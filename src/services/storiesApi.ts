@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 
 /**
  * Stories API service using RTK Query
@@ -11,14 +11,104 @@ export interface StoryRequest {
   age_bracket: '8-10'| '11-12' | '13-15' | '16-17' | '18+'
 }
 
+// API response from backend
+interface ApiStoryResponse {
+  id: string
+  user_id: string
+  text: string
+  translation: Record<string, string>
+  difficulty_level: number
+  age_bracket: string
+  original_language: string
+  translated_language: string
+  tags: string[]
+  created_at: string
+}
+
+// Transformed response for frontend
 export interface StoryResponse {
+  id: string
   story: string
   translations: Record<string, string>
 }
 
+// Questions API types
+export interface Question {
+  id: string
+  text: string
+  options: string[]
+  correct_answer: number
+}
+
+export interface QuestionsResponse {
+  questions: Question[]
+}
+
+// Feedback API types
+export interface FeedbackRequest {
+  start_time: string
+  end_time: string
+  is_skipped: boolean
+  question_attempts: number[]
+  is_liked: boolean
+  is_disliked: boolean
+  feedback_text: string
+}
+
+// Hardcoded credentials
+const HARDCODED_EMAIL = 'alice@example.com'
+const HARDCODED_PASSWORD = 'password123'
+
+// Store token in memory
+let authToken: string | null = null
+
+// Custom baseQuery that handles authentication
+const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
+  // If no token, login first
+  if (!authToken) {
+    try {
+      const loginResponse = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: HARDCODED_EMAIL,
+          password: HARDCODED_PASSWORD,
+        }),
+      })
+
+      if (loginResponse.ok) {
+        const loginData = await loginResponse.json()
+        authToken = loginData.access_token
+      }
+    } catch (error) {
+      console.error('Auto-login failed:', error)
+    }
+  }
+
+  // Create base query with token
+  const baseQuery = fetchBaseQuery({
+    baseUrl: 'http://localhost:8080',
+    prepareHeaders: (headers) => {
+      if (authToken) {
+        headers.set('Authorization', `Bearer ${authToken}`)
+      }
+      return headers
+    },
+  })
+
+  // Execute the actual request
+  return baseQuery(args, api, extraOptions)
+}
+
 export const storiesApi = createApi({
   reducerPath: 'storiesApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3001' }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: ['Story'],
   endpoints: (builder) => ({
     // Mutation to generate a story
@@ -31,10 +121,56 @@ export const storiesApi = createApi({
         },
         body: request,
       }),
+      // Transform API response to match frontend expectations
+      transformResponse: (response: ApiStoryResponse): StoryResponse => ({
+        id: response.id,
+        story: response.text,
+        translations: response.translation,
+      }),
       invalidatesTags: ['Story'],
+    }),
+    // Get questions for a story
+    getQuestions: builder.mutation<QuestionsResponse, string>({
+      query: (storyId) => ({
+        url: `/stories/${storyId}/questions`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      // Transform API response to match frontend expectations
+      transformResponse: (response: Array<{
+        id: string
+        story_id: string
+        text: string
+        options: Array<{ text: string; is_correct: boolean }>
+        created_at: string
+      }>): QuestionsResponse => ({
+        questions: response.map(q => ({
+          id: q.id,
+          text: q.text,
+          options: q.options.map(opt => opt.text),
+          correct_answer: q.options.findIndex(opt => opt.is_correct),
+        })),
+      }),
+    }),
+    // Submit feedback for a story
+    submitFeedback: builder.mutation<void, { storyId: string; feedback: FeedbackRequest }>({
+      query: ({ storyId, feedback }) => ({
+        url: `/stories/${storyId}/feedbacks`,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: feedback,
+      }),
     }),
   }),
 })
 
 // Export hooks for usage in functional components
-export const { useGenerateStoryMutation } = storiesApi
+export const {
+  useGenerateStoryMutation,
+  useGetQuestionsMutation,
+  useSubmitFeedbackMutation
+} = storiesApi

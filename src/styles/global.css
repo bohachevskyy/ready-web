@@ -1,38 +1,37 @@
-
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.96 0.01 240);
-  --foreground: oklch(0.25 0.02 250);
+  --background: oklch(0.98 0.02 145);
+  --foreground: oklch(0.25 0.02 145);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.25 0.02 250);
-  --popover: oklch(0.3 0.05 250);
+  --card-foreground: oklch(0.25 0.02 145);
+  --popover: oklch(0.28 0.12 145);
   --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.55 0.22 260);
+  --primary: oklch(0.68 0.22 145);
   --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.97 0.01 240);
-  --secondary-foreground: oklch(0.25 0.02 250);
-  --muted: oklch(0.94 0.01 240);
-  --muted-foreground: oklch(0.5 0.02 250);
-  --accent: oklch(0.65 0.25 190);
+  --secondary: oklch(0.95 0.02 145);
+  --secondary-foreground: oklch(0.25 0.02 145);
+  --muted: oklch(0.93 0.02 145);
+  --muted-foreground: oklch(0.5 0.02 145);
+  --accent: oklch(0.72 0.24 140);
   --accent-foreground: oklch(0.98 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.88 0.01 240);
-  --input: oklch(0.88 0.01 240);
-  --ring: oklch(0.55 0.22 260);
+  --border: oklch(0.88 0.02 145);
+  --input: oklch(0.88 0.02 145);
+  --ring: oklch(0.68 0.22 145);
   --radius: 0.5rem;
-  --sidebar: oklch(0.99 0 0);
-  --sidebar-foreground: oklch(0.25 0.02 250);
-  --sidebar-primary: oklch(0.55 0.22 260);
+  --sidebar: oklch(0.99 0.01 145);
+  --sidebar-foreground: oklch(0.25 0.02 145);
+  --sidebar-primary: oklch(0.68 0.22 145);
   --sidebar-primary-foreground: oklch(0.98 0 0);
-  --sidebar-accent: oklch(0.96 0.01 240);
-  --sidebar-accent-foreground: oklch(0.25 0.02 250);
-  --sidebar-border: oklch(0.88 0.01 240);
-  --sidebar-ring: oklch(0.55 0.22 260);
+  --sidebar-accent: oklch(0.96 0.015 145);
+  --sidebar-accent-foreground: oklch(0.25 0.02 145);
+  --sidebar-border: oklch(0.88 0.02 145);
+  --sidebar-ring: oklch(0.68 0.22 145);
 }
 
 .dark {
