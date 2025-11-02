@@ -5,6 +5,7 @@ import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { X, Loader2, ThumbsUp, ThumbsDown } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
+import { QuizView } from "./QuizView"
 import { addWord, removeWord } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
 import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, type Question } from "../services/storiesApi"
@@ -32,11 +33,9 @@ export function StoryReader() {
   // Questions state
   const [view, setView] = useState<'story' | 'questions' | 'completed'>('story')
   const [questions, setQuestions] = useState<Question[]>([])
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({})
   const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({})
-  const [incorrectAnswers, setIncorrectAnswers] = useState<Record<string, boolean>>({})
-  const [correctAnswers, setCorrectAnswers] = useState<Record<string, boolean>>({})
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
+  const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
 
   // Helper function to clean word and get translation
   const getTranslation = (word: string): string | null => {
@@ -82,50 +81,38 @@ export function StoryReader() {
     }
   }
 
-  const handleAnswerSelect = (questionId: string, answerIndex: number, correctAnswer: number) => {
-    setSelectedAnswers(prev => ({ ...prev, [questionId]: answerIndex }))
-
-    // Increment attempt count
-    setAttemptCounts(prev => ({ ...prev, [questionId]: (prev[questionId] || 0) + 1 }))
-
-    if (answerIndex === correctAnswer) {
-      // Correct answer
-      setCorrectAnswers(prev => ({ ...prev, [questionId]: true }))
-      setIncorrectAnswers(prev => ({ ...prev, [questionId]: false }))
-    } else {
-      // Incorrect answer
-      setIncorrectAnswers(prev => ({ ...prev, [questionId]: true }))
-      setCorrectAnswers(prev => ({ ...prev, [questionId]: false }))
-    }
-  }
-
-  const allQuestionsCorrect = questions.every(q => correctAnswers[q.id])
-
   const handleComplete = async () => {
-    if (!storyId || !allQuestionsCorrect) return
+    if (!storyId) return
 
     setView('completed')
   }
 
-  const handleLikeFeedback = async (isLiked: boolean) => {
-    if (!storyId || feedbackSubmitted) return
+  const handleLikeFeedback = async (status: "like" | "dislike") => {
+    if (!storyId) return
 
-    try {
-      await submitFeedback({
-        storyId,
-        feedback: {
-          start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-          end_time: new Date().toISOString(),
-          is_skipped: false,
-          question_attempts: questions.map(q => attemptCounts[q.id] || 0),
-          is_liked: isLiked,
-          is_disliked: !isLiked,
-          feedback_text: isLiked ? "Story liked" : "Story disliked"
-        }
-      }).unwrap()
-      setFeedbackSubmitted(true)
-    } catch (err) {
-      console.error('Failed to submit feedback:', err)
+    // Toggle status
+    const newStatus = likeStatus === status ? null : status
+    setLikeStatus(newStatus)
+
+    // Submit feedback if a choice is made
+    if (newStatus && !feedbackSubmitted) {
+      try {
+        await submitFeedback({
+          storyId,
+          feedback: {
+            start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+            end_time: new Date().toISOString(),
+            is_skipped: false,
+            question_attempts: questions.map(q => attemptCounts[q.id] || 0),
+            is_liked: newStatus === "like",
+            is_disliked: newStatus === "dislike",
+            feedback_text: newStatus === "like" ? "Story liked" : "Story disliked"
+          }
+        }).unwrap()
+        setFeedbackSubmitted(true)
+      } catch (err) {
+        console.error('Failed to submit feedback:', err)
+      }
     }
   }
 
@@ -189,12 +176,12 @@ export function StoryReader() {
   return (
     <div className="flex h-screen bg-background">
       {/* Main reading area */}
-      <div className="flex-1 flex flex-col p-8">
-        <div className="max-w-3xl w-full mx-auto flex flex-col h-full">
-          <h1 className="text-2xl font-semibold mb-8 text-foreground flex-shrink-0">
-            {view === 'story' ? 'Reading Practice' : view === 'questions' ? 'Questions' : 'Completed!'}
-          </h1>
-          <Card className="p-8 bg-card shadow-sm flex-1 overflow-auto">
+      <div className="flex-1 flex flex-col p-8 overflow-auto">
+        <h1 className="text-2xl font-semibold mb-8 text-foreground">
+          {view === 'story' ? 'Reading Practice' : view === 'questions' ? 'Quiz Time' : 'Completed!'}
+        </h1>
+        <div className="max-w-3xl w-full mx-auto">
+          <Card className="p-8 bg-card shadow-sm">
             {view === 'story' && (
               <>
                 {isGeneratingStory ? (
@@ -236,7 +223,7 @@ export function StoryReader() {
                                   key={tokenIndex}
                                   onClick={hasTranslation ? (e) => handleWordClick(token, e) : undefined}
                                   className={hasTranslation
-                                    ? "cursor-pointer hover:bg-yellow-200 rounded px-0.5 transition-colors"
+                                    ? "cursor-pointer hover:bg-primary/15 hover:text-primary rounded px-0.5 transition-colors"
                                     : ""
                                   }
                                 >
@@ -249,7 +236,7 @@ export function StoryReader() {
                       })}
                     </div>
                     <div className="flex justify-center mt-8">
-                      <Button onClick={handleFinish} className="h-11 px-8">
+                      <Button onClick={handleFinish} size="lg" className="px-8 bg-primary text-primary-foreground hover:bg-primary/90">
                         Finish
                       </Button>
                     </div>
@@ -259,96 +246,53 @@ export function StoryReader() {
             )}
 
             {view === 'questions' && (
-              <>
-                {isLoadingQuestions ? (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                    <p className="text-lg text-muted-foreground">Loading questions...</p>
-                  </div>
-                ) : (
-                  <div className="space-y-8">
-                    {questions.map((question, qIndex) => (
-                      <div key={question.id} className="space-y-4">
-                        <h3 className="text-lg font-medium text-foreground">
-                          {qIndex + 1}. {question.text}
-                        </h3>
-                        <div className="grid grid-cols-2 gap-3">
-                          {question.options.map((option, optIndex) => {
-                            const isSelected = selectedAnswers[question.id] === optIndex
-                            const isCorrect = correctAnswers[question.id] && isSelected
-                            const isIncorrect = incorrectAnswers[question.id] && isSelected
-
-                            return (
-                              <Button
-                                key={optIndex}
-                                variant={isCorrect ? "default" : isIncorrect ? "destructive" : "outline"}
-                                className={`h-auto py-3 px-4 text-left justify-start ${
-                                  isCorrect ? "bg-green-500 hover:bg-green-600" :
-                                  isIncorrect ? "bg-red-500 hover:bg-red-600" : ""
-                                }`}
-                                onClick={() => handleAnswerSelect(question.id, optIndex, question.correct_answer)}
-                              >
-                                {option}
-                              </Button>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    ))}
-
-                    <div className="flex flex-col items-center gap-3 mt-12 pt-8 border-t">
-                      <Button
-                        onClick={handleComplete}
-                        disabled={!allQuestionsCorrect}
-                        size="lg"
-                        className="w-64 bg-primary hover:bg-primary/90"
-                      >
-                        Complete
-                      </Button>
-                      <Button
-                        onClick={handleSkip}
-                        variant="ghost"
-                        size="lg"
-                        className="w-64 text-muted-foreground"
-                      >
-                        Skip
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </>
+              <QuizView
+                questions={questions}
+                isLoading={isLoadingQuestions}
+                onComplete={handleComplete}
+                onSkip={handleSkip}
+                onLikeFeedback={handleLikeFeedback}
+                likeStatus={likeStatus}
+                feedbackSubmitted={feedbackSubmitted}
+              />
             )}
 
             {view === 'completed' && (
               <div className="flex flex-col items-center justify-center py-12">
                 <h2 className="text-2xl font-semibold text-foreground mb-4">Great job!</h2>
                 <p className="text-lg text-muted-foreground mb-8">You have completed the story.</p>
-                {!feedbackSubmitted && (
-                  <div className="flex gap-4 mb-8">
-                    <Button
-                      onClick={() => handleLikeFeedback(true)}
-                      size="lg"
-                      variant="outline"
-                      className="w-32 gap-2"
-                    >
-                      <ThumbsUp className="h-5 w-5" />
-                      Like
-                    </Button>
-                    <Button
-                      onClick={() => handleLikeFeedback(false)}
-                      size="lg"
-                      variant="outline"
-                      className="w-32 gap-2"
-                    >
-                      <ThumbsDown className="h-5 w-5" />
-                      Dislike
-                    </Button>
-                  </div>
-                )}
+                <div className="flex justify-center gap-4 mb-8">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => handleLikeFeedback("like")}
+                    className={`gap-2 ${
+                      likeStatus === "like"
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary hover:text-primary-foreground"
+                        : ""
+                    }`}
+                  >
+                    <ThumbsUp className="h-5 w-5" />
+                    Like
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => handleLikeFeedback("dislike")}
+                    className={`gap-2 ${
+                      likeStatus === "dislike"
+                        ? "bg-destructive text-destructive-foreground border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                        : ""
+                    }`}
+                  >
+                    <ThumbsDown className="h-5 w-5" />
+                    Dislike
+                  </Button>
+                </div>
                 {feedbackSubmitted && (
                   <p className="text-sm text-muted-foreground mb-8">Thank you for your feedback!</p>
                 )}
-                <Button onClick={() => window.location.reload()} size="lg">
+                <Button onClick={() => window.location.reload()} size="lg" className="px-12 bg-primary text-primary-foreground hover:bg-primary/90">
                   Read Another Story
                 </Button>
               </div>
@@ -367,11 +311,11 @@ export function StoryReader() {
             transform: "translate(-50%, -100%)",
           }}
         >
-          <Card className="bg-gray-100 text-gray-900 p-3 shadow-lg border border-gray-300">
+          <Card className="bg-popover text-popover-foreground p-3 shadow-lg border-border">
             <div className="flex items-start gap-2 min-w-[150px]">
-              <div className="flex-1">
+              <div>
                 <p className="font-semibold text-sm">{selectedWord.word}</p>
-                <p className="text-sm text-gray-600 mt-0.5">{selectedWord.translation}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{selectedWord.translation}</p>
               </div>
               <Button variant="ghost" size="icon" className="h-6 w-6 -mt-1 -mr-1" onClick={() => setSelectedWord(null)}>
                 <X className="h-3 w-3" />

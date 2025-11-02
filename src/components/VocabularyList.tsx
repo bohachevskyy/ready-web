@@ -21,7 +21,7 @@ export function VocabularyList({ savedWords, onRemoveWord }: VocabularyListProps
         <h2 className="text-xl font-semibold mb-4 text-sidebar-foreground">Vocabulary List</h2>
         <p className="text-sm text-muted-foreground mb-6">Click on words in the text to add them here</p>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           {savedWords.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-8">No words saved yet</p>
           ) : (
