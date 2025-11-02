@@ -1,10 +1,10 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { X, ThumbsUp, ThumbsDown } from "lucide-react"
+import { X } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
@@ -16,6 +16,7 @@ import type { SavedWord } from "../types"
 
 export function StoryReader() {
   const { domain } = useParams<{ domain: string }>()
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const savedWords = useAppSelector((state) => state.vocabulary.savedWords)
   const storyId = useAppSelector((state) => state.story.id)
@@ -34,7 +35,7 @@ export function StoryReader() {
   const hasFetchedStory = useRef(false)
 
   // Questions state
-  const [view, setView] = useState<'story' | 'questions' | 'completed'>('story')
+  const [view, setView] = useState<'story' | 'questions'>('story')
   const [questions, setQuestions] = useState<Question[]>([])
   const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({})
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
@@ -88,36 +89,33 @@ export function StoryReader() {
   const handleComplete = async () => {
     if (!storyId) return
 
-    setView('completed')
+    try {
+      await submitFeedback({
+        storyId,
+        feedback: {
+          start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          end_time: new Date().toISOString(),
+          is_skipped: false,
+          question_attempts: questions.map(q => attemptCounts[q.id] || 0),
+          is_liked: likeStatus === "like",
+          is_disliked: likeStatus === "dislike",
+          feedback_text: likeStatus === "like" ? "Story liked" : likeStatus === "dislike" ? "Story disliked" : "Story completed"
+        }
+      }).unwrap()
+
+      // Redirect to main page
+      navigate('/')
+    } catch (err) {
+      console.error('Failed to submit feedback:', err)
+      // Still redirect even if feedback fails
+      navigate('/')
+    }
   }
 
   const handleLikeFeedback = async (status: "like" | "dislike") => {
-    if (!storyId) return
-
     // Toggle status
     const newStatus = likeStatus === status ? null : status
     setLikeStatus(newStatus)
-
-    // Submit feedback if a choice is made
-    if (newStatus && !feedbackSubmitted) {
-      try {
-        await submitFeedback({
-          storyId,
-          feedback: {
-            start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
-            end_time: new Date().toISOString(),
-            is_skipped: false,
-            question_attempts: questions.map(q => attemptCounts[q.id] || 0),
-            is_liked: newStatus === "like",
-            is_disliked: newStatus === "dislike",
-            feedback_text: newStatus === "like" ? "Story liked" : "Story disliked"
-          }
-        }).unwrap()
-        setFeedbackSubmitted(true)
-      } catch (err) {
-        console.error('Failed to submit feedback:', err)
-      }
-    }
   }
 
   const handleSkip = async () => {
@@ -131,14 +129,18 @@ export function StoryReader() {
           end_time: new Date().toISOString(),
           is_skipped: true,
           question_attempts: questions.map(q => attemptCounts[q.id] || 0),
-          is_liked: false,
-          is_disliked: false,
+          is_liked: likeStatus === "like",
+          is_disliked: likeStatus === "dislike",
           feedback_text: "Story skipped"
         }
       }).unwrap()
-      setView('completed')
+
+      // Redirect to main page
+      navigate('/')
     } catch (err) {
       console.error('Failed to submit feedback:', err)
+      // Still redirect even if feedback fails
+      navigate('/')
     }
   }
 
@@ -187,7 +189,7 @@ export function StoryReader() {
       {/* Main reading area */}
       <div className="flex-1 flex flex-col p-8 overflow-auto">
         <h1 className="text-2xl font-semibold mb-8 text-foreground">
-          {view === 'story' ? 'Reading Practice' : view === 'questions' ? 'Quiz Time' : 'Completed!'}
+          {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
         </h1>
         <div className="max-w-3xl w-full mx-auto">
           <Card className="p-8 bg-card shadow-sm">
@@ -259,47 +261,6 @@ export function StoryReader() {
                 likeStatus={likeStatus}
                 feedbackSubmitted={feedbackSubmitted}
               />
-            )}
-
-            {view === 'completed' && (
-              <div className="flex flex-col items-center justify-center py-12">
-                <h2 className="text-2xl font-semibold text-foreground mb-4">Great job!</h2>
-                <p className="text-lg text-muted-foreground mb-8">You have completed the story.</p>
-                <div className="flex justify-center gap-4 mb-8">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => handleLikeFeedback("like")}
-                    className={`gap-2 ${
-                      likeStatus === "like"
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary hover:text-primary-foreground"
-                        : ""
-                    }`}
-                  >
-                    <ThumbsUp className="h-5 w-5" />
-                    Like
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => handleLikeFeedback("dislike")}
-                    className={`gap-2 ${
-                      likeStatus === "dislike"
-                        ? "bg-destructive text-destructive-foreground border-destructive hover:bg-destructive hover:text-destructive-foreground"
-                        : ""
-                    }`}
-                  >
-                    <ThumbsDown className="h-5 w-5" />
-                    Dislike
-                  </Button>
-                </div>
-                {feedbackSubmitted && (
-                  <p className="text-sm text-muted-foreground mb-8">Thank you for your feedback!</p>
-                )}
-                <Button onClick={() => window.location.reload()} size="lg" className="px-12 bg-primary text-primary-foreground hover:bg-primary/90">
-                  Read Another Story
-                </Button>
-              </div>
             )}
           </Card>
         </div>
