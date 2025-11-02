@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { StoryReader } from './components/StoryReader';
 import { ModeSelection } from './components/ModeSelection';
+import { StoryCategorySelection } from './components/StoryCategorySelection';
 import './styles/App.css';
 
 function PracticePlaceholder() {
@@ -19,7 +20,7 @@ function ModeSelectionWithNavigation() {
 
   const handleSelectMode = (mode: "read" | "practice") => {
     if (mode === "read") {
-      navigate('/story');
+      navigate('/story/category');
     } else {
       navigate('/practice');
     }
@@ -28,13 +29,23 @@ function ModeSelectionWithNavigation() {
   return <ModeSelection onSelectMode={handleSelectMode} />;
 }
 
+function StoryCategoryWithNavigation() {
+  const navigate = useNavigate();
+
+  const handleSelectDomain = (domain: string) => {
+    navigate(`/story/${domain}`);
+  };
+
+  return <StoryCategorySelection onSelectDomain={handleSelectDomain} />;
+}
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<ModeSelectionWithNavigation />} />
-        <Route path="/story" element={<StoryReader />} />
-        <Route path="/story/:id" element={<StoryReader />} />
+        <Route path="/story/category" element={<StoryCategoryWithNavigation />} />
+        <Route path="/story/:domain" element={<StoryReader />} />
         <Route path="/practice" element={<PracticePlaceholder />} />
       </Routes>
     </BrowserRouter>

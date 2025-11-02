@@ -1,11 +1,13 @@
 import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
+import { useParams } from "react-router-dom"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { X, Loader2, ThumbsUp, ThumbsDown } from "lucide-react"
+import { X, ThumbsUp, ThumbsDown } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
+import { StoryLoading } from "./StoryLoading"
 import { addWord, removeWord } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
 import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, type Question } from "../services/storiesApi"
@@ -13,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../store/store"
 import type { SavedWord } from "../types"
 
 export function StoryReader() {
+  const { domain } = useParams<{ domain: string }>()
   const dispatch = useAppDispatch()
   const savedWords = useAppSelector((state) => state.vocabulary.savedWords)
   const storyId = useAppSelector((state) => state.story.id)
@@ -53,7 +56,8 @@ export function StoryReader() {
         const result = await generateStory({
           level: 1,
           words: ['the'],
-          age_bracket: '8-10'
+          age_bracket: '8-10',
+          domain: domain
         }).unwrap()
 
         dispatch(setStoryId(result.id))
@@ -67,7 +71,7 @@ export function StoryReader() {
     }
 
     fetchStory()
-  }, [generateStory, dispatch])
+  }, [generateStory, dispatch, domain])
 
   const handleFinish = async () => {
     if (!storyId) return
@@ -173,6 +177,11 @@ export function StoryReader() {
 
   const lines = storyText.split('\n')
 
+  // Show full-screen loading animation while generating story
+  if (isGeneratingStory) {
+    return <StoryLoading />
+  }
+
   return (
     <div className="flex h-screen bg-background">
       {/* Main reading area */}
@@ -184,12 +193,7 @@ export function StoryReader() {
           <Card className="p-8 bg-card shadow-sm">
             {view === 'story' && (
               <>
-                {isGeneratingStory ? (
-                  <div className="flex flex-col items-center justify-center py-12">
-                    <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                    <p className="text-lg text-muted-foreground">Generating your story...</p>
-                  </div>
-                ) : storyError ? (
+                {storyError ? (
                   <div className="flex flex-col items-center justify-center py-12">
                     <p className="text-lg text-destructive mb-4">Failed to generate story</p>
                     <Button onClick={() => window.location.reload()}>Try Again</Button>

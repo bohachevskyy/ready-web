@@ -9,6 +9,7 @@ export interface StoryRequest {
   level: number
   words: string[]
   age_bracket: '8-10'| '11-12' | '13-15' | '16-17' | '18+'
+  domain?: string
 }
 
 // API response from backend
