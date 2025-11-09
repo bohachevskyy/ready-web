@@ -1,13 +1,25 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 
+interface User {
+  id: string
+  email: string
+  firebase_uid: string
+  created_at: string
+  updated_at: string
+}
+
 interface AuthState {
   token: string | null
+  refreshToken: string | null
+  user: User | null
   isLoading: boolean
   error: string | null
 }
 
 const initialState: AuthState = {
   token: null,
+  refreshToken: null,
+  user: null,
   isLoading: false,
   error: null,
 }
@@ -21,7 +33,17 @@ export interface LoginResponse {
   access_token: string
 }
 
-// Async thunk for login
+export interface FirebaseAuthRequest {
+  firebase_token: string
+}
+
+export interface FirebaseAuthResponse {
+  access_token: string
+  refresh_token: string
+  user: User
+}
+
+// Async thunk for traditional login
 export const login = createAsyncThunk<LoginResponse, LoginRequest>(
   'auth/login',
   async (credentials) => {
@@ -42,6 +64,29 @@ export const login = createAsyncThunk<LoginResponse, LoginRequest>(
   }
 )
 
+// Async thunk for Firebase authentication
+export const loginWithFirebase = createAsyncThunk<FirebaseAuthResponse, FirebaseAuthRequest>(
+  'auth/loginWithFirebase',
+  async (request) => {
+    const response = await fetch('http://localhost:8080/auth/firebase', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id_token: request.firebase_token
+      }),
+    })
+
+    if (!response.ok) {
+      throw new Error('Firebase authentication failed')
+    }
+
+    const data = await response.json()
+    return data
+  }
+)
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -49,12 +94,15 @@ export const authSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
-    clearToken: (state) => {
+    clearAuth: (state) => {
       state.token = null
+      state.refreshToken = null
+      state.user = null
     },
   },
   extraReducers: (builder) => {
     builder
+      // Traditional login
       .addCase(login.pending, (state) => {
         state.isLoading = true
         state.error = null
@@ -67,9 +115,24 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.error = action.error.message || 'Login failed'
       })
+      // Firebase login
+      .addCase(loginWithFirebase.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(loginWithFirebase.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.token = action.payload.access_token
+        state.refreshToken = action.payload.refresh_token
+        state.user = action.payload.user
+      })
+      .addCase(loginWithFirebase.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.error.message || 'Firebase authentication failed'
+      })
   },
 })
 
-export const { setToken, clearToken } = authSlice.actions
+export const { setToken, clearAuth } = authSlice.actions
 
 export default authSlice.reducer

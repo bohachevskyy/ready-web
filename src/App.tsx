@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { StoryReader } from './components/StoryReader';
 import { ModeSelection } from './components/ModeSelection';
 import { StoryCategorySelection } from './components/StoryCategorySelection';
+import { Login } from './components/Login';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import './styles/App.css';
 
 function PracticePlaceholder() {
@@ -43,10 +45,39 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<ModeSelectionWithNavigation />} />
-        <Route path="/story/category" element={<StoryCategoryWithNavigation />} />
-        <Route path="/story/:domain" element={<StoryReader />} />
-        <Route path="/practice" element={<PracticePlaceholder />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <ModeSelectionWithNavigation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/story/category"
+          element={
+            <ProtectedRoute>
+              <StoryCategoryWithNavigation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/story/:domain"
+          element={
+            <ProtectedRoute>
+              <StoryReader />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/practice"
+          element={
+            <ProtectedRoute>
+              <PracticePlaceholder />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

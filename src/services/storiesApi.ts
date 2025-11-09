@@ -56,55 +56,37 @@ export interface FeedbackRequest {
   feedback_text: string
 }
 
-// Hardcoded credentials
-const HARDCODED_EMAIL = 'alice@example.com'
-const HARDCODED_PASSWORD = 'password123'
-
-// Store token in memory
-let authToken: string | null = null
-
-// Custom baseQuery that handles authentication
+// Custom baseQuery that handles authentication from Redux state
 const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
   extraOptions
 ) => {
-  // If no token, login first
-  if (!authToken) {
-    try {
-      const loginResponse = await fetch('http://localhost:8080/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: HARDCODED_EMAIL,
-          password: HARDCODED_PASSWORD,
-        }),
-      })
+  const state = api.getState() as any
+  const token = state.auth.token
 
-      if (loginResponse.ok) {
-        const loginData = await loginResponse.json()
-        authToken = loginData.access_token
-      }
-    } catch (error) {
-      console.error('Auto-login failed:', error)
-    }
-  }
-
-  // Create base query with token
+  // Create base query with token from Redux state
   const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:8080',
     prepareHeaders: (headers) => {
-      if (authToken) {
-        headers.set('Authorization', `Bearer ${authToken}`)
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`)
       }
       return headers
     },
   })
 
   // Execute the actual request
-  return baseQuery(args, api, extraOptions)
+  const result = await baseQuery(args, api, extraOptions)
+
+  // Handle 401 Unauthorized errors
+  if (result.error && result.error.status === 401) {
+    // Token expired or invalid - user should log in again
+    // You could dispatch a logout action here if needed
+    console.error('Authentication error: token expired or invalid')
+  }
+
+  return result
 }
 
 export const storiesApi = createApi({
