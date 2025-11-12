@@ -6,6 +6,11 @@ interface User {
   firebase_uid: string
   created_at: string
   updated_at: string
+  first_name?: string
+  last_name?: string
+  name?: string
+  age?: number
+  language_level?: number
 }
 
 interface AuthState {
@@ -94,6 +99,14 @@ export const authSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
+    setUser: (state, action: PayloadAction<User | null>) => {
+      state.user = action.payload
+    },
+    updateUserLanguageLevel: (state, action: PayloadAction<number>) => {
+      if (state.user) {
+        state.user.language_level = action.payload
+      }
+    },
     clearAuth: (state) => {
       state.token = null
       state.refreshToken = null
@@ -133,6 +146,6 @@ export const authSlice = createSlice({
   },
 })
 
-export const { setToken, clearAuth } = authSlice.actions
+export const { setToken, setUser, updateUserLanguageLevel, clearAuth } = authSlice.actions
 
 export default authSlice.reducer
