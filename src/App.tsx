@@ -5,6 +5,7 @@ import { StoryCategorySelection } from './components/StoryCategorySelection';
 import { Login } from './components/Login';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
+import { AccountSettingsPage } from './components/AccountSettingsPage';
 import './styles/App.css';
 
 function PracticePlaceholder() {
@@ -84,6 +85,14 @@ function App() {
               <Layout>
                 <PracticePlaceholder />
               </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <AccountSettingsPage />
             </ProtectedRoute>
           }
         />
