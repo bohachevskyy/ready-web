@@ -92,6 +92,33 @@ export const loginWithFirebase = createAsyncThunk<FirebaseAuthResponse, Firebase
   }
 )
 
+// Async thunk for refreshing access token
+export const refreshAccessToken = createAsyncThunk<FirebaseAuthResponse, string>(
+  'auth/refreshToken',
+  async (refreshToken, { rejectWithValue }) => {
+    try {
+      const response = await fetch('http://localhost:8080/auth/refresh', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          refresh_token: refreshToken
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Token refresh failed')
+      }
+
+      const data = await response.json()
+      return data
+    } catch (error) {
+      return rejectWithValue('Failed to refresh token')
+    }
+  }
+)
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -142,6 +169,24 @@ export const authSlice = createSlice({
       .addCase(loginWithFirebase.rejected, (state, action) => {
         state.isLoading = false
         state.error = action.error.message || 'Firebase authentication failed'
+      })
+      // Refresh token
+      .addCase(refreshAccessToken.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.token = action.payload.access_token
+        state.refreshToken = action.payload.refresh_token
+        state.user = action.payload.user
+      })
+      .addCase(refreshAccessToken.rejected, (state) => {
+        state.isLoading = false
+        state.token = null
+        state.refreshToken = null
+        state.user = null
+        state.error = 'Session expired. Please login again.'
       })
   },
 })

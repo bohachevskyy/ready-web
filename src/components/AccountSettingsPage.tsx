@@ -1,57 +1,46 @@
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AccountSettingsForm } from './AccountSettingsForm';
-import { type RootState, useAppDispatch, useAppSelector } from '../store/store';
-import { setToken, setUser } from '../store/authSlice';
+import { NavigationBar } from './NavigationBar';
+import { useAppDispatch } from '../store/store';
+import { clearAuth } from '../store/authSlice';
+import { signOut } from '../services/firebaseAuth';
+import { persistor } from '../store/store';
 
 export function AccountSettingsPage() {
   const dispatch = useAppDispatch();
-  const { token } = useAppSelector((state) => state.auth);
-  const [searchParams] = useSearchParams();
-  const payloadKey = searchParams.get('payloadKey');
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || !payloadKey) {
-      return;
-    }
+  const handleHomeClick = () => {
+    navigate('/');
+  };
 
+  const handleAccountClick = () => {
+    // Already on account page, do nothing
+  };
+
+  const handleLogout = async () => {
     try {
-      const stored = window.localStorage.getItem(payloadKey);
-
-      if (stored) {
-        const parsed = JSON.parse(stored) as {
-          token?: string;
-          user?: RootState['auth']['user'];
-        };
-
-        if (!token && parsed.token) {
-          dispatch(setToken(parsed.token));
-        }
-
-        if ('user' in parsed) {
-          dispatch(setUser(parsed.user ?? null));
-        }
-      }
+      await signOut();
+      dispatch(clearAuth());
+      await persistor.purge();
+      navigate('/login');
     } catch (error) {
-      console.error('Failed to hydrate account settings window', error);
-    } finally {
-      window.localStorage.removeItem(payloadKey);
-    }
-  }, [dispatch, payloadKey, token]);
-
-  const handleCloseWindow = () => {
-    if (typeof window !== 'undefined') {
-      window.close();
+      console.error('Error signing out:', error);
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="flex min-h-screen items-center justify-center px-4 py-10">
+      <NavigationBar
+        onHomeClick={handleHomeClick}
+        onLogout={handleLogout}
+        onAccountClick={handleAccountClick}
+      />
+      <div className="p-6">
         <AccountSettingsForm
           resetKey="account-page"
-          onClose={handleCloseWindow}
-          closeLabel="Close window"
+          onClose={handleHomeClick}
+          closeLabel="Back to Home"
         />
       </div>
     </div>

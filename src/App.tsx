@@ -90,11 +90,7 @@ function App() {
         />
         <Route
           path="/account"
-          element={
-            <ProtectedRoute>
-              <AccountSettingsPage />
-            </ProtectedRoute>
-          }
+          element={<AccountSettingsPage />}
         />
       </Routes>
     </BrowserRouter>

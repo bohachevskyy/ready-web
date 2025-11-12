@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
+import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 import counterReducer from './counterSlice'
 import vocabularyReducer from './vocabularySlice'
 import storyReducer from './storySlice'
@@ -9,24 +11,39 @@ import { translationApi } from '../services/translationApi'
 import { storiesApi } from '../services/storiesApi'
 import { authMiddleware } from './authMiddleware'
 
+// Configure persistence for auth slice
+const authPersistConfig = {
+  key: 'auth',
+  storage,
+  whitelist: ['token', 'refreshToken', 'user'], // Only persist these fields
+}
+
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     vocabulary: vocabularyReducer,
     story: storyReducer,
-    auth: authReducer,
+    auth: persistedAuthReducer,
     // Add the RTK Query API reducers
     [translationApi.reducerPath]: translationApi.reducer,
     [storiesApi.reducerPath]: storiesApi.reducer,
   },
   // Add the RTK Query middleware
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(
       translationApi.middleware,
       storiesApi.middleware,
       authMiddleware
     ),
 })
+
+export const persistor = persistStore(store)
 
 // Enable refetchOnFocus and refetchOnReconnect behaviors
 setupListeners(store.dispatch)

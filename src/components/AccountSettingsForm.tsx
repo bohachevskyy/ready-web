@@ -1,15 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { User } from 'lucide-react';
 import { type RootState, useAppDispatch, useAppSelector } from '../store/store';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
+import { Toast } from './ui/toast';
 import { setUser, updateUserLanguageLevel } from '../store/authSlice';
 import { updateLanguageLevel } from '../services/userApi';
 
 type MaybeUser = RootState['auth']['user'];
-type User = Exclude<MaybeUser, null>;
+type UserType = Exclude<MaybeUser, null>;
 
-const COMPLEXITY_LEVELS = [1, 2, 3, 4, 5];
+type LanguageLevel = 1 | 2 | 3 | 4 | 5;
+
+const languageLevels = [
+  { level: 1, label: "A1", color: "bg-emerald-400", description: "Beginner" },
+  { level: 2, label: "A2", color: "bg-green-400", description: "Elementary" },
+  { level: 3, label: "B1", color: "bg-yellow-400", description: "Intermediate" },
+  { level: 4, label: "B2", color: "bg-orange-400", description: "Upper Intermediate" },
+  { level: 5, label: "C1", color: "bg-red-400", description: "Advanced" },
+];
 
 export function useAccountSettings(resetKey?: unknown) {
   const dispatch = useAppDispatch();
@@ -69,7 +79,7 @@ export function useAccountSettings(resetKey?: unknown) {
 
       if (response && typeof response === 'object') {
         const nextUser = user
-          ? ({ ...user, ...(response as Partial<User>) } as MaybeUser)
+          ? ({ ...user, ...(response as Partial<UserType>) } as MaybeUser)
           : (response as MaybeUser);
 
         if (nextUser && typeof nextUser === 'object' && 'id' in nextUser) {
@@ -110,75 +120,155 @@ export function AccountSettingsForm({
   onClose,
   resetKey,
   className,
-  closeLabel = 'Close',
+  closeLabel = 'Cancel',
   showCloseButton = true,
 }: AccountSettingsFormProps) {
   const { user, fullName, languageLevel, setLanguageLevel, isSaving, error, isSuccess, handleSave } =
     useAccountSettings(resetKey);
 
-  const containerClasses = `w-full max-w-md rounded-lg bg-card p-6 shadow-lg ${className ?? ''}`.trim();
+  const [showToast, setShowToast] = useState(false);
+
+  const ageGroup = user?.age ? (user.age < 15 ? "10-14" : user.age < 18 ? "15-17" : "18+") : "18+";
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowToast(true);
+    }
+  }, [isSuccess]);
 
   return (
-    <div className={containerClasses}>
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-foreground">Account Settings</h2>
-        <p className="text-sm text-muted-foreground">
-          Review your profile details and adjust your reading complexity level.
-        </p>
-      </div>
+    <div className={`mx-auto max-w-2xl ${className ?? ''}`.trim()}>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <User className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl">Account Settings</CardTitle>
+              <CardDescription>Manage your profile and learning preferences</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-8">
+          <div className="space-y-2">
+            <Label className="text-base font-semibold">Name</Label>
+            <div className="rounded-lg border border-border bg-muted/50 px-4 py-3 text-base text-foreground">
+              {fullName}
+            </div>
+          </div>
 
-      <div className="space-y-4">
-        <div className="grid gap-2">
-          <Label htmlFor="account-name">Name</Label>
-          <Input id="account-name" value={fullName} disabled readOnly />
-        </div>
+          <div className="space-y-3">
+            <Label className="text-base font-semibold">Age Group</Label>
+            <div className="rounded-lg border-2 border-primary bg-primary/10 px-6 py-4 text-center text-lg font-medium text-foreground">
+              {ageGroup}
+            </div>
+          </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="account-age">Age</Label>
-          <Input
-            id="account-age"
-            value={user?.age ? String(user.age) : 'Not provided'}
-            disabled
-            readOnly
-          />
-        </div>
+          {/* Language Complexity Section */}
+          <div className="space-y-4">
+            <div>
+              <Label className="text-base font-semibold">Language Complexity</Label>
+              <p className="text-sm text-muted-foreground">
+                Choose your preferred difficulty level for reading materials
+              </p>
+            </div>
 
-        <div className="grid gap-2">
-          <Label htmlFor="account-language-level">Reading complexity level</Label>
-          <select
-            id="account-language-level"
-            className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            value={languageLevel}
-            onChange={(event) => setLanguageLevel(Number(event.target.value))}
-            disabled={isSaving}
-          >
-            {COMPLEXITY_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                Level {level}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-muted-foreground">
-            Higher levels increase story complexity and introduce richer vocabulary.
-          </p>
-        </div>
-      </div>
+            {/* Current Level Display */}
+            <div className="flex items-center justify-center gap-4 rounded-lg bg-muted/50 p-6">
+              <div
+                className={`flex h-16 w-16 items-center justify-center rounded-full ${
+                  languageLevels[languageLevel - 1].color
+                } text-2xl font-bold text-white shadow-lg`}
+              >
+                {languageLevels[languageLevel - 1].label}
+              </div>
+              <div>
+                <p className="text-xl font-semibold">{languageLevels[languageLevel - 1].description}</p>
+                <p className="text-sm text-muted-foreground">Level {languageLevel} of 5</p>
+              </div>
+            </div>
 
-      {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
-      {isSuccess && !error && (
-        <p className="mt-4 text-sm text-emerald-500">Language level updated successfully.</p>
-      )}
+            {/* Custom Slider */}
+            <div className="space-y-4">
+              <div className="relative px-2">
+                {/* Level markers */}
+                <div className="mb-3 flex justify-between">
+                  {languageLevels.map((level) => (
+                    <div key={level.level} className="flex flex-col items-center gap-1">
+                      <div
+                        className={`h-3 w-3 rounded-full transition-all ${
+                          languageLevel >= level.level ? level.color : "bg-muted"
+                        }`}
+                      />
+                      <span
+                        className={`text-xs font-medium transition-colors ${
+                          languageLevel === level.level ? "text-foreground" : "text-muted-foreground"
+                        }`}
+                      >
+                        {level.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
 
-      <div className="mt-6 flex justify-end gap-3">
-        {showCloseButton && onClose && (
-          <Button variant="ghost" onClick={onClose} disabled={isSaving}>
-            {closeLabel}
-          </Button>
-        )}
-        <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? 'Saving…' : 'Save'}
-        </Button>
-      </div>
+                {/* Slider track */}
+                <div className="relative h-2 rounded-full bg-muted">
+                  {/* Progress bar */}
+                  <div
+                    className={`absolute left-0 top-0 h-full rounded-full transition-all ${
+                      languageLevels[languageLevel - 1].color
+                    }`}
+                    style={{ width: `${((languageLevel - 1) / 4) * 100}%` }}
+                  />
+                </div>
+
+                {/* Actual slider input */}
+                <input
+                  type="range"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value={languageLevel}
+                  onChange={(e) => setLanguageLevel(Number(e.target.value) as LanguageLevel)}
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  disabled={isSaving}
+                />
+              </div>
+
+              {/* Level descriptions */}
+              <div className="grid grid-cols-5 gap-2 text-center">
+                {languageLevels.map((level) => (
+                  <button
+                    key={level.level}
+                    onClick={() => setLanguageLevel(level.level as LanguageLevel)}
+                    className={`rounded-md p-2 text-xs transition-colors ${
+                      languageLevel === level.level
+                        ? "bg-primary/10 font-semibold text-primary"
+                        : "text-muted-foreground hover:bg-muted"
+                    }`}
+                    disabled={isSaving}
+                    type="button"
+                  >
+                    {level.description}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {error && <p className="text-sm text-destructive">{error}</p>}
+
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4">
+            <Button onClick={handleSave} className="flex-1" size="lg" disabled={isSaving}>
+              {isSaving ? 'Saving Changes...' : 'Save Changes'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {showToast && <Toast message="Saved" onClose={() => setShowToast(false)} />}
     </div>
   );
 }
