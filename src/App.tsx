@@ -4,6 +4,7 @@ import { ModeSelection } from './components/ModeSelection';
 import { StoryCategorySelection } from './components/StoryCategorySelection';
 import { Login } from './components/Login';
 import { ProtectedRoute } from './components/ProtectedRoute';
+import { Layout } from './components/Layout';
 import './styles/App.css';
 
 function PracticePlaceholder() {
@@ -50,7 +51,9 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <ModeSelectionWithNavigation />
+              <Layout>
+                <ModeSelectionWithNavigation />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -58,7 +61,9 @@ function App() {
           path="/story/category"
           element={
             <ProtectedRoute>
-              <StoryCategoryWithNavigation />
+              <Layout>
+                <StoryCategoryWithNavigation />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -66,7 +71,9 @@ function App() {
           path="/story/:domain"
           element={
             <ProtectedRoute>
-              <StoryReader />
+              <Layout>
+                <StoryReader />
+              </Layout>
             </ProtectedRoute>
           }
         />
@@ -74,7 +81,9 @@ function App() {
           path="/practice"
           element={
             <ProtectedRoute>
-              <PracticePlaceholder />
+              <Layout>
+                <PracticePlaceholder />
+              </Layout>
             </ProtectedRoute>
           }
         />

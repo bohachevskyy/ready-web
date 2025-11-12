@@ -1,5 +1,7 @@
 import {
   signInWithPopup,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   OAuthProvider,
   UserCredential,
@@ -116,6 +118,48 @@ export const verifyPhoneOTP = async (
     confirmationResult = null;
   } catch (error) {
     console.error('Error verifying OTP:', error);
+    throw error;
+  }
+};
+
+/**
+ * Sign in with email and password using Firebase
+ * Returns the Firebase ID token which can be exchanged with backend
+ */
+export const signInWithEmail = async (
+  email: string,
+  password: string,
+  dispatch: AppDispatch
+): Promise<void> => {
+  try {
+    const result: UserCredential = await signInWithEmailAndPassword(auth, email, password);
+    const idToken = await result.user.getIdToken();
+
+    // Exchange Firebase token with backend
+    await dispatch(loginWithFirebase({ firebase_token: idToken })).unwrap();
+  } catch (error) {
+    console.error('Error signing in with email:', error);
+    throw error;
+  }
+};
+
+/**
+ * Create account with email and password using Firebase
+ * Returns the Firebase ID token which can be exchanged with backend
+ */
+export const signUpWithEmail = async (
+  email: string,
+  password: string,
+  dispatch: AppDispatch
+): Promise<void> => {
+  try {
+    const result: UserCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const idToken = await result.user.getIdToken();
+
+    // Exchange Firebase token with backend
+    await dispatch(loginWithFirebase({ firebase_token: idToken })).unwrap();
+  } catch (error) {
+    console.error('Error creating account with email:', error);
     throw error;
   }
 };
