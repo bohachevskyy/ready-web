@@ -9,6 +9,7 @@ import storyReducer from './storySlice'
 import authReducer from './authSlice'
 import { translationApi } from '../services/translationApi'
 import { storiesApi } from '../services/storiesApi'
+import { wordsApi } from '../services/wordsApi'
 import { authMiddleware } from './authMiddleware'
 
 // Configure persistence for auth slice
@@ -29,6 +30,7 @@ export const store = configureStore({
     // Add the RTK Query API reducers
     [translationApi.reducerPath]: translationApi.reducer,
     [storiesApi.reducerPath]: storiesApi.reducer,
+    [wordsApi.reducerPath]: wordsApi.reducer,
   },
   // Add the RTK Query middleware
   middleware: (getDefaultMiddleware) =>
@@ -39,6 +41,7 @@ export const store = configureStore({
     }).concat(
       translationApi.middleware,
       storiesApi.middleware,
+      wordsApi.middleware,
       authMiddleware
     ),
 })

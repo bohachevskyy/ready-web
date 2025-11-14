@@ -6,18 +6,8 @@ import { Login } from './components/Login';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { AccountSettingsPage } from './components/AccountSettingsPage';
+import { PracticeWords } from './components/PracticeWords';
 import './styles/App.css';
-
-function PracticePlaceholder() {
-  return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-foreground mb-4">Practice Mode</h1>
-        <p className="text-muted-foreground">Coming soon...</p>
-      </div>
-    </div>
-  );
-}
 
 function ModeSelectionWithNavigation() {
   const navigate = useNavigate();
@@ -83,7 +73,7 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <PracticePlaceholder />
+                <PracticeWords />
               </Layout>
             </ProtectedRoute>
           }
