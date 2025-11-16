@@ -4,13 +4,13 @@ import { useState, useEffect, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { X } from "lucide-react"
+import { X, Plus } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
 import { addWord, removeWord } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
-import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, type Question } from "../services/storiesApi"
+import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, useLazyGetWordDetailsQuery, type Question, type WordDetailsResponse } from "../services/storiesApi"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import type { SavedWord } from "../types"
 
@@ -27,9 +27,10 @@ export function StoryReader() {
   const [generateStory, { isLoading: isGeneratingStory, error: storyError }] = useGenerateStoryMutation()
   const [getQuestions, { isLoading: isLoadingQuestions }] = useGetQuestionsMutation()
   const [submitFeedback] = useSubmitFeedbackMutation()
+  const [getWordDetails, { isLoading: isLoadingWordDetails }] = useLazyGetWordDetailsQuery()
 
-  const [selectedWord, setSelectedWord] = useState<{ word: string; translation: string } | null>(null)
-  const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number } | null>(null)
+  const [selectedWord, setSelectedWord] = useState<WordDetailsResponse | null>(null)
+  const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number; showBelow: boolean } | null>(null)
 
   // Track if story has been fetched to prevent duplicate requests
   const hasFetchedStory = useRef(false)
@@ -144,40 +145,73 @@ export function StoryReader() {
     }
   }
 
-  const handleWordClick = (word: string, event: React.MouseEvent) => {
-    const translation = getTranslation(word)
-    if (!translation) return
+  const handleWordClick = async (event: React.MouseEvent) => {
+    if (!storyId) return
 
-    const cleanWord = word.trim().replace(/[.,!?;:"""''()[\]{}]/g, '')
+    const target = event.target as HTMLElement
+    const start = target.getAttribute('data-start')
+    const end = target.getAttribute('data-end')
+
+    if (!start || !end) return
 
     // Position popover near the clicked word
-    const rect = (event.target as HTMLElement).getBoundingClientRect()
+    const rect = target.getBoundingClientRect()
+    const popoverHeight = 400 // Approximate height of popover
+    const spaceAbove = rect.top
+    const spaceBelow = window.innerHeight - rect.bottom
+
+    // Decide whether to show above or below based on available space
+    const showBelow = spaceBelow > popoverHeight || spaceBelow > spaceAbove
+
+    // Show popover immediately with position
     setPopoverPosition({
       x: rect.left + rect.width / 2,
-      y: rect.top - 10,
+      y: showBelow ? rect.bottom + 4 : rect.top - 4,
+      showBelow: showBelow,
     })
 
-    // Show translation from store
-    setSelectedWord({
-      word: cleanWord,
-      translation: translation,
-    })
+    // Clear previous word to show loading state
+    setSelectedWord(null)
+
+    // Fetch word details from API
+    try {
+      const result = await getWordDetails({
+        storyId,
+        start: parseInt(start),
+        end: parseInt(end),
+      }).unwrap()
+
+      setSelectedWord(result)
+    } catch (error) {
+      console.error('Failed to fetch word details:', error)
+      // Hide popover on error
+      setPopoverPosition(null)
+    }
+  }
+
+  const addWordToList = () => {
+    if (!selectedWord) return
 
     // Add to Redux vocabulary store
     const newWord: SavedWord = {
-      id: `${Date.now()}-${cleanWord}`,
-      word: cleanWord,
-      translation: translation,
+      id: `${Date.now()}-${selectedWord.expression}`,
+      word: selectedWord.expression,
+      translation: selectedWord.translation,
       timestamp: Date.now(),
+      grammatical_info: selectedWord.grammatical_info,
+      sentence_translation: selectedWord.sentence_translation,
+      example_sentence: selectedWord.example_sentence,
     }
     dispatch(addWord(newWord))
+
+    // Hide popover after adding word
+    setSelectedWord(null)
+    setPopoverPosition(null)
   }
 
   const handleRemoveWord = (id: string) => {
     dispatch(removeWord(id))
   }
-
-  const lines = storyText.split('\n')
 
   // Show full-screen loading animation while generating story
   if (isGeneratingStory) {
@@ -203,43 +237,57 @@ export function StoryReader() {
                 ) : (
                   <>
                     <div className="text-lg leading-relaxed text-card-foreground mb-8">
-                      {lines.map((line, lineIndex) => {
-                        const tokens = line.split(/(\s+|[.,!?;:"""''()[\]{}]+)/)
-                        return (
-                          <p key={lineIndex}>
-                            {tokens.map((token, tokenIndex) => {
-                              // Skip empty tokens
-                              if (!token) return null
+                      {(() => {
+                        const lines = storyText.split('\n')
+                        let currentPosition = 0
 
-                              // Render whitespace as-is
-                              if (token.match(/^\s+$/)) {
-                                return <span key={tokenIndex}>{token}</span>
-                              }
+                        return lines.map((line, lineIndex) => {
+                          const tokens = line.split(/(\s+|[.,!?;:"""''()[\]{}]+)/)
 
-                              // Render punctuation as plain text
-                              if (token.match(/^[.,!?;:"""''()[\]{}]+$/)) {
-                                return <span key={tokenIndex}>{token}</span>
-                              }
+                          const lineContent = (
+                            <p key={lineIndex}>
+                              {tokens.map((token, tokenIndex) => {
+                                // Skip empty tokens
+                                if (!token) return null
 
-                              // Check if word has translation
-                              const hasTranslation = getTranslation(token) !== null
+                                const startPos = currentPosition
+                                const endPos = currentPosition + token.length
+                                currentPosition = endPos
 
-                              return (
-                                <span
-                                  key={tokenIndex}
-                                  onClick={hasTranslation ? (e) => handleWordClick(token, e) : undefined}
-                                  className={hasTranslation
-                                    ? "cursor-pointer hover:bg-primary/15 hover:text-primary rounded px-0.5 transition-colors"
-                                    : ""
-                                  }
-                                >
-                                  {token}
-                                </span>
-                              )
-                            })}
-                          </p>
-                        )
-                      })}
+                                // Render whitespace as-is
+                                if (token.match(/^\s+$/)) {
+                                  return <span key={tokenIndex}>{token}</span>
+                                }
+
+                                // Render punctuation as plain text
+                                if (token.match(/^[.,!?;:"""''()[\]{}]+$/)) {
+                                  return <span key={tokenIndex}>{token}</span>
+                                }
+
+                                // All words are clickable - translations fetched on demand
+                                return (
+                                  <span
+                                    key={tokenIndex}
+                                    onClick={handleWordClick}
+                                    data-start={startPos}
+                                    data-end={endPos}
+                                    className="cursor-pointer hover:bg-primary/15 hover:text-primary rounded px-0.5 transition-colors"
+                                  >
+                                    {token}
+                                  </span>
+                                )
+                              })}
+                            </p>
+                          )
+
+                          // Add newline character to position counter (except for last line)
+                          if (lineIndex < lines.length - 1) {
+                            currentPosition += 1
+                          }
+
+                          return lineContent
+                        })
+                      })()}
                     </div>
                     <div className="flex justify-center mt-8">
                       <Button onClick={handleFinish} size="lg" className="px-8 bg-primary text-primary-foreground hover:bg-primary/90">
@@ -267,25 +315,68 @@ export function StoryReader() {
       </div>
 
       {/* Translation popover */}
-      {selectedWord && popoverPosition && (
+      {popoverPosition && (
         <div
           className="fixed z-50 animate-in fade-in zoom-in-95 duration-200"
           style={{
             left: `${popoverPosition.x}px`,
             top: `${popoverPosition.y}px`,
-            transform: "translate(-50%, -100%)",
+            transform: popoverPosition.showBelow
+              ? "translate(-50%, 0)"
+              : "translate(-50%, -100%)",
           }}
         >
-          <Card className="bg-popover text-popover-foreground p-3 shadow-lg border-border">
-            <div className="flex items-start gap-2 min-w-[150px]">
-              <div>
-                <p className="font-semibold text-sm">{selectedWord.word}</p>
-                <p className="text-sm text-muted-foreground mt-0.5">{selectedWord.translation}</p>
+          <Card className="bg-popover text-popover-foreground shadow-lg border-border w-[400px]">
+            {!selectedWord ? (
+              // Loading state
+              <div className="p-4 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
               </div>
-              <Button variant="ghost" size="icon" className="h-6 w-6 -mt-1 -mr-1" onClick={() => setSelectedWord(null)}>
-                <X className="h-3 w-3" />
-              </Button>
-            </div>
+            ) : (
+              // Loaded content
+              <div className="p-4 space-y-4">
+                {/* Header with word and close button */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h3 className="font-semibold text-lg">{selectedWord.expression}</h3>
+                    <p className="text-muted-foreground text-sm italic">{selectedWord.grammatical_info}</p>
+                  </div>
+                  <Button variant="ghost" size="icon" className="h-7 w-7 -mt-1 -mr-1" onClick={() => { setSelectedWord(null); setPopoverPosition(null); }}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                {/* Translation */}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Translation</p>
+                  <p className="text-base">{selectedWord.translation}</p>
+                </div>
+
+                {/* Sentence translation */}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Sentence translation</p>
+                  <p className="text-sm text-card-foreground">{selectedWord.sentence_translation}</p>
+                </div>
+
+                {/* Example sentence */}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Example</p>
+                  <p className="text-sm italic text-card-foreground">{selectedWord.example_sentence}</p>
+                </div>
+
+                {/* Add to list button */}
+                <Button
+                  className="w-full gap-2"
+                  onClick={addWordToList}
+                  disabled={savedWords.some(w => w.word.toLowerCase() === selectedWord.expression.toLowerCase())}
+                >
+                  <Plus className="h-4 w-4" />
+                  {savedWords.some(w => w.word.toLowerCase() === selectedWord.expression.toLowerCase())
+                    ? "Already in list"
+                    : "Add to vocabulary list"}
+                </Button>
+              </div>
+            )}
           </Card>
         </div>
       )}

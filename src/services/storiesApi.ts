@@ -56,6 +56,15 @@ export interface FeedbackRequest {
   feedback_text: string
 }
 
+// Word details API types
+export interface WordDetailsResponse {
+  expression: string
+  translation: string
+  grammatical_info: string
+  sentence_translation: string
+  example_sentence: string
+}
+
 // Custom baseQuery that handles authentication from Redux state
 const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
@@ -148,6 +157,13 @@ export const storiesApi = createApi({
         body: feedback,
       }),
     }),
+    // Get word details with context
+    getWordDetails: builder.query<WordDetailsResponse, { storyId: string; start: number; end: number }>({
+      query: ({ storyId, start, end }) => ({
+        url: `/stories/${storyId}/words?start=${start}&end=${end}`,
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
@@ -155,5 +171,6 @@ export const storiesApi = createApi({
 export const {
   useGenerateStoryMutation,
   useGetQuestionsMutation,
-  useSubmitFeedbackMutation
+  useSubmitFeedbackMutation,
+  useLazyGetWordDetailsQuery
 } = storiesApi

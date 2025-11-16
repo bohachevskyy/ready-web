@@ -7,6 +7,9 @@ export interface SavedWord {
   word: string
   translation: string
   timestamp: number
+  grammatical_info?: string
+  sentence_translation?: string
+  example_sentence?: string
 }
 
 export interface Translation {
