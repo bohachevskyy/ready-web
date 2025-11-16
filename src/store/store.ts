@@ -10,13 +10,14 @@ import authReducer from './authSlice'
 import { translationApi } from '../services/translationApi'
 import { storiesApi } from '../services/storiesApi'
 import { wordsApi } from '../services/wordsApi'
+import { userApi } from '../services/userApi'
 import { authMiddleware } from './authMiddleware'
 
 // Configure persistence for auth slice
 const authPersistConfig = {
   key: 'auth',
   storage,
-  whitelist: ['token', 'refreshToken', 'user'], // Only persist these fields
+  whitelist: ['token', 'tokenExpiresAt', 'refreshToken', 'refreshTokenExpiresAt', 'user'], // Only persist these fields
 }
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)
@@ -31,6 +32,7 @@ export const store = configureStore({
     [translationApi.reducerPath]: translationApi.reducer,
     [storiesApi.reducerPath]: storiesApi.reducer,
     [wordsApi.reducerPath]: wordsApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   // Add the RTK Query middleware
   middleware: (getDefaultMiddleware) =>
@@ -42,6 +44,7 @@ export const store = configureStore({
       translationApi.middleware,
       storiesApi.middleware,
       wordsApi.middleware,
+      userApi.middleware,
       authMiddleware
     ),
 })

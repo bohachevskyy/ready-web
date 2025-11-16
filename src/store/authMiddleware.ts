@@ -1,10 +1,18 @@
 import { Middleware } from '@reduxjs/toolkit'
 import { REHYDRATE } from 'redux-persist'
-import { refreshAccessToken } from './authSlice'
+import { refreshAccessToken, loginWithFirebase } from './authSlice'
 import type { RootState } from './store'
+import {
+  scheduleTokenRefresh,
+  cancelTokenRefresh,
+  isTokenExpired,
+  getMillisecondsUntilExpiration,
+} from '../utils/tokenRefreshScheduler'
 
 /**
- * Auth middleware that handles automatic token refresh on app initialization
+ * Auth middleware that handles automatic token refresh
+ * - On app rehydration: checks token expiration and schedules refresh
+ * - On login/refresh success: schedules automatic refresh before token expires
  */
 export const authMiddleware: Middleware = (storeAPI) => (next) => (action) => {
   // Type guard for actions with a 'type' property
@@ -16,16 +24,83 @@ export const authMiddleware: Middleware = (storeAPI) => (next) => (action) => {
   if (hasType(action) && action.type === REHYDRATE) {
     const result = next(action)
 
-    // After state is rehydrated, check if we need to refresh the token
+    // After state is rehydrated, check token expiration
     const state = storeAPI.getState() as RootState
-    const { refreshToken, token } = state.auth
+    const { refreshToken, tokenExpiresAt } = state.auth
 
-    // If we have a refresh token but no access token (or expired), refresh it
-    if (refreshToken && !token) {
-      storeAPI.dispatch(refreshAccessToken(refreshToken) as any)
+    if (refreshToken && tokenExpiresAt) {
+      // Check if token is expired or expires soon
+      const FIVE_MINUTES_MS = 5 * 60 * 1000
+      const msUntilExpiration = getMillisecondsUntilExpiration(tokenExpiresAt)
+
+      if (isTokenExpired(tokenExpiresAt)) {
+        // Token already expired, refresh immediately
+        console.log('[AuthMiddleware] Token expired, refreshing immediately')
+        storeAPI.dispatch(refreshAccessToken(refreshToken) as any)
+      } else if (msUntilExpiration < FIVE_MINUTES_MS) {
+        // Token expires soon, refresh immediately
+        console.log('[AuthMiddleware] Token expires soon, refreshing immediately')
+        storeAPI.dispatch(refreshAccessToken(refreshToken) as any)
+      } else {
+        // Token still valid, schedule refresh
+        scheduleTokenRefresh(tokenExpiresAt, () => {
+          const currentState = storeAPI.getState() as RootState
+          const currentRefreshToken = currentState.auth.refreshToken
+          if (currentRefreshToken) {
+            storeAPI.dispatch(refreshAccessToken(currentRefreshToken) as any)
+          }
+        })
+      }
     }
 
     return result
+  }
+
+  // Handle successful login - schedule token refresh
+  if (hasType(action) && action.type === loginWithFirebase.fulfilled.type) {
+    const result = next(action)
+    const state = storeAPI.getState() as RootState
+    const { tokenExpiresAt, refreshToken } = state.auth
+
+    if (tokenExpiresAt && refreshToken) {
+      scheduleTokenRefresh(tokenExpiresAt, () => {
+        const currentState = storeAPI.getState() as RootState
+        const currentRefreshToken = currentState.auth.refreshToken
+        if (currentRefreshToken) {
+          storeAPI.dispatch(refreshAccessToken(currentRefreshToken) as any)
+        }
+      })
+    }
+
+    return result
+  }
+
+  // Handle successful token refresh - schedule next refresh
+  if (hasType(action) && action.type === refreshAccessToken.fulfilled.type) {
+    const result = next(action)
+    const state = storeAPI.getState() as RootState
+    const { tokenExpiresAt, refreshToken } = state.auth
+
+    if (tokenExpiresAt && refreshToken) {
+      scheduleTokenRefresh(tokenExpiresAt, () => {
+        const currentState = storeAPI.getState() as RootState
+        const currentRefreshToken = currentState.auth.refreshToken
+        if (currentRefreshToken) {
+          storeAPI.dispatch(refreshAccessToken(currentRefreshToken) as any)
+        }
+      })
+    }
+
+    return result
+  }
+
+  // Handle logout or token refresh failure - cancel scheduled refresh
+  if (
+    hasType(action) &&
+    (action.type === 'auth/clearAuth' || action.type === refreshAccessToken.rejected.type)
+  ) {
+    cancelTokenRefresh()
+    return next(action)
   }
 
   return next(action)

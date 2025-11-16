@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Label } from './ui/label';
 import { Toast } from './ui/toast';
 import { setUser, updateUserLanguageLevel } from '../store/authSlice';
-import { updateLanguageLevel } from '../services/userApi';
+import { useUpdateLanguageLevelMutation } from '../services/userApi';
 
 type MaybeUser = RootState['auth']['user'];
 type UserType = Exclude<MaybeUser, null>;
@@ -24,10 +24,9 @@ const languageLevels = [
 export function useAccountSettings(resetKey?: unknown) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
-  const token = useAppSelector((state) => state.auth.token);
+  const [updateLanguageLevelMutation, { isLoading: isSaving }] = useUpdateLanguageLevelMutation();
 
   const [languageLevel, setLanguageLevel] = useState<number>(user?.language_level ?? 1);
-  const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
 
@@ -54,47 +53,21 @@ export function useAccountSettings(resetKey?: unknown) {
   }, [languageLevel]);
 
   const handleSave = useCallback(async () => {
-    if (!token) {
-      setError('You must be signed in to update your account.');
-      return;
-    }
-
-    setIsSaving(true);
     setError(null);
     setIsSuccess(false);
 
     try {
-      const response = await updateLanguageLevel({
-        token,
-        languageLevel,
-      });
+      await updateLanguageLevelMutation({
+        language_level: languageLevel,
+      }).unwrap();
 
-      const updatedLevel =
-        response && typeof response === 'object' && 'language_level' in response &&
-        typeof (response as { language_level?: number }).language_level === 'number'
-          ? (response as { language_level: number }).language_level
-          : languageLevel;
-
-      dispatch(updateUserLanguageLevel(updatedLevel));
-
-      if (response && typeof response === 'object') {
-        const nextUser = user
-          ? ({ ...user, ...(response as Partial<UserType>) } as MaybeUser)
-          : (response as MaybeUser);
-
-        if (nextUser && typeof nextUser === 'object' && 'id' in nextUser) {
-          dispatch(setUser(nextUser));
-        }
-      }
-
+      dispatch(updateUserLanguageLevel(languageLevel));
       setIsSuccess(true);
     } catch (err) {
       console.error('Failed to update language level', err);
       setError(err instanceof Error ? err.message : 'Failed to update language level');
-    } finally {
-      setIsSaving(false);
     }
-  }, [dispatch, languageLevel, token, user]);
+  }, [dispatch, languageLevel, updateLanguageLevelMutation]);
 
   return {
     user,

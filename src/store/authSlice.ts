@@ -15,7 +15,9 @@ interface User {
 
 interface AuthState {
   token: string | null
+  tokenExpiresAt: string | null
   refreshToken: string | null
+  refreshTokenExpiresAt: string | null
   user: User | null
   isLoading: boolean
   error: string | null
@@ -23,7 +25,9 @@ interface AuthState {
 
 const initialState: AuthState = {
   token: null,
+  tokenExpiresAt: null,
   refreshToken: null,
+  refreshTokenExpiresAt: null,
   user: null,
   isLoading: false,
   error: null,
@@ -44,7 +48,9 @@ export interface FirebaseAuthRequest {
 
 export interface FirebaseAuthResponse {
   access_token: string
+  access_token_expires_at: string
   refresh_token: string
+  refresh_token_expires_at: string
   user: User
 }
 
@@ -136,7 +142,9 @@ export const authSlice = createSlice({
     },
     clearAuth: (state) => {
       state.token = null
+      state.tokenExpiresAt = null
       state.refreshToken = null
+      state.refreshTokenExpiresAt = null
       state.user = null
     },
   },
@@ -163,7 +171,9 @@ export const authSlice = createSlice({
       .addCase(loginWithFirebase.fulfilled, (state, action) => {
         state.isLoading = false
         state.token = action.payload.access_token
+        state.tokenExpiresAt = action.payload.access_token_expires_at
         state.refreshToken = action.payload.refresh_token
+        state.refreshTokenExpiresAt = action.payload.refresh_token_expires_at
         state.user = action.payload.user
       })
       .addCase(loginWithFirebase.rejected, (state, action) => {
@@ -178,13 +188,17 @@ export const authSlice = createSlice({
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.isLoading = false
         state.token = action.payload.access_token
+        state.tokenExpiresAt = action.payload.access_token_expires_at
         state.refreshToken = action.payload.refresh_token
+        state.refreshTokenExpiresAt = action.payload.refresh_token_expires_at
         state.user = action.payload.user
       })
       .addCase(refreshAccessToken.rejected, (state) => {
         state.isLoading = false
         state.token = null
+        state.tokenExpiresAt = null
         state.refreshToken = null
+        state.refreshTokenExpiresAt = null
         state.user = null
         state.error = 'Session expired. Please login again.'
       })

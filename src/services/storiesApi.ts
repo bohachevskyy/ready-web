@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQueryWithAuth } from '../utils/apiBaseQuery'
 
 /**
  * Stories API service using RTK Query
@@ -63,39 +64,6 @@ export interface WordDetailsResponse {
   grammatical_info: string
   sentence_translation: string
   example_sentence: string
-}
-
-// Custom baseQuery that handles authentication from Redux state
-const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions
-) => {
-  const state = api.getState() as any
-  const token = state.auth.token
-
-  // Create base query with token from Redux state
-  const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:8080',
-    prepareHeaders: (headers) => {
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  })
-
-  // Execute the actual request
-  const result = await baseQuery(args, api, extraOptions)
-
-  // Handle 401 Unauthorized errors
-  if (result.error && result.error.status === 401) {
-    // Token expired or invalid - user should log in again
-    // You could dispatch a logout action here if needed
-    console.error('Authentication error: token expired or invalid')
-  }
-
-  return result
 }
 
 export const storiesApi = createApi({

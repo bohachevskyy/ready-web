@@ -1,4 +1,5 @@
-import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQueryWithAuth } from '../utils/apiBaseQuery'
 import { Word, WordReview, WordsCountResponse } from '../types'
 
 /**
@@ -20,37 +21,6 @@ export interface GetWordsCountParams {
 
 export interface SubmitReviewsRequest {
   reviews: WordReview[]
-}
-
-// Custom baseQuery that handles authentication from Redux state
-const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
-  args,
-  api,
-  extraOptions
-) => {
-  const state = api.getState() as any
-  const token = state.auth.token
-
-  // Create base query with token from Redux state
-  const baseQuery = fetchBaseQuery({
-    baseUrl: 'http://localhost:8080',
-    prepareHeaders: (headers) => {
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  })
-
-  // Execute the actual request
-  const result = await baseQuery(args, api, extraOptions)
-
-  // Handle 401 Unauthorized errors
-  if (result.error && result.error.status === 401) {
-    console.error('Authentication error: token expired or invalid')
-  }
-
-  return result
 }
 
 export const wordsApi = createApi({

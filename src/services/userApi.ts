@@ -1,45 +1,33 @@
-interface UpdateLanguageLevelOptions {
-  token: string;
-  languageLevel: number;
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQueryWithAuth } from '../utils/apiBaseQuery'
+
+/**
+ * User API service using RTK Query
+ * Handles user profile updates
+ */
+
+export interface UpdateLanguageLevelRequest {
+  language_level: number
 }
 
-const BASE_URL = 'http://localhost:8080';
+export const userApi = createApi({
+  reducerPath: 'userApi',
+  baseQuery: baseQueryWithAuth,
+  tagTypes: ['User'],
+  endpoints: (builder) => ({
+    updateLanguageLevel: builder.mutation<void, UpdateLanguageLevelRequest>({
+      query: (body) => ({
+        url: '/users',
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body,
+      }),
+      invalidatesTags: ['User'],
+    }),
+  }),
+})
 
-export async function updateLanguageLevel({ token, languageLevel }: UpdateLanguageLevelOptions) {
-  const response = await fetch(`${BASE_URL}/users`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ language_level: languageLevel }),
-  });
-
-  if (!response.ok) {
-    let message = 'Unable to update language level.';
-
-    try {
-      const errorPayload = await response.json();
-      if (errorPayload?.message && typeof errorPayload.message === 'string') {
-        message = errorPayload.message;
-      }
-    } catch (err) {
-      // Ignore JSON parsing errors and use default message
-      console.error('Failed to parse error response', err);
-    }
-
-    throw new Error(message);
-  }
-
-  const contentType = response.headers.get('Content-Type');
-
-  if (contentType && contentType.includes('application/json')) {
-    try {
-      return await response.json();
-    } catch (err) {
-      console.error('Failed to parse update response', err);
-    }
-  }
-
-  return null;
-}
+// Export hooks for usage in functional components
+export const { useUpdateLanguageLevelMutation } = userApi
