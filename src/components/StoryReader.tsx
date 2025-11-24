@@ -10,7 +10,7 @@ import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
 import { addWord, removeWord } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
-import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, useLazyGetWordDetailsQuery, type Question, type WordDetailsResponse } from "../services/storiesApi"
+import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, useLazyGetWordDetailsQuery, useSaveWordsMutation, type Question, type WordDetailsResponse } from "../services/storiesApi"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import type { SavedWord } from "../types"
 
@@ -28,6 +28,7 @@ export function StoryReader() {
   const [getQuestions, { isLoading: isLoadingQuestions }] = useGetQuestionsMutation()
   const [submitFeedback] = useSubmitFeedbackMutation()
   const [getWordDetails, { isLoading: isLoadingWordDetails }] = useLazyGetWordDetailsQuery()
+  const [saveWords] = useSaveWordsMutation()
 
   const [selectedWord, setSelectedWord] = useState<WordDetailsResponse | null>(null)
   const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number; showBelow: boolean } | null>(null)
@@ -91,6 +92,17 @@ export function StoryReader() {
     if (!storyId) return
 
     try {
+      // Save words to vocabulary if any were added
+      if (savedWords.length > 0) {
+        await saveWords({
+          words: savedWords.map(word => ({
+            word: word.word,
+            ...(word.example_sentence && { sentence_context: word.example_sentence }),
+            story_id: storyId
+          }))
+        }).unwrap()
+      }
+
       await submitFeedback({
         storyId,
         feedback: {
@@ -225,7 +237,7 @@ export function StoryReader() {
         <h1 className="text-2xl font-semibold mb-8 text-foreground">
           {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
         </h1>
-        <div className="max-w-3xl w-full mx-auto">
+        <div className="max-w-3xl w-full mx-auto mb-12">
           <Card className="p-8 bg-card shadow-sm">
             {view === 'story' && (
               <>
@@ -235,66 +247,59 @@ export function StoryReader() {
                     <Button onClick={() => window.location.reload()}>Try Again</Button>
                   </div>
                 ) : (
-                  <>
-                    <div className="text-lg leading-relaxed text-card-foreground mb-8">
-                      {(() => {
-                        const lines = storyText.split('\n')
-                        let currentPosition = 0
+                  <div className="text-lg leading-relaxed text-card-foreground">
+                    {(() => {
+                      const lines = storyText.split('\n')
+                      let currentPosition = 0
 
-                        return lines.map((line, lineIndex) => {
-                          const tokens = line.split(/(\s+|[.,!?;:"""''()[\]{}]+)/)
+                      return lines.map((line, lineIndex) => {
+                        const tokens = line.split(/(\s+|[.,!?;:"""''()[\]{}]+)/)
 
-                          const lineContent = (
-                            <p key={lineIndex}>
-                              {tokens.map((token, tokenIndex) => {
-                                // Skip empty tokens
-                                if (!token) return null
+                        const lineContent = (
+                          <p key={lineIndex}>
+                            {tokens.map((token, tokenIndex) => {
+                              // Skip empty tokens
+                              if (!token) return null
 
-                                const startPos = currentPosition
-                                const endPos = currentPosition + token.length
-                                currentPosition = endPos
+                              const startPos = currentPosition
+                              const endPos = currentPosition + token.length
+                              currentPosition = endPos
 
-                                // Render whitespace as-is
-                                if (token.match(/^\s+$/)) {
-                                  return <span key={tokenIndex}>{token}</span>
-                                }
+                              // Render whitespace as-is
+                              if (token.match(/^\s+$/)) {
+                                return <span key={tokenIndex}>{token}</span>
+                              }
 
-                                // Render punctuation as plain text
-                                if (token.match(/^[.,!?;:"""''()[\]{}]+$/)) {
-                                  return <span key={tokenIndex}>{token}</span>
-                                }
+                              // Render punctuation as plain text
+                              if (token.match(/^[.,!?;:"""''()[\]{}]+$/)) {
+                                return <span key={tokenIndex}>{token}</span>
+                              }
 
-                                // All words are clickable - translations fetched on demand
-                                return (
-                                  <span
-                                    key={tokenIndex}
-                                    onClick={handleWordClick}
-                                    data-start={startPos}
-                                    data-end={endPos}
-                                    className="cursor-pointer hover:bg-primary/15 hover:text-primary rounded px-0.5 transition-colors"
-                                  >
-                                    {token}
-                                  </span>
-                                )
-                              })}
-                            </p>
-                          )
+                              // All words are clickable - translations fetched on demand
+                              return (
+                                <span
+                                  key={tokenIndex}
+                                  onClick={handleWordClick}
+                                  data-start={startPos}
+                                  data-end={endPos}
+                                  className="cursor-pointer hover:bg-primary/15 hover:text-primary rounded px-0.5 transition-colors"
+                                >
+                                  {token}
+                                </span>
+                              )
+                            })}
+                          </p>
+                        )
 
-                          // Add newline character to position counter (except for last line)
-                          if (lineIndex < lines.length - 1) {
-                            currentPosition += 1
-                          }
+                        // Add newline character to position counter (except for last line)
+                        if (lineIndex < lines.length - 1) {
+                          currentPosition += 1
+                        }
 
-                          return lineContent
-                        })
-                      })()}
-                    </div>
-                    <div className="flex justify-center mt-8">
-                      <Button onClick={handleFinish} size="lg" className="px-8 bg-primary text-primary-foreground hover:bg-primary/90">
-                        Finish
-                      </Button>
-                    </div>
-                  </>
+                        return lineContent
+                      })
+                    })()}
+                  </div>
                 )}
               </>
             )}
@@ -311,6 +316,14 @@ export function StoryReader() {
               />
             )}
           </Card>
+
+          {view === 'story' && !storyError && (
+            <div className="flex justify-center mt-8">
+              <Button onClick={handleFinish} size="lg" className="px-8 bg-primary text-primary-foreground hover:bg-primary/90">
+                Finish
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

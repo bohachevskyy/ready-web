@@ -66,6 +66,17 @@ export interface WordDetailsResponse {
   example_sentence: string
 }
 
+// Save words API types
+export interface SaveWordRequest {
+  word: string
+  sentence_context?: string
+  story_id?: string
+}
+
+export interface SaveWordsRequest {
+  words: SaveWordRequest[]
+}
+
 export const storiesApi = createApi({
   reducerPath: 'storiesApi',
   baseQuery: baseQueryWithAuth,
@@ -132,6 +143,17 @@ export const storiesApi = createApi({
         method: 'GET',
       }),
     }),
+    // Save words to vocabulary
+    saveWords: builder.mutation<void, SaveWordsRequest>({
+      query: (request) => ({
+        url: '/words',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: request,
+      }),
+    }),
   }),
 })
 
@@ -140,5 +162,6 @@ export const {
   useGenerateStoryMutation,
   useGetQuestionsMutation,
   useSubmitFeedbackMutation,
-  useLazyGetWordDetailsQuery
+  useLazyGetWordDetailsQuery,
+  useSaveWordsMutation
 } = storiesApi
