@@ -2,14 +2,14 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
 import { Brain, Clock } from "lucide-react"
-import { useGetWordsQuery, useLazyGetWordsQuery, useGetWordsCountQuery, useSubmitReviewsMutation } from "../services/wordsApi"
-import { Word, WordReview } from "../types"
+import { useGetWordsQuery, useLazyGetWordsQuery, useGetWordsCountQuery, useSubmitReviewMutation } from "../services/wordsApi"
+import { Word } from "../types"
 
 // FSRS Card data structure for UI
 type FSRSCard = {
   id: string
   word: string
-  translation: string
+  sentenceContext?: string
   due: Date
   stability: number
   difficulty: number
@@ -24,16 +24,16 @@ type FSRSCard = {
 function wordToCard(word: Word): FSRSCard {
   return {
     id: word.id,
-    word: word.word,
-    translation: word.translation,
-    due: new Date(word.due),
+    word: word.name,
+    sentenceContext: word.sentence_context,
+    due: new Date(word.due_at),
     stability: word.stability,
     difficulty: word.difficulty,
     elapsedDays: word.elapsed_days,
     scheduledDays: word.scheduled_days,
     reps: word.reps,
     lapses: word.lapses,
-    state: word.state,
+    state: word.state.toLowerCase() as "new" | "learning" | "review" | "relearning",
   }
 }
 
@@ -92,8 +92,6 @@ export function PracticeWords() {
   const [timer, setTimer] = useState(0)
   const [isActive, setIsActive] = useState(true)
   const [sessionComplete, setSessionComplete] = useState(false)
-  const [reviewStartTime, setReviewStartTime] = useState<number>(Date.now())
-  const [pendingReviews, setPendingReviews] = useState<WordReview[]>([])
   const [lastWordId, setLastWordId] = useState<string | undefined>(undefined)
   const [hasNextPage, setHasNextPage] = useState(true)
 
@@ -101,7 +99,7 @@ export function PracticeWords() {
   const { data: initialWords, isLoading, error } = useGetWordsQuery({ limit: 15 })
   const [fetchNextPage, { data: nextWords }] = useLazyGetWordsQuery()
   const { data: wordsCount } = useGetWordsCountQuery({})
-  const [submitReviews] = useSubmitReviewsMutation()
+  const [submitReview] = useSubmitReviewMutation()
 
   // Initialize cards from API
   useEffect(() => {
@@ -133,23 +131,6 @@ export function PracticeWords() {
     }
   }, [currentIndex, hasNextPage, lastWordId, fetchNextPage])
 
-  // Submit reviews every 10 words or on unmount
-  useEffect(() => {
-    if (pendingReviews.length >= 10) {
-      submitReviews({ reviews: pendingReviews })
-      setPendingReviews([])
-    }
-  }, [pendingReviews, submitReviews])
-
-  // Submit remaining reviews on unmount
-  useEffect(() => {
-    return () => {
-      if (pendingReviews.length > 0) {
-        submitReviews({ reviews: pendingReviews })
-      }
-    }
-  }, [pendingReviews, submitReviews])
-
   // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
@@ -171,21 +152,16 @@ export function PracticeWords() {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handleRating = (rating: "again" | "hard" | "good" | "easy") => {
+  const handleRating = async (rating: "again" | "hard" | "good" | "easy") => {
     const currentCard = cards[currentIndex]
     const updatedCard = calculateNextReview(currentCard, rating)
 
-    // Map rating to API values
-    const ratingMap = { again: 1, hard: 2, good: 3, easy: 4 } as const
-    const reviewDuration = Date.now() - reviewStartTime
-
-    // Add review to pending batch
-    const review: WordReview = {
-      word_id: currentCard.id,
-      rating: ratingMap[rating],
-      review_duration_ms: reviewDuration,
+    // Submit review to the server immediately
+    try {
+      await submitReview({ wordId: currentCard.id, rating }).unwrap()
+    } catch (error) {
+      console.error('Failed to submit review:', error)
     }
-    setPendingReviews(prev => [...prev, review])
 
     // Update the cards array
     const newCards = [...cards]
@@ -197,15 +173,9 @@ export function PracticeWords() {
       setCurrentIndex(currentIndex + 1)
       setShowTranslation(false)
       setTimer(0)
-      setReviewStartTime(Date.now())
     } else {
       setSessionComplete(true)
       setIsActive(false)
-      // Submit remaining reviews
-      if (pendingReviews.length > 0 || review) {
-        submitReviews({ reviews: [...pendingReviews, review] })
-        setPendingReviews([])
-      }
     }
   }
 
@@ -334,8 +304,10 @@ export function PracticeWords() {
 
               {showTranslation ? (
                 <div className="space-y-4 pt-8 border-t-2">
-                  <p className="text-base text-muted-foreground font-medium">Translation</p>
-                  <h3 className="text-4xl font-semibold text-foreground">{currentCard.translation}</h3>
+                  <p className="text-base text-muted-foreground font-medium">Example Sentence</p>
+                  <h3 className="text-2xl font-semibold text-foreground italic">
+                    {currentCard.sentenceContext || "No example available"}
+                  </h3>
                 </div>
               ) : (
                 <Button
@@ -344,7 +316,7 @@ export function PracticeWords() {
                   onClick={handleShowTranslation}
                   className="mt-8 bg-transparent text-lg px-8 py-6"
                 >
-                  Show Translation
+                  Show Example
                 </Button>
               )}
             </div>
@@ -414,7 +386,7 @@ export function PracticeWords() {
         {!showTranslation && (
           <Card className="bg-muted/50 border-primary/20">
             <CardContent className="pt-4 text-center text-sm text-muted-foreground">
-              Click "Show Translation" to reveal the answer, then rate how well you knew this word.
+              Click "Show Example" to see the word in context, then rate how well you knew this word.
             </CardContent>
           </Card>
         )}

@@ -135,6 +135,17 @@ export function StoryReader() {
     if (!storyId) return
 
     try {
+      // Save words to vocabulary if any were added
+      if (savedWords.length > 0) {
+        await saveWords({
+          words: savedWords.map(word => ({
+            word: word.word,
+            ...(word.example_sentence && { sentence_context: word.example_sentence }),
+            story_id: storyId
+          }))
+        }).unwrap()
+      }
+
       await submitFeedback({
         storyId,
         feedback: {

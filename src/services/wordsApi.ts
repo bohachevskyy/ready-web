@@ -19,8 +19,9 @@ export interface GetWordsCountParams {
   order?: string
 }
 
-export interface SubmitReviewsRequest {
-  reviews: WordReview[]
+export interface SubmitReviewRequest {
+  wordId: string
+  rating: "again" | "hard" | "good" | "easy"
 }
 
 export const wordsApi = createApi({
@@ -52,15 +53,15 @@ export const wordsApi = createApi({
       },
       providesTags: ['Words'],
     }),
-    // Mutation to submit batch word reviews
-    submitReviews: builder.mutation<void, SubmitReviewsRequest>({
-      query: (body) => ({
-        url: '/words/reviews',
+    // Mutation to submit a single word review
+    submitReview: builder.mutation<Word, SubmitReviewRequest>({
+      query: ({ wordId, rating }) => ({
+        url: `/words/${wordId}/reviews`,
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body,
+        body: { rating },
       }),
       invalidatesTags: ['Words'],
     }),
@@ -72,5 +73,5 @@ export const {
   useGetWordsQuery,
   useLazyGetWordsQuery,
   useGetWordsCountQuery,
-  useSubmitReviewsMutation,
+  useSubmitReviewMutation,
 } = wordsApi

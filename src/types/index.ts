@@ -22,19 +22,19 @@ export interface VocabularyState {
   savedWords: SavedWord[]
 }
 
-// Word Training Types
+// Word Training Types (matches backend API response)
 export interface Word {
   id: string
-  word: string
-  translation: string
-  due: string
+  name: string // The word itself
+  sentence_context?: string // Example sentence
+  due_at: string // When the word is due for review
   stability: number
   difficulty: number
   elapsed_days: number
   scheduled_days: number
   reps: number
   lapses: number
-  state: "new" | "learning" | "review" | "relearning"
+  state: "New" | "Learning" | "Review" | "Relearning"
 }
 
 export interface WordReview {
