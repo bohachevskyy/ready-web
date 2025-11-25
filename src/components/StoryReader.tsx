@@ -97,7 +97,9 @@ export function StoryReader() {
         await saveWords({
           words: savedWords.map(word => ({
             word: word.word,
-            ...(word.example_sentence && { sentence_context: word.example_sentence }),
+            translation: word.translation,
+            sentence_context: word.example_sentence,
+            sentence_example: word.example_sentence,
             story_id: storyId
           }))
         }).unwrap()
@@ -140,7 +142,9 @@ export function StoryReader() {
         await saveWords({
           words: savedWords.map(word => ({
             word: word.word,
-            ...(word.example_sentence && { sentence_context: word.example_sentence }),
+            translation: word.translation,
+            sentence_context: word.example_sentence,
+            sentence_example: word.example_sentence,
             story_id: storyId
           }))
         }).unwrap()

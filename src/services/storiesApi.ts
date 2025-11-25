@@ -69,7 +69,9 @@ export interface WordDetailsResponse {
 // Save words API types
 export interface SaveWordRequest {
   word: string
+  translation?: string
   sentence_context?: string
+  sentence_example?: string
   story_id?: string
 }
 

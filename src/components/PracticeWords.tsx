@@ -9,7 +9,9 @@ import { Word } from "../types"
 type FSRSCard = {
   id: string
   word: string
+  translation?: string
   sentenceContext?: string
+  sentenceTranslation?: string
   due: Date
   stability: number
   difficulty: number
@@ -25,7 +27,9 @@ function wordToCard(word: Word): FSRSCard {
   return {
     id: word.id,
     word: word.name,
+    translation: word.translation,
     sentenceContext: word.sentence_context,
+    sentenceTranslation: word.sentence_translation,
     due: new Date(word.due_at),
     stability: word.stability,
     difficulty: word.difficulty,
@@ -33,7 +37,7 @@ function wordToCard(word: Word): FSRSCard {
     scheduledDays: word.scheduled_days,
     reps: word.reps,
     lapses: word.lapses,
-    state: word.state.toLowerCase() as "new" | "learning" | "review" | "relearning",
+    state: word.state ? word.state.toLowerCase() as "new" | "learning" | "review" | "relearning" : "new",
   }
 }
 
@@ -303,11 +307,21 @@ export function PracticeWords() {
               </div>
 
               {showTranslation ? (
-                <div className="space-y-4 pt-8 border-t-2">
-                  <p className="text-base text-muted-foreground font-medium">Example Sentence</p>
-                  <h3 className="text-2xl font-semibold text-foreground italic">
-                    {currentCard.sentenceContext || "No example available"}
-                  </h3>
+                <div className="space-y-6 pt-8 border-t-2">
+                  <div className="space-y-2">
+                    <p className="text-base text-muted-foreground font-medium">Translation</p>
+                    <h3 className="text-3xl font-bold text-foreground">
+                      {currentCard.translation || "No translation available"}
+                    </h3>
+                  </div>
+                  {currentCard.sentenceContext && (
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground font-medium">Example Sentence</p>
+                      <p className="text-lg text-muted-foreground italic">
+                        {currentCard.sentenceContext}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <Button
@@ -316,7 +330,7 @@ export function PracticeWords() {
                   onClick={handleShowTranslation}
                   className="mt-8 bg-transparent text-lg px-8 py-6"
                 >
-                  Show Example
+                  Show Translation
                 </Button>
               )}
             </div>
@@ -386,7 +400,7 @@ export function PracticeWords() {
         {!showTranslation && (
           <Card className="bg-muted/50 border-primary/20">
             <CardContent className="pt-4 text-center text-sm text-muted-foreground">
-              Click "Show Example" to see the word in context, then rate how well you knew this word.
+              Click "Show Translation" to see the translation and example, then rate how well you knew this word.
             </CardContent>
           </Card>
         )}

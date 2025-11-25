@@ -26,7 +26,9 @@ export interface VocabularyState {
 export interface Word {
   id: string
   name: string // The word itself
+  translation?: string // Translation of the word
   sentence_context?: string // Example sentence
+  sentence_translation?: string // Translation of the sentence
   due_at: string // When the word is due for review
   stability: number
   difficulty: number
@@ -34,7 +36,7 @@ export interface Word {
   scheduled_days: number
   reps: number
   lapses: number
-  state: "New" | "Learning" | "Review" | "Relearning"
+  state?: "New" | "Learning" | "Review" | "Relearning"
 }
 
 export interface WordReview {

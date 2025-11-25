@@ -24,6 +24,8 @@ This a react application for enhancing vocabulary.
 - `mcp__playwright__browser_console_message`
 - `mcp__playwright__browser_take_screenshot`
 - `mcp__playwright__browser_evaluate`
+- `mcp__playwright__browser_network_requests`
+- `mcp__playwright__browser_run_code`
 
 ## Auto-approved MCP tools
 - All Playwright browser tools (navigate, click, snapshot, type, etc.) for testing at `http://localhost:3000`
