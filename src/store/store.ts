@@ -7,9 +7,10 @@ import counterReducer from './counterSlice'
 import vocabularyReducer from './vocabularySlice'
 import storyReducer from './storySlice'
 import authReducer from './authSlice'
+import wordsReducer from './wordsSlice'
+import speechSettingsReducer from './speechSettingsSlice'
 import { translationApi } from '../services/translationApi'
 import { storiesApi } from '../services/storiesApi'
-import { wordsApi } from '../services/wordsApi'
 import { userApi } from '../services/userApi'
 import { authMiddleware } from './authMiddleware'
 
@@ -22,16 +23,26 @@ const authPersistConfig = {
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)
 
+// Configure persistence for speech settings slice
+const speechSettingsPersistConfig = {
+  key: 'speechSettings',
+  storage,
+  whitelist: ['autoPlayEnabled', 'speechRate', 'selectedVoice'], // Persist all speech settings
+}
+
+const persistedSpeechSettingsReducer = persistReducer(speechSettingsPersistConfig, speechSettingsReducer)
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
     vocabulary: vocabularyReducer,
     story: storyReducer,
     auth: persistedAuthReducer,
+    words: wordsReducer,
+    speechSettings: persistedSpeechSettingsReducer,
     // Add the RTK Query API reducers
     [translationApi.reducerPath]: translationApi.reducer,
     [storiesApi.reducerPath]: storiesApi.reducer,
-    [wordsApi.reducerPath]: wordsApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
   },
   // Add the RTK Query middleware
@@ -43,7 +54,6 @@ export const store = configureStore({
     }).concat(
       translationApi.middleware,
       storiesApi.middleware,
-      wordsApi.middleware,
       userApi.middleware,
       authMiddleware
     ),

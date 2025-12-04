@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
-import { Brain, Clock } from "lucide-react"
-import { useGetWordsQuery, useLazyGetWordsQuery, useGetWordsCountQuery, useSubmitReviewMutation } from "../services/wordsApi"
+import { SpeakerButton } from "./ui/speaker-button"
+import { Brain, Clock, Volume2, VolumeX } from "lucide-react"
+import { useAppDispatch, useAppSelector } from "../store/store"
+import { fetchWords, fetchWordsCount, submitWordReview, nextWord, clearWords } from "../store/wordsSlice"
+import { toggleAutoPlay } from "../store/speechSettingsSlice"
+import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { Word } from "../types"
 
 // FSRS Card data structure for UI
@@ -91,49 +95,70 @@ function calculateNextReview(card: FSRSCard, rating: "again" | "hard" | "good" |
 
 export function PracticeWords() {
   const [cards, setCards] = useState<FSRSCard[]>([])
-  const [currentIndex, setCurrentIndex] = useState(0)
   const [showTranslation, setShowTranslation] = useState(false)
   const [timer, setTimer] = useState(0)
   const [isActive, setIsActive] = useState(true)
   const [sessionComplete, setSessionComplete] = useState(false)
-  const [lastWordId, setLastWordId] = useState<string | undefined>(undefined)
-  const [hasNextPage, setHasNextPage] = useState(true)
 
-  // API hooks
-  const { data: initialWords, isLoading, error } = useGetWordsQuery({ limit: 15 })
-  const [fetchNextPage, { data: nextWords }] = useLazyGetWordsQuery()
-  const { data: wordsCount } = useGetWordsCountQuery({})
-  const [submitReview] = useSubmitReviewMutation()
+  // Redux state and dispatch
+  const dispatch = useAppDispatch()
+  const {
+    words: apiWords,
+    wordsCount,
+    isLoading,
+    error,
+    lastWordId,
+    hasNextPage,
+    currentIndex
+  } = useAppSelector((state) => state.words)
 
-  // Initialize cards from API
+  const { autoPlayEnabled, speechRate } = useAppSelector((state) => state.speechSettings)
+
+  // Speech synthesis hook
+  const { speak, cancel, supported } = useSpeechSynthesis()
+
+  // Initialize cards from Redux state - fetch on mount
   useEffect(() => {
-    if (initialWords && initialWords.length > 0) {
-      setCards(initialWords.map(wordToCard))
-      setLastWordId(initialWords[initialWords.length - 1].id)
-      setHasNextPage(initialWords.length === 15)
-    } else if (initialWords && initialWords.length === 0) {
+    // Clear any previous session data
+    dispatch(clearWords())
+    // Fetch fresh data
+    dispatch(fetchWords({ limit: 15 }))
+    dispatch(fetchWordsCount({}))
+  }, [dispatch])
+
+  // Update cards when apiWords changes
+  useEffect(() => {
+    if (apiWords && apiWords.length > 0) {
+      setCards(apiWords.map(wordToCard))
+      setSessionComplete(false) // Reset session complete when we have words
+      setIsActive(true) // Make sure timer is active
+    } else if (apiWords.length === 0 && !isLoading && cards.length === 0) {
+      // Only set session complete if we actually finished reviewing cards
+      // Not just because we cleared the state
       setSessionComplete(true)
       setIsActive(false)
     }
-  }, [initialWords])
-
-  // Append next page of words
-  useEffect(() => {
-    if (nextWords && nextWords.length > 0) {
-      setCards(prev => [...prev, ...nextWords.map(wordToCard)])
-      setLastWordId(nextWords[nextWords.length - 1].id)
-      setHasNextPage(nextWords.length === 15)
-    } else if (nextWords && nextWords.length === 0) {
-      setHasNextPage(false)
-    }
-  }, [nextWords])
+  }, [apiWords, isLoading, cards.length])
 
   // Prefetch next page at word 10
   useEffect(() => {
     if (currentIndex === 9 && hasNextPage && lastWordId) {
-      fetchNextPage({ afterId: lastWordId, limit: 15 })
+      dispatch(fetchWords({ afterId: lastWordId, limit: 15 }))
     }
-  }, [currentIndex, hasNextPage, lastWordId, fetchNextPage])
+  }, [currentIndex, hasNextPage, lastWordId, dispatch])
+
+  // Auto-play pronunciation when card changes
+  useEffect(() => {
+    if (autoPlayEnabled && supported && cards.length > 0 && cards[currentIndex]) {
+      // Small delay to prevent immediate play on mount and give smooth transition
+      const timer = setTimeout(() => {
+        speak(cards[currentIndex].word, { rate: speechRate })
+      }, 300)
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [currentIndex, autoPlayEnabled, supported, cards, speak, speechRate])
 
   // Timer effect
   useEffect(() => {
@@ -160,26 +185,32 @@ export function PracticeWords() {
     const currentCard = cards[currentIndex]
     const updatedCard = calculateNextReview(currentCard, rating)
 
-    // Submit review to the server immediately
+    // Cancel any ongoing speech before moving to next card
+    cancel()
+
     try {
-      await submitReview({ wordId: currentCard.id, rating }).unwrap()
+      // Dispatch thunk - optimistic count decrement happens in pending state
+      await dispatch(submitWordReview({ wordId: currentCard.id, rating })).unwrap()
+
+      // Only update local card state on success
+      const newCards = [...cards]
+      newCards[currentIndex] = updatedCard
+      setCards(newCards)
+
+      // Move to next card - Redux manages currentIndex
+      if (currentIndex < cards.length - 1) {
+        dispatch(nextWord())
+        setShowTranslation(false)
+        setTimer(0)
+      } else {
+        setSessionComplete(true)
+        setIsActive(false)
+        // Clear Redux words state to force fresh fetch on next session
+        dispatch(clearWords())
+      }
     } catch (error) {
       console.error('Failed to submit review:', error)
-    }
-
-    // Update the cards array
-    const newCards = [...cards]
-    newCards[currentIndex] = updatedCard
-    setCards(newCards)
-
-    // Move to next card
-    if (currentIndex < cards.length - 1) {
-      setCurrentIndex(currentIndex + 1)
-      setShowTranslation(false)
-      setTimer(0)
-    } else {
-      setSessionComplete(true)
-      setIsActive(false)
+      // Optimistic update already rolled back in rejected state
     }
   }
 
@@ -187,7 +218,7 @@ export function PracticeWords() {
     setShowTranslation(true)
   }
 
-  const remainingCards = wordsCount?.count || cards.length - currentIndex
+  const remainingCards = wordsCount || cards.length - currentIndex
 
   if (isLoading) {
     return (
@@ -279,9 +310,32 @@ export function PracticeWords() {
               <p className="text-4xl font-bold text-primary">{remainingCards}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-lg border-2 border-primary/30">
-            <Clock className="w-6 h-6 text-primary" />
-            <span className="font-mono text-2xl font-bold text-primary">{formatTime(timer)}</span>
+          <div className="flex items-center gap-3">
+            {supported && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => dispatch(toggleAutoPlay())}
+                className="gap-2"
+                title={autoPlayEnabled ? "Disable auto-play" : "Enable auto-play"}
+              >
+                {autoPlayEnabled ? (
+                  <>
+                    <Volume2 className="w-4 h-4" />
+                    <span className="hidden sm:inline">Auto-play</span>
+                  </>
+                ) : (
+                  <>
+                    <VolumeX className="w-4 h-4" />
+                    <span className="hidden sm:inline">Auto-play</span>
+                  </>
+                )}
+              </Button>
+            )}
+            <div className="flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-lg border-2 border-primary/30">
+              <Clock className="w-6 h-6 text-primary" />
+              <span className="font-mono text-2xl font-bold text-primary">{formatTime(timer)}</span>
+            </div>
           </div>
         </div>
 
@@ -303,7 +357,13 @@ export function PracticeWords() {
             <div className="text-center space-y-8">
               <div className="space-y-4">
                 <p className="text-base text-muted-foreground font-medium">English Word</p>
-                <h2 className="text-6xl font-bold text-primary">{currentCard.word}</h2>
+                <div className="flex items-center justify-center gap-4">
+                  <h2 className="text-6xl font-bold text-primary">{currentCard.word}</h2>
+                  <SpeakerButton
+                    text={currentCard.word}
+                    size="lg"
+                  />
+                </div>
               </div>
 
               {showTranslation ? (

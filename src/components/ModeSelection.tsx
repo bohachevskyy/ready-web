@@ -1,13 +1,23 @@
 import { BookOpen, Brain } from "lucide-react"
 import { Card } from "./ui/card"
-import { useGetWordsCountQuery } from "../services/wordsApi"
+import { useEffect } from "react"
+import { useAppDispatch, useAppSelector } from "../store/store"
+import { fetchWordsCount } from "../store/wordsSlice"
 
 interface ModeSelectionProps {
   onSelectMode: (mode: "read" | "practice") => void
 }
 
 export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
-  const { data: wordsCount } = useGetWordsCountQuery({})
+  const dispatch = useAppDispatch()
+  const { wordsCount } = useAppSelector((state) => state.words)
+
+  // Fetch count on mount only if cache is stale
+  useEffect(() => {
+    // Cache check happens inside thunk
+    dispatch(fetchWordsCount({}))
+  }, [dispatch])
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-5xl">
@@ -43,9 +53,9 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
             <div className="flex flex-col items-center gap-6 p-8 text-center">
               <div className="relative rounded-2xl bg-primary/10 p-6 transition-colors group-hover:bg-primary/20">
                 <Brain className="h-16 w-16 text-primary" strokeWidth={1.5} />
-                {wordsCount && wordsCount.count > 0 && (
+                {wordsCount && wordsCount > 0 && (
                   <div className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-red-500 text-sm font-bold text-white shadow-md">
-                    {wordsCount.count}
+                    {wordsCount}
                   </div>
                 )}
               </div>
