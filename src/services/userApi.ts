@@ -20,7 +20,7 @@ interface User {
   language_level?: number
   birth_month?: number
   birth_year?: number
-  learning_language?: string
+  native_language?: string
 }
 
 export interface UpdateLanguageLevelRequest {
@@ -30,7 +30,7 @@ export interface UpdateLanguageLevelRequest {
 export interface UpdateUserProfileRequest {
   birth_month?: number
   birth_year?: number
-  learning_language?: string
+  native_language?: string
   language_level?: number
 }
 

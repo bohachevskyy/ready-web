@@ -13,7 +13,7 @@ interface User {
   language_level?: number
   birth_month?: number
   birth_year?: number
-  learning_language?: string
+  native_language?: string
 }
 
 interface AuthState {

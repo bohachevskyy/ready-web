@@ -21,7 +21,7 @@ export function Onboarding() {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("verify")
   const [birthMonth, setBirthMonth] = useState<number>(user?.birth_month || 0)
   const [birthYear, setBirthYear] = useState<number>(user?.birth_year || 0)
-  const [nativeLanguage, setNativeLanguage] = useState<string>(user?.learning_language || "")
+  const [nativeLanguage, setNativeLanguage] = useState<string>(user?.native_language || "")
   const [languageLevel, setLanguageLevel] = useState<number>(user?.language_level || 3)
   const [error, setError] = useState<string | null>(null)
 
@@ -72,7 +72,7 @@ export function Onboarding() {
       const result = await updateProfile({
         birth_month: birthMonth,
         birth_year: birthYear,
-        learning_language: nativeLanguage,
+        native_language: nativeLanguage,
         language_level: languageLevel,
       }).unwrap()
 

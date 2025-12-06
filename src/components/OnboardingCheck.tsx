@@ -15,7 +15,7 @@ export function OnboardingCheck({ children }: OnboardingCheckProps) {
     user.birth_month === undefined ||
     user.birth_year === null ||
     user.birth_year === undefined ||
-    !user.learning_language || 
+    !user.native_language || 
     !user.language_level
   )
   console.log(user)
@@ -25,7 +25,7 @@ export function OnboardingCheck({ children }: OnboardingCheckProps) {
     console.log('[OnboardingCheck] User profile:', {
       birth_month: user.birth_month,
       birth_year: user.birth_year,
-      learning_language: user.learning_language,
+      native_language: user.native_language,
       language_level: user.language_level,
       needsOnboarding
     })
