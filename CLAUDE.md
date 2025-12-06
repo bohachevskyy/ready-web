@@ -2,6 +2,8 @@
 
 This a react application for enhancing vocabulary.
 
+Don't look at the node modules during the planning stage. Only rely on the code. In case you need to know a library behavior search online.
+
 ## Auto-approved commands
 - `npm install`
 - `npm start`

@@ -2,6 +2,9 @@ import { BaseQueryFn, FetchArgs, FetchBaseQueryError, fetchBaseQuery } from '@re
 import type { RootState } from '../store/store'
 import { refreshAccessToken, clearAuth } from '../store/authSlice'
 
+// Track ongoing refresh to prevent concurrent refresh attempts
+let refreshPromise: Promise<any> | null = null
+
 /**
  * Shared base query with automatic token refresh fallback
  * Handles authentication and token refresh for all RTK Query APIs
@@ -38,24 +41,34 @@ export const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBa
 
     if (refreshToken) {
       try {
-        // Attempt to refresh the token
-        const refreshResult = await api.dispatch(refreshAccessToken(refreshToken))
+        // If there's already a refresh in progress, wait for it
+        if (!refreshPromise) {
+          console.log('[BaseQuery] Starting new token refresh')
+          refreshPromise = api.dispatch(refreshAccessToken(refreshToken)).unwrap()
+            .finally(() => {
+              // Clear the promise when done (success or failure)
+              refreshPromise = null
+            })
+        } else {
+          console.log('[BaseQuery] Waiting for ongoing token refresh')
+        }
 
-        if (refreshAccessToken.fulfilled.match(refreshResult)) {
-          // Token refreshed successfully, retry the original request
-          console.log('[BaseQuery] Token refreshed successfully, retrying request')
+        // Wait for the refresh to complete
+        await refreshPromise
 
-          // Get the new token
-          const newState = api.getState() as RootState
-          const newToken = newState.auth.token
+        // Token refreshed successfully, retry the original request
+        console.log('[BaseQuery] Token refreshed successfully, retrying request')
 
+        // Get the new token
+        const newState = api.getState() as RootState
+        const newToken = newState.auth.token
+
+        if (newToken) {
           // Create a new base query with the new token
           const retryBaseQuery = fetchBaseQuery({
             baseUrl: 'http://localhost:8080',
             prepareHeaders: (headers) => {
-              if (newToken) {
-                headers.set('Authorization', `Bearer ${newToken}`)
-              }
+              headers.set('Authorization', `Bearer ${newToken}`)
               return headers
             },
           })
@@ -63,13 +76,13 @@ export const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBa
           // Retry the original request
           result = await retryBaseQuery(args, api, extraOptions)
         } else {
-          // Token refresh failed, clear auth state
-          console.error('[BaseQuery] Token refresh failed, logging out')
+          // No new token available after refresh
+          console.error('[BaseQuery] No token available after refresh, logging out')
           api.dispatch(clearAuth())
         }
       } catch (error) {
-        // Error during refresh, clear auth state
-        console.error('[BaseQuery] Error during token refresh:', error)
+        // Token refresh failed, clear auth state
+        console.error('[BaseQuery] Token refresh failed, logging out:', error)
         api.dispatch(clearAuth())
       }
     } else {

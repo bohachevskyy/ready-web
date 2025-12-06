@@ -10,7 +10,7 @@ interface NavigationBarProps {
 export function NavigationBar({ onHomeClick, onLogout, onAccountClick }: NavigationBarProps) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-      <div className="container flex h-16 items-center justify-between px-4">
+      <div className="flex h-16 items-center justify-between px-4">
         <Button variant="ghost" size="sm" onClick={onHomeClick} className="gap-2 hover:bg-primary/10">
           <Home className="h-5 w-5" />
           <span className="font-medium">Home</span>
@@ -37,7 +37,6 @@ export function NavigationBar({ onHomeClick, onLogout, onAccountClick }: Navigat
             <span className="font-medium">Logout</span>
           </Button>
         </div>
-
       </div>
     </nav>
   );

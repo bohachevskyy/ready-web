@@ -2,13 +2,22 @@ import { useNavigate } from 'react-router-dom';
 import { AccountSettingsForm } from './AccountSettingsForm';
 import { NavigationBar } from './NavigationBar';
 import { useAppDispatch } from '../store/store';
-import { clearAuth } from '../store/authSlice';
+import { clearAuth, setUser } from '../store/authSlice';
 import { signOut } from '../services/firebaseAuth';
 import { persistor } from '../store/store';
+import { useGetUserProfileQuery } from '../services/userApi';
+import { useEffect } from 'react';
 
 export function AccountSettingsPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { data: userProfile, isLoading, error } = useGetUserProfileQuery();
+
+  useEffect(() => {
+    if (userProfile) {
+      dispatch(setUser(userProfile));
+    }
+  }, [userProfile, dispatch]);
 
   const handleHomeClick = () => {
     navigate('/');
@@ -28,6 +37,36 @@ export function AccountSettingsPage() {
       console.error('Error signing out:', error);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <NavigationBar
+          onHomeClick={handleHomeClick}
+          onLogout={handleLogout}
+          onAccountClick={handleAccountClick}
+        />
+        <div className="flex items-center justify-center p-6">
+          <div className="text-muted-foreground">Loading account information...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <NavigationBar
+          onHomeClick={handleHomeClick}
+          onLogout={handleLogout}
+          onAccountClick={handleAccountClick}
+        />
+        <div className="flex items-center justify-center p-6">
+          <div className="text-destructive">Failed to load account information. Please try again.</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">

@@ -11,6 +11,9 @@ interface User {
   name?: string
   age?: number
   language_level?: number
+  birth_month?: number
+  birth_year?: number
+  learning_language?: string
 }
 
 interface AuthState {

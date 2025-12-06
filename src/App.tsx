@@ -7,6 +7,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { AccountSettingsPage } from './components/AccountSettingsPage';
 import { PracticeWords } from './components/PracticeWords';
+import { Onboarding } from './components/Onboarding';
+import { OnboardingCheck } from './components/OnboardingCheck';
 import './styles/App.css';
 
 function ModeSelectionWithNavigation() {
@@ -39,12 +41,22 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute>
+              <Onboarding />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/"
           element={
             <ProtectedRoute>
-              <Layout>
-                <ModeSelectionWithNavigation />
-              </Layout>
+              <OnboardingCheck>
+                <Layout>
+                  <ModeSelectionWithNavigation />
+                </Layout>
+              </OnboardingCheck>
             </ProtectedRoute>
           }
         />
@@ -52,9 +64,11 @@ function App() {
           path="/story/category"
           element={
             <ProtectedRoute>
-              <Layout>
-                <StoryCategoryWithNavigation />
-              </Layout>
+              <OnboardingCheck>
+                <Layout>
+                  <StoryCategoryWithNavigation />
+                </Layout>
+              </OnboardingCheck>
             </ProtectedRoute>
           }
         />
@@ -62,9 +76,11 @@ function App() {
           path="/story/:domain"
           element={
             <ProtectedRoute>
-              <Layout>
-                <StoryReader />
-              </Layout>
+              <OnboardingCheck>
+                <Layout>
+                  <StoryReader />
+                </Layout>
+              </OnboardingCheck>
             </ProtectedRoute>
           }
         />
@@ -72,9 +88,11 @@ function App() {
           path="/practice"
           element={
             <ProtectedRoute>
-              <Layout>
-                <PracticeWords />
-              </Layout>
+              <OnboardingCheck>
+                <Layout>
+                  <PracticeWords />
+                </Layout>
+              </OnboardingCheck>
             </ProtectedRoute>
           }
         />

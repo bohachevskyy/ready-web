@@ -3,9 +3,10 @@ import { Word } from '../types'
 
 interface WordsState {
   words: Word[]
-  wordsCount: number
+  wordsCount: number | undefined
   countLastFetched: number | null  // Timestamp for cache invalidation
   isLoading: boolean
+  isCountLoading: boolean  // Separate loading flag for count
   isSubmitting: boolean
   error: string | null
   lastWordId: string | undefined
@@ -15,9 +16,10 @@ interface WordsState {
 
 const initialState: WordsState = {
   words: [],
-  wordsCount: 0,
+  wordsCount: undefined,
   countLastFetched: null,
   isLoading: false,
+  isCountLoading: false,
   isSubmitting: false,
   error: null,
   lastWordId: undefined,
@@ -151,7 +153,7 @@ export const wordsSlice = createSlice({
     // Synchronous action to clear words (e.g., on logout or session complete)
     clearWords: (state) => {
       state.words = []
-      state.wordsCount = 0
+      state.wordsCount = undefined
       state.countLastFetched = null
       state.lastWordId = undefined
       state.hasNextPage = true
@@ -202,13 +204,16 @@ export const wordsSlice = createSlice({
 
       // Fetch words count
       .addCase(fetchWordsCount.pending, (state) => {
+        state.isCountLoading = true
         state.error = null
       })
       .addCase(fetchWordsCount.fulfilled, (state, action) => {
+        state.isCountLoading = false
         state.wordsCount = action.payload
         state.countLastFetched = Date.now()  // Update cache timestamp
       })
       .addCase(fetchWordsCount.rejected, (state, action) => {
+        state.isCountLoading = false
         state.error = action.payload || 'Failed to fetch count'
       })
 
@@ -217,19 +222,22 @@ export const wordsSlice = createSlice({
         state.isSubmitting = true
         state.error = null
         // Optimistically decrement count
-        if (state.wordsCount > 0) {
+        if (state.wordsCount !== undefined && state.wordsCount > 0) {
           state.wordsCount -= 1
         }
       })
       .addCase(submitWordReview.fulfilled, (state, action) => {
         state.isSubmitting = false
-        // Count already decremented optimistically in pending
+        // Reset count to undefined to trigger refetch
+        state.wordsCount = undefined
       })
       .addCase(submitWordReview.rejected, (state, action) => {
         state.isSubmitting = false
         state.error = action.payload || 'Failed to submit review'
         // Rollback optimistic update
-        state.wordsCount += 1
+        if (state.wordsCount !== undefined) {
+          state.wordsCount += 1
+        }
       })
   },
 })

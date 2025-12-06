@@ -4,9 +4,10 @@ import { Button } from "./ui/button"
 import { SpeakerButton } from "./ui/speaker-button"
 import { Brain, Clock, Volume2, VolumeX } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../store/store"
-import { fetchWords, fetchWordsCount, submitWordReview, nextWord, clearWords } from "../store/wordsSlice"
+import { fetchWords, submitWordReview, nextWord, clearWords } from "../store/wordsSlice"
 import { toggleAutoPlay } from "../store/speechSettingsSlice"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
+import { useWordCount } from "../hooks/useWordCount"
 import { Word } from "../types"
 
 // FSRS Card data structure for UI
@@ -104,7 +105,6 @@ export function PracticeWords() {
   const dispatch = useAppDispatch()
   const {
     words: apiWords,
-    wordsCount,
     isLoading,
     error,
     lastWordId,
@@ -117,13 +117,15 @@ export function PracticeWords() {
   // Speech synthesis hook
   const { speak, cancel, supported } = useSpeechSynthesis()
 
+  // Word count hook (auto-fetches when undefined)
+  const { wordsCount } = useWordCount()
+
   // Initialize cards from Redux state - fetch on mount
   useEffect(() => {
     // Clear any previous session data
     dispatch(clearWords())
     // Fetch fresh data
     dispatch(fetchWords({ limit: 15 }))
-    dispatch(fetchWordsCount({}))
   }, [dispatch])
 
   // Update cards when apiWords changes
