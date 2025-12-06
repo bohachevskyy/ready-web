@@ -1,5 +1,6 @@
 import { Check, ChevronLeft } from "lucide-react"
 import { Button } from "../ui/button"
+import { useTranslation } from "../../i18n/useTranslation"
 
 interface DifficultyStepProps {
   languageLevel: number
@@ -11,20 +12,31 @@ interface DifficultyStepProps {
 
 type LanguageLevel = 1 | 2 | 3 | 4 | 5
 
-const languageLevels = [
-  { level: 1, label: "A1", color: "bg-emerald-400", description: "Beginner" },
-  { level: 2, label: "A2", color: "bg-green-400", description: "Elementary" },
-  { level: 3, label: "B1", color: "bg-yellow-400", description: "Intermediate" },
-  { level: 4, label: "B2", color: "bg-orange-400", description: "Upper Intermediate" },
-  { level: 5, label: "C1", color: "bg-red-400", description: "Advanced" },
-]
+const levelColorMap = {
+  1: "bg-emerald-400",
+  2: "bg-green-400",
+  3: "bg-yellow-400",
+  4: "bg-orange-400",
+  5: "bg-red-400",
+}
 
 export function DifficultyStep({ languageLevel, onLevelChange, onComplete, onBack, isLoading }: DifficultyStepProps) {
+  const { t, tObject } = useTranslation()
+  const levels = tObject('data.levels')
+
+  // Map the object to array format
+  const languageLevels = Object.entries(levels).map(([key, value]) => ({
+    level: Number(key) as LanguageLevel,
+    label: value.label,
+    color: levelColorMap[Number(key) as LanguageLevel],
+    description: value.description,
+  }))
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-4">
-        <h2 className="text-xl font-semibold">Choose your level</h2>
-        <p className="text-sm text-muted-foreground mt-2">How comfortable are you with English?</p>
+        <h2 className="text-xl font-semibold">{t('onboarding.difficulty.question')}</h2>
+        <p className="text-sm text-muted-foreground mt-2">{t('onboarding.difficulty.description')}</p>
       </div>
 
       {/* Current Level Display */}
@@ -38,7 +50,7 @@ export function DifficultyStep({ languageLevel, onLevelChange, onComplete, onBac
         </div>
         <div>
           <p className="text-2xl font-semibold">{languageLevels[languageLevel - 1].description}</p>
-          <p className="text-sm text-muted-foreground">Level {languageLevel} of 5</p>
+          <p className="text-sm text-muted-foreground">{t('onboarding.difficulty.levelProgress', { level: languageLevel })}</p>
         </div>
       </div>
 
@@ -111,12 +123,12 @@ export function DifficultyStep({ languageLevel, onLevelChange, onComplete, onBac
 
       <Button onClick={onComplete} className="w-full" size="lg" disabled={isLoading}>
         <Check className="h-4 w-4 mr-2" />
-        {isLoading ? "Saving..." : "Start Learning"}
+        {isLoading ? t('common.saving') : t('onboarding.difficulty.startLearning')}
       </Button>
 
       <Button type="button" variant="ghost" className="w-full" onClick={onBack} disabled={isLoading}>
         <ChevronLeft className="h-4 w-4 mr-2" />
-        Back
+        {t('common.back')}
       </Button>
     </div>
   )

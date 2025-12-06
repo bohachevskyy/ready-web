@@ -1,0 +1,310 @@
+{
+  "common": {
+    "continue": "계속하기",
+    "back": "뒤로가기",
+    "loading": "로딩 중...",
+    "save": "저장",
+    "saving": "저장 중...",
+    "cancel": "취소",
+    "or": "또는",
+    "signIn": "로그인",
+    "signUp": "회원가입",
+    "signingIn": "로그인 중...",
+    "signingUp": "회원가입 중...",
+    "welcome": "환영합니다",
+    "home": "홈",
+    "account": "계정",
+    "logout": "로그아웃"
+  },
+  "auth": {
+    "welcome": "환영합니다",
+    "signInPrompt": "로그인하여 학습을 계속하세요",
+    "continueWithGoogle": "Google로 계속하기",
+    "continueWithApple": "Apple로 계속하기",
+    "continueWithPhone": "휴대폰 번호로 계속하기",
+    "continueWithEmail": "이메일로 계속하기",
+    "or": "또는",
+    "phone": {
+      "label": "휴대폰 번호",
+      "placeholder": "+82 (10) 0000-0000",
+      "sendCode": "인증 코드 전송",
+      "sending": "전송 중...",
+      "backToOptions": "로그인 옵션으로 돌아가기",
+      "verificationCode": "인증 코드",
+      "enterCode": "{phoneNumber}로 전송된 6자리 코드를 입력하세요",
+      "codePlaceholder": "000000",
+      "verifying": "확인 중...",
+      "verifyAndContinue": "확인 및 계속하기",
+      "backToNumber": "휴대폰 번호로 돌아가기"
+    },
+    "email": {
+      "label": "이메일",
+      "placeholder": "you@example.com",
+      "password": "비밀번호",
+      "passwordPlaceholder": "비밀번호를 입력하세요",
+      "confirmPassword": "비밀번호 확인",
+      "confirmPasswordPlaceholder": "비밀번호를 다시 입력하세요",
+      "signInButton": "로그인",
+      "signUpButton": "회원가입",
+      "noAccount": "계정이 없으신가요? 회원가입",
+      "hasAccount": "이미 계정이 있으신가요? 로그인",
+      "backToOptions": "로그인 옵션으로 돌아가기"
+    },
+    "errors": {
+      "invalidPhone": "올바른 휴대폰 번호를 입력하세요",
+      "phoneNotReady": "휴대폰 인증이 준비되지 않았습니다. 페이지를 새로고침하세요.",
+      "invalidPhoneFormat": "올바르지 않은 휴대폰 번호 형식입니다",
+      "tooManyAttempts": "너무 많은 시도가 있었습니다. 나중에 다시 시도하세요.",
+      "failedSendCode": "인증 코드 전송에 실패했습니다. 다시 시도하세요.",
+      "invalidCode": "올바르지 않은 인증 코드입니다",
+      "codeExpired": "코드가 만료되었습니다. 새로운 코드를 요청하세요.",
+      "failedVerifyCode": "코드 확인에 실패했습니다. 다시 시도하세요.",
+      "enterCodeDigits": "6자리 인증 코드를 입력하세요",
+      "requiredFields": "이메일과 비밀번호를 모두 입력하세요",
+      "confirmPasswordRequired": "비밀번호를 확인해주세요",
+      "passwordMismatch": "비밀번호가 일치하지 않습니다",
+      "passwordTooShort": "비밀번호는 최소 6자 이상이어야 합니다",
+      "invalidEmailPassword": "올바르지 않은 이메일 또는 비밀번호입니다",
+      "userNotFound": "이 이메일로 등록된 계정을 찾을 수 없습니다",
+      "tooManyFailed": "너무 많은 실패가 있었습니다. 나중에 다시 시도하세요.",
+      "failedSignIn": "로그인에 실패했습니다. 다시 시도하세요.",
+      "emailInUse": "이미 이 이메일로 등록된 계정이 있습니다",
+      "invalidEmail": "올바르지 않은 이메일 주소입니다",
+      "weakPassword": "비밀번호가 너무 약합니다",
+      "failedCreateAccount": "계정 생성에 실패했습니다. 다시 시도하세요.",
+      "failedInitPhone": "휴대폰 인증 초기화에 실패했습니다. 페이지를 새로고침하세요."
+    }
+  },
+  "onboarding": {
+    "welcome": "환영합니다",
+    "stepProgress": "{total}단계 중 {current}단계",
+    "completeAllFields": "모든 항목을 입력해주세요",
+    "failedSaveProfile": "프로필 저장에 실패했습니다. 다시 시도하세요.",
+    "emailVerification": {
+      "title": "이메일을 확인하세요",
+      "messageSent": "인증 링크를 다음 주소로 보냈습니다",
+      "clickLink": "이메일의 링크를 클릭하여 계정을 확인하세요",
+      "waitingForVerification": "인증 대기 중...",
+      "verifiedButton": "이메일을 확인했습니다",
+      "resendEmail": "인증 이메일 다시 보내기"
+    },
+    "birthdate": {
+      "question": "생년월일은 언제인가요?",
+      "description": "이는 당신의 학습 경험을 맞춤화하는 데 도움이 됩니다",
+      "month": "월",
+      "year": "연도",
+      "selectMonth": "월을 선택하세요",
+      "selectYear": "연도를 선택하세요",
+      "ageGroup": "연령대"
+    },
+    "language": {
+      "question": "모국어는 무엇인가요?",
+      "description": "이 언어로 번역을 표시해드리겠습니다"
+    },
+    "difficulty": {
+      "question": "수준을 선택하세요",
+      "description": "영어로 얼마나 편하신가요?",
+      "levelProgress": "5단계 중 {level}단계",
+      "startLearning": "학습 시작하기"
+    }
+  },
+  "practice": {
+    "loadingWords": "단어 로딩 중...",
+    "errorLoading": "단어 로딩 중 오류가 발생했습니다",
+    "tryAgainLater": "나중에 다시 시도해주세요.",
+    "sessionComplete": "세션 완료!",
+    "sessionCompleteMessage": "잘했습니다! 이 세션에서 {count}개의 카드를 모두 검토했습니다.",
+    "startNewSession": "새 세션 시작하기",
+    "noWords": "연습할 단어가 없습니다",
+    "comeBackLater": "복습할 단어가 준비되면 나중에 다시 방문하세요.",
+    "cardsRemaining": "남은 카드",
+    "autoPlay": "자동 재생",
+    "autoPlayEnable": "자동 재생 활성화",
+    "autoPlayDisable": "자동 재생 비활성화",
+    "englishWord": "영어 단어",
+    "translation": "번역",
+    "noTranslation": "사용 가능한 번역이 없습니다",
+    "exampleSentence": "예문",
+    "showTranslation": "번역 보기",
+    "instruction": "\"번역 보기\"를 클릭하여 번역과 예문을 본 다음, 이 단어를 얼마나 잘 알고 있는지 평가하세요.",
+    "cardProgress": "{total}개 중 {current}개",
+    "reps": "반복: {count}",
+    "ratings": {
+      "again": "다시",
+      "hard": "어려움",
+      "good": "좋음",
+      "easy": "쉬움"
+    },
+    "states": {
+      "new": "새로운",
+      "learning": "학습 중",
+      "review": "복습",
+      "relearning": "재학습"
+    }
+  },
+  "stories": {
+    "pageTitle": "스토리 주제를 선택하세요",
+    "pageDescription": "주제를 선택하여 읽기를 시작하세요",
+    "categories": {
+      "nonfiction": "논픽션",
+      "fiction": "소설",
+      "everydayLife": "일상 생활"
+    },
+    "domains": {
+      "nonfiction": {
+        "history": {
+          "name": "역사 및 고고학",
+          "description": "역사적 사건, 고대 문명"
+        },
+        "biology": {
+          "name": "생물학 및 의학",
+          "description": "동물, 생태계, 인체, 건강"
+        },
+        "physics": {
+          "name": "물리학 및 공학",
+          "description": "우주, 물리학, 기계 작동 원리"
+        },
+        "earth": {
+          "name": "지구 및 환경",
+          "description": "자연, 기후, 날씨, 환경 보존"
+        },
+        "technology": {
+          "name": "기술 및 혁신",
+          "description": "발명, 기술 혁신"
+        },
+        "art": {
+          "name": "미술, 문학 및 문화",
+          "description": "그림, 책, 예술 운동"
+        },
+        "biography": {
+          "name": "전기 및 업적",
+          "description": "과학자, 탐험가, 발명가의 이야기"
+        },
+        "psychology": {
+          "name": "심리학 및 행동",
+          "description": "인지 과학, 인간 행동"
+        }
+      },
+      "fiction": {
+        "adventure_quest": {
+          "name": "모험 및 탐험",
+          "description": "여행, 보물 찾기, 탐험"
+        },
+        "mystery_detective": {
+          "name": "미스터리 및 추리",
+          "description": "범죄 해결, 비밀 파헤치기"
+        },
+        "fantasy_magic": {
+          "name": "판타지 및 마법",
+          "description": "마법의 세계, 신화 속 생물"
+        },
+        "sci_fi_future": {
+          "name": "공상과학 및 미래",
+          "description": "우주 모험, 시간 여행, 로봇"
+        },
+        "humor_comedy": {
+          "name": "유머 및 코미디",
+          "description": "재미있는 상황, 엉뚱한 캐릭터"
+        }
+      },
+      "everyday": {
+        "relationships": {
+          "name": "관계",
+          "description": "로맨스, 데이트, 우정, 가족"
+        },
+        "work_career": {
+          "name": "일 및 경력",
+          "description": "직업, 직장 상황, 경력 결정"
+        },
+        "personal_growth": {
+          "name": "개인 성장",
+          "description": "자기계발, 장애물 극복"
+        },
+        "home_lifestyle": {
+          "name": "가정 및 생활",
+          "description": "일상 루틴, 가정생활, 커뮤니티"
+        },
+        "food_culture": {
+          "name": "음식 및 문화",
+          "description": "요리 모험, 요리 전통"
+        }
+      }
+    },
+    "failedLoad": "스토리를 불러올 수 없습니다. 나중에 다시 시도해주세요."
+  },
+  "navigation": {
+    "home": "홈",
+    "account": "계정",
+    "logout": "로그아웃"
+  },
+  "modeSelection": {
+    "title": "학습 방식을 선택하세요",
+    "description": "오늘 어떻게 연습하고 싶은지 선택하세요",
+    "readStories": "스토리 읽기",
+    "readStoriesDescription": "대화형 스토리로 읽기 이해력을 향상시키세요",
+    "practiceWords": "단어 연습하기",
+    "practiceWordsDescription": "목표 지향적인 단어 연습으로 어휘를 확장하세요"
+  },
+  "account": {
+    "settings": "계정 설정",
+    "loadingInfo": "계정 정보를 로딩 중입니다...",
+    "failedLoad": "계정 정보를 불러올 수 없습니다. 다시 시도해주세요.",
+    "name": "이름",
+    "ageGroup": "연령대",
+    "languageComplexity": "언어 복잡도",
+    "backToHome": "홈으로 돌아가기"
+  },
+  "data": {
+    "months": [
+      "1월",
+      "2월",
+      "3월",
+      "4월",
+      "5월",
+      "6월",
+      "7월",
+      "8월",
+      "9월",
+      "10월",
+      "11월",
+      "12월"
+    ],
+    "languages": {
+      "en": "영어",
+      "uk": "우크라이나어",
+      "es": "스페인어",
+      "fr": "프랑스어",
+      "de": "독일어",
+      "it": "이탈리아어",
+      "pt": "포르투갈어",
+      "pl": "폴란드어",
+      "zh": "중국어",
+      "ja": "일본어",
+      "ko": "한국어",
+      "ar": "아랍어",
+      "hi": "힌디어"
+    },
+    "levels": {
+      "1": {
+        "label": "A1",
+        "description": "초급"
+      },
+      "2": {
+        "label": "A2",
+        "description": "초등"
+      },
+      "3": {
+        "label": "B1",
+        "description": "중급"
+      },
+      "4": {
+        "label": "B2",
+        "description": "중상급"
+      },
+      "5": {
+        "label": "C1",
+        "description": "고급"
+      }
+    }
+  }
+}

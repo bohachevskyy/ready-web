@@ -1,0 +1,310 @@
+{
+  "common": {
+    "continue": "Continua",
+    "back": "Indietro",
+    "loading": "Caricamento...",
+    "save": "Salva",
+    "saving": "Salvataggio in corso...",
+    "cancel": "Annulla",
+    "or": "O",
+    "signIn": "Accedi",
+    "signUp": "Registrati",
+    "signingIn": "Accesso in corso...",
+    "signingUp": "Registrazione in corso...",
+    "welcome": "Benvenuto",
+    "home": "Home",
+    "account": "Account",
+    "logout": "Esci"
+  },
+  "auth": {
+    "welcome": "Benvenuto",
+    "signInPrompt": "Accedi per continuare a imparare",
+    "continueWithGoogle": "Continua con Google",
+    "continueWithApple": "Continua con Apple",
+    "continueWithPhone": "Continua con il numero di telefono",
+    "continueWithEmail": "Continua con Email",
+    "or": "O",
+    "phone": {
+      "label": "Numero di telefono",
+      "placeholder": "+39 (320) 000-0000",
+      "sendCode": "Invia codice di verifica",
+      "sending": "Invio in corso...",
+      "backToOptions": "Torna alle opzioni di accesso",
+      "verificationCode": "Codice di verifica",
+      "enterCode": "Inserisci il codice a 6 cifre inviato a {phoneNumber}",
+      "codePlaceholder": "000000",
+      "verifying": "Verifica in corso...",
+      "verifyAndContinue": "Verifica e continua",
+      "backToNumber": "Torna al numero di telefono"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "tu@esempio.com",
+      "password": "Password",
+      "passwordPlaceholder": "Inserisci la tua password",
+      "confirmPassword": "Conferma password",
+      "confirmPasswordPlaceholder": "Conferma la tua password",
+      "signInButton": "Accedi",
+      "signUpButton": "Registrati",
+      "noAccount": "Non hai un account? Registrati",
+      "hasAccount": "Hai già un account? Accedi",
+      "backToOptions": "Torna alle opzioni di accesso"
+    },
+    "errors": {
+      "invalidPhone": "Inserisci un numero di telefono valido",
+      "phoneNotReady": "Verifica telefonica non disponibile. Aggiorna la pagina.",
+      "invalidPhoneFormat": "Formato numero di telefono non valido",
+      "tooManyAttempts": "Troppi tentativi. Riprova più tardi.",
+      "failedSendCode": "Impossibile inviare il codice di verifica. Riprova.",
+      "invalidCode": "Codice di verifica non valido",
+      "codeExpired": "Il codice è scaduto. Richiedine uno nuovo.",
+      "failedVerifyCode": "Impossibile verificare il codice. Riprova.",
+      "enterCodeDigits": "Inserisci il codice di verifica a 6 cifre",
+      "requiredFields": "Inserisci sia l'email che la password",
+      "confirmPasswordRequired": "Conferma la tua password",
+      "passwordMismatch": "Le password non corrispondono",
+      "passwordTooShort": "La password deve contenere almeno 6 caratteri",
+      "invalidEmailPassword": "Email o password non valida",
+      "userNotFound": "Nessun account trovato con questa email",
+      "tooManyFailed": "Troppi tentativi falliti. Riprova più tardi.",
+      "failedSignIn": "Impossibile accedere. Riprova.",
+      "emailInUse": "Esiste già un account con questa email",
+      "invalidEmail": "Indirizzo email non valido",
+      "weakPassword": "La password è troppo debole",
+      "failedCreateAccount": "Impossibile creare l'account. Riprova.",
+      "failedInitPhone": "Impossibile inizializzare la verifica telefonica. Aggiorna la pagina."
+    }
+  },
+  "onboarding": {
+    "welcome": "Benvenuto",
+    "stepProgress": "Passaggio {current} di {total}",
+    "completeAllFields": "Completa tutti i campi",
+    "failedSaveProfile": "Impossibile salvare il profilo. Riprova.",
+    "emailVerification": {
+      "title": "Controlla la tua email",
+      "messageSent": "Abbiamo inviato un link di verifica a",
+      "clickLink": "Fai clic sul link nella tua email per verificare l'account",
+      "waitingForVerification": "In attesa di verifica...",
+      "verifiedButton": "Ho verificato la mia email",
+      "resendEmail": "Reinvia email di verifica"
+    },
+    "birthdate": {
+      "question": "Quando sei nato?",
+      "description": "Questo ci aiuta a personalizzare la tua esperienza di apprendimento",
+      "month": "Mese",
+      "year": "Anno",
+      "selectMonth": "Seleziona mese",
+      "selectYear": "Seleziona anno",
+      "ageGroup": "Fascia d'età"
+    },
+    "language": {
+      "question": "Qual è la tua lingua madre?",
+      "description": "Ti mostreremo le traduzioni in questa lingua"
+    },
+    "difficulty": {
+      "question": "Scegli il tuo livello",
+      "description": "Con quanto inglese ti senti a tuo agio?",
+      "levelProgress": "Livello {level} di 5",
+      "startLearning": "Inizia a imparare"
+    }
+  },
+  "practice": {
+    "loadingWords": "Caricamento parole...",
+    "errorLoading": "Errore nel caricamento delle parole",
+    "tryAgainLater": "Riprova più tardi.",
+    "sessionComplete": "Sessione completata!",
+    "sessionCompleteMessage": "Ottimo lavoro! Hai ripassato tutte le {count} carte in questa sessione.",
+    "startNewSession": "Inizia una nuova sessione",
+    "noWords": "Nessuna parola da esercitare",
+    "comeBackLater": "Torna più tardi quando le parole saranno disponibili per il ripasso.",
+    "cardsRemaining": "Carte rimanenti",
+    "autoPlay": "Riproduzione automatica",
+    "autoPlayEnable": "Abilita riproduzione automatica",
+    "autoPlayDisable": "Disabilita riproduzione automatica",
+    "englishWord": "Parola inglese",
+    "translation": "Traduzione",
+    "noTranslation": "Nessuna traduzione disponibile",
+    "exampleSentence": "Frase di esempio",
+    "showTranslation": "Mostra traduzione",
+    "instruction": "Fai clic su \"Mostra traduzione\" per vedere la traduzione e l'esempio, quindi valuta quanto bene conosci questa parola.",
+    "cardProgress": "Carta {current} di {total}",
+    "reps": "Ripetizioni: {count}",
+    "ratings": {
+      "again": "Di nuovo",
+      "hard": "Difficile",
+      "good": "Buono",
+      "easy": "Facile"
+    },
+    "states": {
+      "new": "nuovo",
+      "learning": "apprendimento",
+      "review": "ripasso",
+      "relearning": "riapprendimento"
+    }
+  },
+  "stories": {
+    "pageTitle": "Scegli il tuo dominio di storia",
+    "pageDescription": "Seleziona un argomento per iniziare a leggere",
+    "categories": {
+      "nonfiction": "Non-fiction",
+      "fiction": "Narrativa",
+      "everydayLife": "Vita quotidiana"
+    },
+    "domains": {
+      "nonfiction": {
+        "history": {
+          "name": "Storia e Archeologia",
+          "description": "Eventi storici, civiltà antiche"
+        },
+        "biology": {
+          "name": "Biologia e Medicina",
+          "description": "Animali, ecosistemi, corpo umano, salute"
+        },
+        "physics": {
+          "name": "Fisica e Ingegneria",
+          "description": "Spazio, fisica, come funzionano le macchine"
+        },
+        "earth": {
+          "name": "Terra e Ambiente",
+          "description": "Natura, clima, meteo, conservazione"
+        },
+        "technology": {
+          "name": "Tecnologia e Innovazione",
+          "description": "Invenzioni, innovazioni tecnologiche"
+        },
+        "art": {
+          "name": "Arte, Letteratura e Cultura",
+          "description": "Pitture, libri, movimenti artistici"
+        },
+        "biography": {
+          "name": "Biografia e Successo",
+          "description": "Storie di scienziati, esploratori, inventori"
+        },
+        "psychology": {
+          "name": "Psicologia e Comportamento",
+          "description": "Scienze cognitive, comportamento umano"
+        }
+      },
+      "fiction": {
+        "adventure_quest": {
+          "name": "Avventura e Ricerca",
+          "description": "Viaggi, caccia al tesoro, esplorazione"
+        },
+        "mystery_detective": {
+          "name": "Mistero e Investigazione",
+          "description": "Risolvere crimini, scoprire segreti"
+        },
+        "fantasy_magic": {
+          "name": "Fantasy e Magia",
+          "description": "Mondi magici, creature mitiche"
+        },
+        "sci_fi_future": {
+          "name": "Fantascienza e Futuro",
+          "description": "Avventure nello spazio, viaggio nel tempo, robot"
+        },
+        "humor_comedy": {
+          "name": "Umorismo e Commedia",
+          "description": "Situazioni divertenti, personaggi strambi"
+        }
+      },
+      "everyday": {
+        "relationships": {
+          "name": "Relazioni",
+          "description": "Romanticismo, appuntamenti, amicizia, famiglia"
+        },
+        "work_career": {
+          "name": "Lavoro e Carriera",
+          "description": "Lavori, scenari lavorativi, decisioni di carriera"
+        },
+        "personal_growth": {
+          "name": "Crescita Personale",
+          "description": "Automigliormente, superamento degli ostacoli"
+        },
+        "home_lifestyle": {
+          "name": "Casa e Stile di Vita",
+          "description": "Routine quotidiane, vita familiare, comunità"
+        },
+        "food_culture": {
+          "name": "Cibo e Cultura",
+          "description": "Avventure culinarie, tradizioni gastronomiche"
+        }
+      }
+    },
+    "failedLoad": "Impossibile caricare la storia. Riprova più tardi."
+  },
+  "navigation": {
+    "home": "Home",
+    "account": "Account",
+    "logout": "Esci"
+  },
+  "modeSelection": {
+    "title": "Scegli la tua modalità di apprendimento",
+    "description": "Seleziona come vorresti esercitarti oggi",
+    "readStories": "Leggi storie",
+    "readStoriesDescription": "Migliora la tua comprensione della lettura con storie interattive",
+    "practiceWords": "Esercitati con le parole",
+    "practiceWordsDescription": "Espandi il tuo vocabolario con esercizi mirati sulle parole"
+  },
+  "account": {
+    "settings": "Impostazioni account",
+    "loadingInfo": "Caricamento informazioni account...",
+    "failedLoad": "Impossibile caricare le informazioni dell'account. Riprova.",
+    "name": "Nome",
+    "ageGroup": "Fascia d'età",
+    "languageComplexity": "Complessità linguistica",
+    "backToHome": "Torna alla home"
+  },
+  "data": {
+    "months": [
+      "Gennaio",
+      "Febbraio",
+      "Marzo",
+      "Aprile",
+      "Maggio",
+      "Giugno",
+      "Luglio",
+      "Agosto",
+      "Settembre",
+      "Ottobre",
+      "Novembre",
+      "Dicembre"
+    ],
+    "languages": {
+      "en": "Inglese",
+      "uk": "Ucraino",
+      "es": "Spagnolo",
+      "fr": "Francese",
+      "de": "Tedesco",
+      "it": "Italiano",
+      "pt": "Portoghese",
+      "pl": "Polacco",
+      "zh": "Cinese",
+      "ja": "Giapponese",
+      "ko": "Coreano",
+      "ar": "Arabo",
+      "hi": "Hindi"
+    },
+    "levels": {
+      "1": {
+        "label": "A1",
+        "description": "Principiante"
+      },
+      "2": {
+        "label": "A2",
+        "description": "Elementare"
+      },
+      "3": {
+        "label": "B1",
+        "description": "Intermedio"
+      },
+      "4": {
+        "label": "B2",
+        "description": "Intermedio-superiore"
+      },
+      "5": {
+        "label": "C1",
+        "description": "Avanzato"
+      }
+    }
+  }
+}

@@ -24,6 +24,7 @@ interface AuthState {
   user: User | null
   isLoading: boolean
   error: string | null
+  uiLanguage: string | null
 }
 
 const initialState: AuthState = {
@@ -34,6 +35,7 @@ const initialState: AuthState = {
   user: null,
   isLoading: false,
   error: null,
+  uiLanguage: null,
 }
 
 export interface LoginRequest {
@@ -143,6 +145,9 @@ export const authSlice = createSlice({
         state.user.language_level = action.payload
       }
     },
+    setUILanguage: (state, action: PayloadAction<string>) => {
+      state.uiLanguage = action.payload
+    },
     clearAuth: (state) => {
       state.token = null
       state.tokenExpiresAt = null
@@ -208,6 +213,6 @@ export const authSlice = createSlice({
   },
 })
 
-export const { setToken, setUser, updateUserLanguageLevel, clearAuth } = authSlice.actions
+export const { setToken, setUser, updateUserLanguageLevel, setUILanguage, clearAuth } = authSlice.actions
 
 export default authSlice.reducer

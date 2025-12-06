@@ -1,0 +1,310 @@
+{
+  "common": {
+    "continue": "जारी रखें",
+    "back": "वापस",
+    "loading": "लोड हो रहा है...",
+    "save": "सहेजें",
+    "saving": "सहेज रहे हैं...",
+    "cancel": "रद्द करें",
+    "or": "या",
+    "signIn": "साइन इन करें",
+    "signUp": "साइन अप करें",
+    "signingIn": "साइन इन हो रहे हैं...",
+    "signingUp": "साइन अप हो रहे हैं...",
+    "welcome": "स्वागत है",
+    "home": "होम",
+    "account": "खाता",
+    "logout": "लॉगआउट"
+  },
+  "auth": {
+    "welcome": "स्वागत है",
+    "signInPrompt": "सीखना जारी रखने के लिए साइन इन करें",
+    "continueWithGoogle": "गूगल से जारी रखें",
+    "continueWithApple": "ऐप्पल से जारी रखें",
+    "continueWithPhone": "फोन नंबर से जारी रखें",
+    "continueWithEmail": "ईमेल से जारी रखें",
+    "or": "या",
+    "phone": {
+      "label": "फोन नंबर",
+      "placeholder": "+91 (98) 0000-0000",
+      "sendCode": "सत्यापन कोड भेजें",
+      "sending": "भेज रहे हैं...",
+      "backToOptions": "साइन इन विकल्पों पर वापस जाएं",
+      "verificationCode": "सत्यापन कोड",
+      "enterCode": "{phoneNumber} पर भेजा गया 6-अंकीय कोड दर्ज करें",
+      "codePlaceholder": "000000",
+      "verifying": "सत्यापन हो रहा है...",
+      "verifyAndContinue": "सत्यापित करें और जारी रखें",
+      "backToNumber": "फोन नंबर पर वापस जाएं"
+    },
+    "email": {
+      "label": "ईमेल",
+      "placeholder": "आप@उदाहरण.com",
+      "password": "पासवर्ड",
+      "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
+      "confirmPassword": "पासवर्ड की पुष्टि करें",
+      "confirmPasswordPlaceholder": "अपना पासवर्ड की पुष्टि करें",
+      "signInButton": "साइन इन करें",
+      "signUpButton": "साइन अप करें",
+      "noAccount": "खाता नहीं है? साइन अप करें",
+      "hasAccount": "पहले से खाता है? साइन इन करें",
+      "backToOptions": "साइन इन विकल्पों पर वापस जाएं"
+    },
+    "errors": {
+      "invalidPhone": "कृपया एक वैध फोन नंबर दर्ज करें",
+      "phoneNotReady": "फोन सत्यापन तैयार नहीं है। कृपया पृष्ठ को रीफ्रेश करें।",
+      "invalidPhoneFormat": "अमान्य फोन नंबर प्रारूप",
+      "tooManyAttempts": "बहुत अधिक प्रयास। कृपया बाद में फिर से कोशिश करें।",
+      "failedSendCode": "सत्यापन कोड भेजने में विफल। कृपया फिर से कोशिश करें।",
+      "invalidCode": "अमान्य सत्यापन कोड",
+      "codeExpired": "कोड समाप्त हो गया। कृपया एक नया कोड मांगें।",
+      "failedVerifyCode": "कोड सत्यापित करने में विफल। कृपया फिर से कोशिश करें।",
+      "enterCodeDigits": "कृपया 6-अंकीय सत्यापन कोड दर्ज करें",
+      "requiredFields": "कृपया ईमेल और पासवर्ड दोनों दर्ज करें",
+      "confirmPasswordRequired": "कृपया अपना पासवर्ड की पुष्टि करें",
+      "passwordMismatch": "पासवर्ड मेल नहीं खाता",
+      "passwordTooShort": "पासवर्ड कम से कम 6 वर्णों का होना चाहिए",
+      "invalidEmailPassword": "अमान्य ईमेल या पासवर्ड",
+      "userNotFound": "इस ईमेल से कोई खाता नहीं मिला",
+      "tooManyFailed": "बहुत अधिक विफल प्रयास। कृपया बाद में फिर से कोशिश करें।",
+      "failedSignIn": "साइन इन करने में विफल। कृपया फिर से कोशिश करें।",
+      "emailInUse": "इस ईमेल के साथ पहले से एक खाता मौजूद है",
+      "invalidEmail": "अमान्य ईमेल पता",
+      "weakPassword": "पासवर्ड बहुत कमजोर है",
+      "failedCreateAccount": "खाता बनाने में विफल। कृपया फिर से कोशिश करें।",
+      "failedInitPhone": "फोन सत्यापन शुरू करने में विफल। कृपया पृष्ठ को रीफ्रेश करें।"
+    }
+  },
+  "onboarding": {
+    "welcome": "स्वागत है",
+    "stepProgress": "चरण {current} में से {total}",
+    "completeAllFields": "कृपया सभी फील्ड भरें",
+    "failedSaveProfile": "प्रोफाइल सहेजने में विफल। कृपया फिर से कोशिश करें।",
+    "emailVerification": {
+      "title": "अपना ईमेल चेक करें",
+      "messageSent": "हमने एक सत्यापन लिंक भेजा है",
+      "clickLink": "अपने खाते को सत्यापित करने के लिए अपने ईमेल में लिंक पर क्लिक करें",
+      "waitingForVerification": "सत्यापन का इंतजार हो रहा है...",
+      "verifiedButton": "मैंने अपना ईमेल सत्यापित कर दिया",
+      "resendEmail": "सत्यापन ईमेल दोबारा भेजें"
+    },
+    "birthdate": {
+      "question": "आप कब पैदा हुए थे?",
+      "description": "यह हमें आपके सीखने का अनुभव व्यक्तिगत करने में मदद करता है",
+      "month": "महीना",
+      "year": "साल",
+      "selectMonth": "महीना चुनें",
+      "selectYear": "साल चुनें",
+      "ageGroup": "आयु समूह"
+    },
+    "language": {
+      "question": "आपकी मूल भाषा कौन सी है?",
+      "description": "हम इस भाषा में अनुवाद दिखाएंगे"
+    },
+    "difficulty": {
+      "question": "अपना स्तर चुनें",
+      "description": "आप अंग्रेजी के साथ कितने सहज हैं?",
+      "levelProgress": "स्तर {level} में से 5",
+      "startLearning": "सीखना शुरू करें"
+    }
+  },
+  "practice": {
+    "loadingWords": "शब्द लोड हो रहे हैं...",
+    "errorLoading": "शब्द लोड करने में त्रुटि",
+    "tryAgainLater": "कृपया बाद में फिर से कोशिश करें।",
+    "sessionComplete": "सत्र पूर्ण!",
+    "sessionCompleteMessage": "बहुत अच्छा! आपने इस सत्र में सभी {count} कार्ड की समीक्षा की है।",
+    "startNewSession": "नया सत्र शुरू करें",
+    "noWords": "अभ्यास के लिए कोई शब्द नहीं",
+    "comeBackLater": "बाद में वापस आएं जब शब्द समीक्षा के लिए तैयार हों।",
+    "cardsRemaining": "शेष कार्ड",
+    "autoPlay": "स्वचालित चलाएं",
+    "autoPlayEnable": "स्वचालित चलाना सक्षम करें",
+    "autoPlayDisable": "स्वचालित चलाना अक्षम करें",
+    "englishWord": "अंग्रेजी शब्द",
+    "translation": "अनुवाद",
+    "noTranslation": "कोई अनुवाद उपलब्ध नहीं",
+    "exampleSentence": "उदाहरण वाक्य",
+    "showTranslation": "अनुवाद दिखाएं",
+    "instruction": "अनुवाद और उदाहरण देखने के लिए \"अनुवाद दिखाएं\" पर क्लिक करें, फिर दर्जा दें कि आप इस शब्द को कितनी अच्छी तरह जानते थे।",
+    "cardProgress": "कार्ड {current} में से {total}",
+    "reps": "दोहराव: {count}",
+    "ratings": {
+      "again": "फिर से",
+      "hard": "कठिन",
+      "good": "अच्छा",
+      "easy": "आसान"
+    },
+    "states": {
+      "new": "नया",
+      "learning": "सीख रहे हैं",
+      "review": "समीक्षा",
+      "relearning": "फिर से सीख रहे हैं"
+    }
+  },
+  "stories": {
+    "pageTitle": "अपनी कहानी श्रेणी चुनें",
+    "pageDescription": "पढ़ना शुरू करने के लिए एक विषय चुनें",
+    "categories": {
+      "nonfiction": "अशानकथा",
+      "fiction": "कथा",
+      "everydayLife": "रोजमर्रा की ज़िंदगी"
+    },
+    "domains": {
+      "nonfiction": {
+        "history": {
+          "name": "इतिहास और पुरातत्व",
+          "description": "ऐतिहासिक घटनाएं, प्राचीन सभ्यताएं"
+        },
+        "biology": {
+          "name": "जीव विज्ञान और चिकित्सा",
+          "description": "जानवर, पारिस्थितिकी तंत्र, मानव शरीर, स्वास्थ्य"
+        },
+        "physics": {
+          "name": "भौतिकी और इंजीनियरिंग",
+          "description": "अंतरिक्ष, भौतिकी, मशीनें कैसे काम करती हैं"
+        },
+        "earth": {
+          "name": "पृथ्वी और पर्यावरण",
+          "description": "प्रकृति, जलवायु, मौसम, संरक्षण"
+        },
+        "technology": {
+          "name": "प्रौद्योगिकी और नवाचार",
+          "description": "आविष्कार, तकनीकी सफलताएं"
+        },
+        "art": {
+          "name": "कला, साहित्य और संस्कृति",
+          "description": "चित्र, किताबें, कलात्मक आंदोलन"
+        },
+        "biography": {
+          "name": "जीवनी और उपलब्धि",
+          "description": "वैज्ञानिकों, खोजकर्ताओं, आविष्कारकों की कहानियां"
+        },
+        "psychology": {
+          "name": "मनोविज्ञान और व्यवहार",
+          "description": "संज्ञानात्मक विज्ञान, मानव व्यवहार"
+        }
+      },
+      "fiction": {
+        "adventure_quest": {
+          "name": "साहसिक और खोज",
+          "description": "यात्राएं, खजाने की खोज, अन्वेषण"
+        },
+        "mystery_detective": {
+          "name": "रहस्य और जांच",
+          "description": "अपराध को सुलझाना, रहस्य उजागर करना"
+        },
+        "fantasy_magic": {
+          "name": "कल्पना और जादू",
+          "description": "जादुई दुनिया, मिथोलॉजिकल प्राणी"
+        },
+        "sci_fi_future": {
+          "name": "विज्ञान कल्पना और भविष्य",
+          "description": "अंतरिक्ष की साहसिक यात्रा, समय यात्रा, रोबोट"
+        },
+        "humor_comedy": {
+          "name": "हास्य और कॉमेडी",
+          "description": "मजेदार स्थितियां, मूर्ख पात्र"
+        }
+      },
+      "everyday": {
+        "relationships": {
+          "name": "रिश्ते",
+          "description": "रोमांस, डेटिंग, दोस्ती, परिवार"
+        },
+        "work_career": {
+          "name": "काम और कैरियर",
+          "description": "नौकरियां, कार्यस्थल के परिदृश्य, कैरियर के फैसले"
+        },
+        "personal_growth": {
+          "name": "व्यक्तिगत विकास",
+          "description": "आत्मसुधार, बाधाओं को पार करना"
+        },
+        "home_lifestyle": {
+          "name": "घर और जीवनशैली",
+          "description": "दैनिक दिनचर्या, पारिवारिक जीवन, समुदाय"
+        },
+        "food_culture": {
+          "name": "भोजन और संस्कृति",
+          "description": "खाना पकाने की साहसिक यात्रा, पाक परंपराएं"
+        }
+      }
+    },
+    "failedLoad": "कहानी लोड करने में विफल। कृपया बाद में फिर से कोशिश करें।"
+  },
+  "navigation": {
+    "home": "होम",
+    "account": "खाता",
+    "logout": "लॉगआउट"
+  },
+  "modeSelection": {
+    "title": "अपना सीखने का तरीका चुनें",
+    "description": "चुनें कि आप आज कैसे अभ्यास करना चाहते हैं",
+    "readStories": "कहानियां पढ़ें",
+    "readStoriesDescription": "इंटरैक्टिव कहानियों के साथ अपनी पढ़ने की समझ में सुधार करें",
+    "practiceWords": "शब्दों का अभ्यास करें",
+    "practiceWordsDescription": "लक्षित शब्द अभ्यास के साथ अपनी शब्दावली बनाएं"
+  },
+  "account": {
+    "settings": "खाता सेटिंग",
+    "loadingInfo": "खाता जानकारी लोड हो रही है...",
+    "failedLoad": "खाता जानकारी लोड करने में विफल। कृपया फिर से कोशिश करें।",
+    "name": "नाम",
+    "ageGroup": "आयु समूह",
+    "languageComplexity": "भाषा की जटिलता",
+    "backToHome": "होम पर वापस जाएं"
+  },
+  "data": {
+    "months": [
+      "जनवरी",
+      "फरवरी",
+      "मार्च",
+      "अप्रैल",
+      "मई",
+      "जून",
+      "जुलाई",
+      "अगस्त",
+      "सितंबर",
+      "अक्टूबर",
+      "नवंबर",
+      "दिसंबर"
+    ],
+    "languages": {
+      "en": "अंग्रेजी",
+      "uk": "यूक्रेनी",
+      "es": "स्पेनिश",
+      "fr": "फ्रांसीसी",
+      "de": "जर्मन",
+      "it": "इतालवी",
+      "pt": "पुर्तगाली",
+      "pl": "पोलिश",
+      "zh": "चीनी",
+      "ja": "जापानी",
+      "ko": "कोरियाई",
+      "ar": "अरबी",
+      "hi": "हिंदी"
+    },
+    "levels": {
+      "1": {
+        "label": "A1",
+        "description": "शुरुआती"
+      },
+      "2": {
+        "label": "A2",
+        "description": "प्राथमिक"
+      },
+      "3": {
+        "label": "B1",
+        "description": "मध्यवर्ती"
+      },
+      "4": {
+        "label": "B2",
+        "description": "उच्च मध्यवर्ती"
+      },
+      "5": {
+        "label": "C1",
+        "description": "उन्नत"
+      }
+    }
+  }
+}

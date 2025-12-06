@@ -9,8 +9,10 @@ import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Apple, Phone, Mail, Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from '../i18n/useTranslation';
 
 export function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { isLoading, error } = useAppSelector((state) => state.auth);
@@ -43,7 +45,7 @@ export function Login() {
           console.log('reCAPTCHA initialized successfully');
         } catch (err) {
           console.error('Failed to initialize reCAPTCHA:', err);
-          setAuthError('Failed to initialize phone verification. Please refresh the page.');
+          setAuthError(t('auth.errors.recaptchaInit'));
         }
       }, 100);
 
@@ -73,12 +75,12 @@ export function Login() {
     e.preventDefault();
 
     if (!phoneNumber || phoneNumber.length < 10) {
-      setAuthError('Please enter a valid phone number');
+      setAuthError(t('auth.errors.invalidPhone'));
       return;
     }
 
     if (!recaptchaVerifierRef.current) {
-      setAuthError('Phone verification not ready. Please refresh the page.');
+      setAuthError(t('auth.errors.recaptchaNotReady'));
       return;
     }
 
@@ -95,11 +97,11 @@ export function Login() {
     } catch (err: any) {
       console.error('Error sending OTP:', err);
       if (err.code === 'auth/invalid-phone-number') {
-        setAuthError('Invalid phone number format');
+        setAuthError(t('auth.errors.invalidPhoneFormat'));
       } else if (err.code === 'auth/too-many-requests') {
-        setAuthError('Too many attempts. Please try again later.');
+        setAuthError(t('auth.errors.tooManyAttempts'));
       } else {
-        setAuthError('Failed to send verification code. Please try again.');
+        setAuthError(t('auth.errors.sendCodeFailed'));
       }
     } finally {
       setIsSubmitting(false);
@@ -110,7 +112,7 @@ export function Login() {
     e.preventDefault();
 
     if (!otp || otp.length !== 6) {
-      setAuthError('Please enter the 6-digit verification code');
+      setAuthError(t('auth.errors.invalidCode'));
       return;
     }
 
@@ -123,13 +125,13 @@ export function Login() {
     } catch (err: any) {
       console.error('Error verifying OTP:', err);
       if (err.code === 'auth/invalid-verification-code') {
-        setAuthError('Invalid verification code');
+        setAuthError(t('auth.errors.invalidVerificationCode'));
       } else if (err.code === 'auth/code-expired') {
-        setAuthError('Code expired. Please request a new one.');
+        setAuthError(t('auth.errors.codeExpired'));
         setStep('input');
         setOtp('');
       } else {
-        setAuthError('Failed to verify code. Please try again.');
+        setAuthError(t('auth.errors.verifyCodeFailed'));
       }
     } finally {
       setIsSubmitting(false);
@@ -146,7 +148,7 @@ export function Login() {
       }
       navigate('/');
     } catch (err) {
-      setAuthError(`Failed to sign in with ${provider}. Please try again.`);
+      setAuthError(t('auth.errors.socialLoginFailed', { provider }));
       console.error(err);
     }
   };
@@ -155,21 +157,21 @@ export function Login() {
     e.preventDefault();
 
     if (!email || !password) {
-      setAuthError('Please enter both email and password');
+      setAuthError(t('auth.errors.emailPasswordRequired'));
       return;
     }
 
     if (emailMode === 'signup') {
       if (!confirmPassword) {
-        setAuthError('Please confirm your password');
+        setAuthError(t('auth.errors.confirmPasswordRequired'));
         return;
       }
       if (password !== confirmPassword) {
-        setAuthError('Passwords do not match');
+        setAuthError(t('auth.errors.passwordMismatch'));
         return;
       }
       if (password.length < 6) {
-        setAuthError('Password must be at least 6 characters');
+        setAuthError(t('auth.errors.passwordTooShort'));
         return;
       }
     }
@@ -188,23 +190,23 @@ export function Login() {
       console.error(`Error ${emailMode === 'signup' ? 'signing up' : 'signing in'} with email:`, err);
       if (emailMode === 'signin') {
         if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
-          setAuthError('Invalid email or password');
+          setAuthError(t('auth.errors.invalidCredentials'));
         } else if (err.code === 'auth/user-not-found') {
-          setAuthError('No account found with this email');
+          setAuthError(t('auth.errors.userNotFound'));
         } else if (err.code === 'auth/too-many-requests') {
-          setAuthError('Too many failed attempts. Please try again later.');
+          setAuthError(t('auth.errors.tooManyAttempts'));
         } else {
-          setAuthError('Failed to sign in. Please try again.');
+          setAuthError(t('auth.errors.signInFailed'));
         }
       } else {
         if (err.code === 'auth/email-already-in-use') {
-          setAuthError('An account with this email already exists');
+          setAuthError(t('auth.errors.emailInUse'));
         } else if (err.code === 'auth/invalid-email') {
-          setAuthError('Invalid email address');
+          setAuthError(t('auth.errors.invalidEmail'));
         } else if (err.code === 'auth/weak-password') {
-          setAuthError('Password is too weak');
+          setAuthError(t('auth.errors.weakPassword'));
         } else {
-          setAuthError('Failed to create account. Please try again.');
+          setAuthError(t('auth.errors.signUpFailed'));
         }
       }
     } finally {
@@ -216,8 +218,8 @@ export function Login() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md p-8 bg-card shadow-lg">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome</h1>
-          <p className="text-muted-foreground">Sign in to continue learning</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('auth.welcome')}</h1>
+          <p className="text-muted-foreground">{t('auth.signInPrompt')}</p>
         </div>
 
         {method === 'choice' && (
@@ -235,7 +237,7 @@ export function Login() {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
               </svg>
-              Continue with Google
+              {t('auth.continueWithGoogle')}
             </Button>
 
             {process.env.REACT_APP_ENABLE_APPLE_LOGIN === 'true' && (
@@ -247,7 +249,7 @@ export function Login() {
                 onClick={() => handleSocialLogin('apple')}
               >
                 <Apple className="h-5 w-5" />
-                Continue with Apple
+                {t('auth.continueWithApple')}
               </Button>
             )}
 
@@ -256,7 +258,7 @@ export function Login() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or</span>
+                <span className="bg-card px-2 text-muted-foreground">{t('auth.or')}</span>
               </div>
             </div>
 
@@ -271,7 +273,7 @@ export function Login() {
               }}
             >
               <Phone className="h-5 w-5" />
-              Continue with Phone Number
+              {t('auth.continueWithPhone')}
             </Button>
 
             <Button
@@ -285,7 +287,7 @@ export function Login() {
               }}
             >
               <Mail className="h-5 w-5" />
-              Continue with Email
+              {t('auth.continueWithEmail')}
             </Button>
           </div>
         )}
@@ -293,11 +295,11 @@ export function Login() {
         {method === 'phone' && step === 'input' && (
           <form onSubmit={handlePhoneSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="phone">{t('auth.phone.label')}</Label>
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+1 (555) 000-0000"
+                placeholder={t('auth.phone.placeholder')}
                 value={phoneNumber}
                 onChange={handlePhoneChange}
                 disabled={isSubmitting}
@@ -306,7 +308,7 @@ export function Login() {
             </div>
 
             <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? 'Sending...' : 'Send Verification Code'}
+              {isSubmitting ? t('auth.phone.sending') : t('auth.phone.sendCode')}
             </Button>
 
             <Button
@@ -319,7 +321,7 @@ export function Login() {
                 setAuthError(null);
               }}
             >
-              Back to sign in options
+              {t('auth.phone.backToOptions')}
             </Button>
           </form>
         )}
@@ -327,16 +329,16 @@ export function Login() {
         {method === 'phone' && step === 'otp' && (
           <form onSubmit={handleOtpSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="otp">Verification Code</Label>
+              <Label htmlFor="otp">{t('auth.phone.verificationCode')}</Label>
               <p className="text-sm text-muted-foreground mb-4">
-                Enter the 6-digit code sent to {phoneNumber}
+                {t('auth.phone.enterCode', { phoneNumber })}
               </p>
               <Input
                 id="otp"
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                placeholder="000000"
+                placeholder={t('auth.phone.codePlaceholder')}
                 maxLength={6}
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
@@ -347,7 +349,7 @@ export function Login() {
             </div>
 
             <Button type="submit" className="w-full" size="lg" disabled={isSubmitting || otp.length !== 6}>
-              {isSubmitting ? 'Verifying...' : 'Verify & Continue'}
+              {isSubmitting ? t('auth.phone.verifying') : t('auth.phone.verifyAndContinue')}
             </Button>
 
             <Button
@@ -360,7 +362,7 @@ export function Login() {
                 setAuthError(null);
               }}
             >
-              Back to phone number
+              {t('auth.phone.backToNumber')}
             </Button>
           </form>
         )}
@@ -368,11 +370,11 @@ export function Login() {
         {method === 'email' && (
           <form onSubmit={handleEmailSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('auth.email.label')}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t('auth.email.placeholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={isSubmitting}
@@ -381,12 +383,12 @@ export function Login() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t('auth.email.password')}</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  placeholder={t('auth.email.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isSubmitting}
@@ -405,12 +407,12 @@ export function Login() {
 
             {emailMode === 'signup' && (
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">{t('auth.email.confirmPassword')}</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
+                    placeholder={t('auth.email.confirmPasswordPlaceholder')}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     disabled={isSubmitting}
@@ -429,7 +431,7 @@ export function Login() {
             )}
 
             <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? (emailMode === 'signin' ? 'Signing in...' : 'Signing up...') : (emailMode === 'signin' ? 'Sign In' : 'Sign Up')}
+              {isSubmitting ? (emailMode === 'signin' ? t('common.signingIn') : t('common.signingUp')) : (emailMode === 'signin' ? t('auth.email.signInButton') : t('auth.email.signUpButton'))}
             </Button>
 
             <div className="text-center">
@@ -442,7 +444,7 @@ export function Login() {
                 }}
                 className="text-sm text-primary hover:underline"
               >
-                {emailMode === 'signin' ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                {emailMode === 'signin' ? t('auth.email.noAccount') : t('auth.email.hasAccount')}
               </button>
             </div>
 
@@ -459,7 +461,7 @@ export function Login() {
                 setAuthError(null);
               }}
             >
-              Back to sign in options
+              {t('auth.email.backToOptions')}
             </Button>
           </form>
         )}

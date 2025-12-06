@@ -1,0 +1,310 @@
+{
+  "common": {
+    "continue": "Continuar",
+    "back": "Atrás",
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "saving": "Guardando...",
+    "cancel": "Cancelar",
+    "or": "O",
+    "signIn": "Iniciar sesión",
+    "signUp": "Crear cuenta",
+    "signingIn": "Iniciando sesión...",
+    "signingUp": "Creando cuenta...",
+    "welcome": "Bienvenido",
+    "home": "Inicio",
+    "account": "Cuenta",
+    "logout": "Cerrar sesión"
+  },
+  "auth": {
+    "welcome": "Bienvenido",
+    "signInPrompt": "Inicia sesión para continuar aprendiendo",
+    "continueWithGoogle": "Continuar con Google",
+    "continueWithApple": "Continuar con Apple",
+    "continueWithPhone": "Continuar con número de teléfono",
+    "continueWithEmail": "Continuar con correo electrónico",
+    "or": "O",
+    "phone": {
+      "label": "Número de teléfono",
+      "placeholder": "+52 (55) 0000-0000",
+      "sendCode": "Enviar código de verificación",
+      "sending": "Enviando...",
+      "backToOptions": "Volver a las opciones de inicio de sesión",
+      "verificationCode": "Código de verificación",
+      "enterCode": "Ingresa el código de 6 dígitos enviado a {phoneNumber}",
+      "codePlaceholder": "000000",
+      "verifying": "Verificando...",
+      "verifyAndContinue": "Verificar y continuar",
+      "backToNumber": "Volver al número de teléfono"
+    },
+    "email": {
+      "label": "Correo electrónico",
+      "placeholder": "tu@ejemplo.com",
+      "password": "Contraseña",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "confirmPasswordPlaceholder": "Confirma tu contraseña",
+      "signInButton": "Iniciar sesión",
+      "signUpButton": "Crear cuenta",
+      "noAccount": "¿No tienes cuenta? Crea una",
+      "hasAccount": "¿Ya tienes cuenta? Inicia sesión",
+      "backToOptions": "Volver a las opciones de inicio de sesión"
+    },
+    "errors": {
+      "invalidPhone": "Por favor ingresa un número de teléfono válido",
+      "phoneNotReady": "La verificación por teléfono no está disponible. Por favor recarga la página.",
+      "invalidPhoneFormat": "Formato de número de teléfono inválido",
+      "tooManyAttempts": "Demasiados intentos. Por favor intenta más tarde.",
+      "failedSendCode": "Error al enviar el código de verificación. Por favor intenta de nuevo.",
+      "invalidCode": "Código de verificación inválido",
+      "codeExpired": "El código expiró. Por favor solicita uno nuevo.",
+      "failedVerifyCode": "Error al verificar el código. Por favor intenta de nuevo.",
+      "enterCodeDigits": "Por favor ingresa el código de verificación de 6 dígitos",
+      "requiredFields": "Por favor ingresa tanto el correo electrónico como la contraseña",
+      "confirmPasswordRequired": "Por favor confirma tu contraseña",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "passwordTooShort": "La contraseña debe tener al menos 6 caracteres",
+      "invalidEmailPassword": "Correo electrónico o contraseña inválidos",
+      "userNotFound": "No se encontró una cuenta con este correo electrónico",
+      "tooManyFailed": "Demasiados intentos fallidos. Por favor intenta más tarde.",
+      "failedSignIn": "Error al iniciar sesión. Por favor intenta de nuevo.",
+      "emailInUse": "Ya existe una cuenta con este correo electrónico",
+      "invalidEmail": "Dirección de correo electrónico inválida",
+      "weakPassword": "La contraseña es muy débil",
+      "failedCreateAccount": "Error al crear la cuenta. Por favor intenta de nuevo.",
+      "failedInitPhone": "Error al inicializar la verificación por teléfono. Por favor recarga la página."
+    }
+  },
+  "onboarding": {
+    "welcome": "Bienvenido",
+    "stepProgress": "Paso {current} de {total}",
+    "completeAllFields": "Por favor completa todos los campos",
+    "failedSaveProfile": "Error al guardar el perfil. Por favor intenta de nuevo.",
+    "emailVerification": {
+      "title": "Verifica tu correo electrónico",
+      "messageSent": "Enviamos un enlace de verificación a",
+      "clickLink": "Haz clic en el enlace en tu correo electrónico para verificar tu cuenta",
+      "waitingForVerification": "Esperando verificación...",
+      "verifiedButton": "Ya verifiqué mi correo electrónico",
+      "resendEmail": "Reenviar correo de verificación"
+    },
+    "birthdate": {
+      "question": "¿Cuándo naciste?",
+      "description": "Esto nos ayuda a personalizar tu experiencia de aprendizaje",
+      "month": "Mes",
+      "year": "Año",
+      "selectMonth": "Selecciona el mes",
+      "selectYear": "Selecciona el año",
+      "ageGroup": "Grupo de edad"
+    },
+    "language": {
+      "question": "¿Cuál es tu idioma nativo?",
+      "description": "Mostraremos las traducciones en este idioma"
+    },
+    "difficulty": {
+      "question": "Elige tu nivel",
+      "description": "¿Qué tan cómodo te sientes con el inglés?",
+      "levelProgress": "Nivel {level} de 5",
+      "startLearning": "Comenzar a aprender"
+    }
+  },
+  "practice": {
+    "loadingWords": "Cargando palabras...",
+    "errorLoading": "Error al cargar palabras",
+    "tryAgainLater": "Por favor intenta de nuevo más tarde.",
+    "sessionComplete": "¡Sesión completada!",
+    "sessionCompleteMessage": "¡Excelente trabajo! Has revisado todas las {count} tarjetas en esta sesión.",
+    "startNewSession": "Iniciar nueva sesión",
+    "noWords": "No hay palabras para practicar",
+    "comeBackLater": "Vuelve más tarde cuando haya palabras listas para revisar.",
+    "cardsRemaining": "Tarjetas restantes",
+    "autoPlay": "Reproducción automática",
+    "autoPlayEnable": "Habilitar reproducción automática",
+    "autoPlayDisable": "Desabilitar reproducción automática",
+    "englishWord": "Palabra en inglés",
+    "translation": "Traducción",
+    "noTranslation": "No hay traducción disponible",
+    "exampleSentence": "Oración de ejemplo",
+    "showTranslation": "Mostrar traducción",
+    "instruction": "Haz clic en \"Mostrar traducción\" para ver la traducción y ejemplo, luego califica qué tan bien conocías esta palabra.",
+    "cardProgress": "Tarjeta {current} de {total}",
+    "reps": "Repeticiones: {count}",
+    "ratings": {
+      "again": "De nuevo",
+      "hard": "Difícil",
+      "good": "Bueno",
+      "easy": "Fácil"
+    },
+    "states": {
+      "new": "nuevo",
+      "learning": "aprendiendo",
+      "review": "repaso",
+      "relearning": "reaprendiendo"
+    }
+  },
+  "stories": {
+    "pageTitle": "Elige el tema de tu historia",
+    "pageDescription": "Selecciona un tema para comenzar a leer",
+    "categories": {
+      "nonfiction": "No ficción",
+      "fiction": "Ficción",
+      "everydayLife": "Vida cotidiana"
+    },
+    "domains": {
+      "nonfiction": {
+        "history": {
+          "name": "Historia y arqueología",
+          "description": "Eventos históricos, civilizaciones antiguas"
+        },
+        "biology": {
+          "name": "Biología y medicina",
+          "description": "Animales, ecosistemas, cuerpo humano, salud"
+        },
+        "physics": {
+          "name": "Física e ingeniería",
+          "description": "Espacio, física, cómo funcionan las máquinas"
+        },
+        "earth": {
+          "name": "Tierra y medio ambiente",
+          "description": "Naturaleza, clima, tiempo, conservación"
+        },
+        "technology": {
+          "name": "Tecnología e innovación",
+          "description": "Inventos, avances tecnológicos"
+        },
+        "art": {
+          "name": "Arte, literatura y cultura",
+          "description": "Pinturas, libros, movimientos artísticos"
+        },
+        "biography": {
+          "name": "Biografía y logros",
+          "description": "Historias de científicos, exploradores, inventores"
+        },
+        "psychology": {
+          "name": "Psicología y comportamiento",
+          "description": "Ciencia cognitiva, comportamiento humano"
+        }
+      },
+      "fiction": {
+        "adventure_quest": {
+          "name": "Aventura y búsqueda",
+          "description": "Viajes, búsquedas de tesoros, exploración"
+        },
+        "mystery_detective": {
+          "name": "Misterio y detective",
+          "description": "Resolver crímenes, descubrir secretos"
+        },
+        "fantasy_magic": {
+          "name": "Fantasía y magia",
+          "description": "Mundos mágicos, criaturas mitológicas"
+        },
+        "sci_fi_future": {
+          "name": "Ciencia ficción y futuro",
+          "description": "Aventuras espaciales, viajes en el tiempo, robots"
+        },
+        "humor_comedy": {
+          "name": "Humor y comedia",
+          "description": "Situaciones divertidas, personajes absurdos"
+        }
+      },
+      "everyday": {
+        "relationships": {
+          "name": "Relaciones",
+          "description": "Romance, citas, amistad, familia"
+        },
+        "work_career": {
+          "name": "Trabajo y carrera",
+          "description": "Empleos, escenarios de trabajo, decisiones profesionales"
+        },
+        "personal_growth": {
+          "name": "Crecimiento personal",
+          "description": "Autouperación, superar obstáculos"
+        },
+        "home_lifestyle": {
+          "name": "Hogar y estilo de vida",
+          "description": "Rutinas diarias, vida familiar, comunidad"
+        },
+        "food_culture": {
+          "name": "Comida y cultura",
+          "description": "Aventuras culinarias, tradiciones gastronómicas"
+        }
+      }
+    },
+    "failedLoad": "Error al cargar la historia. Por favor intenta más tarde."
+  },
+  "navigation": {
+    "home": "Inicio",
+    "account": "Cuenta",
+    "logout": "Cerrar sesión"
+  },
+  "modeSelection": {
+    "title": "Elige tu modo de aprendizaje",
+    "description": "Selecciona cómo te gustaría practicar hoy",
+    "readStories": "Leer historias",
+    "readStoriesDescription": "Mejora tu comprensión de lectura con historias interactivas",
+    "practiceWords": "Practicar palabras",
+    "practiceWordsDescription": "Construye tu vocabulario con ejercicios de palabras dirigidos"
+  },
+  "account": {
+    "settings": "Configuración de cuenta",
+    "loadingInfo": "Cargando información de la cuenta...",
+    "failedLoad": "Error al cargar la información de la cuenta. Por favor intenta de nuevo.",
+    "name": "Nombre",
+    "ageGroup": "Grupo de edad",
+    "languageComplexity": "Complejidad del idioma",
+    "backToHome": "Volver al inicio"
+  },
+  "data": {
+    "months": [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre"
+    ],
+    "languages": {
+      "en": "Inglés",
+      "uk": "Ucraniano",
+      "es": "Español",
+      "fr": "Francés",
+      "de": "Alemán",
+      "it": "Italiano",
+      "pt": "Portugués",
+      "pl": "Polaco",
+      "zh": "Chino",
+      "ja": "Japonés",
+      "ko": "Coreano",
+      "ar": "Árabe",
+      "hi": "Hindi"
+    },
+    "levels": {
+      "1": {
+        "label": "A1",
+        "description": "Principiante"
+      },
+      "2": {
+        "label": "A2",
+        "description": "Elemental"
+      },
+      "3": {
+        "label": "B1",
+        "description": "Intermedio"
+      },
+      "4": {
+        "label": "B2",
+        "description": "Intermedio alto"
+      },
+      "5": {
+        "label": "C1",
+        "description": "Avanzado"
+      }
+    }
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "common": {
+    "continue": "続行",
+    "back": "戻る",
+    "loading": "読み込み中...",
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "キャンセル",
+    "or": "または",
+    "signIn": "サインイン",
+    "signUp": "サインアップ",
+    "signingIn": "サインイン中...",
+    "signingUp": "サインアップ中...",
+    "welcome": "ようこそ",
+    "home": "ホーム",
+    "account": "アカウント",
+    "logout": "ログアウト"
+  },
+  "auth": {
+    "welcome": "ようこそ",
+    "signInPrompt": "サインインして学習を続行してください",
+    "continueWithGoogle": "Googleで続行",
+    "continueWithApple": "Appleで続行",
+    "continueWithPhone": "電話番号で続行",
+    "continueWithEmail": "メールアドレスで続行",
+    "or": "または",
+    "phone": {
+      "label": "電話番号",
+      "placeholder": "+81 (90) 0000-0000",
+      "sendCode": "確認コードを送信",
+      "sending": "送信中...",
+      "backToOptions": "サインインオプションに戻る",
+      "verificationCode": "確認コード",
+      "enterCode": "{phoneNumber}に送信された6桁のコードを入力してください",
+      "codePlaceholder": "000000",
+      "verifying": "確認中...",
+      "verifyAndContinue": "確認して続行",
+      "backToNumber": "電話番号に戻る"
+    },
+    "email": {
+      "label": "メールアドレス",
+      "placeholder": "you@example.com",
+      "password": "パスワード",
+      "passwordPlaceholder": "パスワードを入力してください",
+      "confirmPassword": "パスワード確認",
+      "confirmPasswordPlaceholder": "パスワードを再度入力してください",
+      "signInButton": "サインイン",
+      "signUpButton": "サインアップ",
+      "noAccount": "アカウントをお持ちでないですか？サインアップ",
+      "hasAccount": "既にアカウントをお持ちですか？サインイン",
+      "backToOptions": "サインインオプションに戻る"
+    },
+    "errors": {
+      "invalidPhone": "有効な電話番号を入力してください",
+      "phoneNotReady": "電話の確認準備ができていません。ページを更新してください。",
+      "invalidPhoneFormat": "電話番号の形式が無効です",
+      "tooManyAttempts": "試行回数が多すぎます。後でもう一度お試しください。",
+      "failedSendCode": "確認コードの送信に失敗しました。もう一度お試しください。",
+      "invalidCode": "確認コードが無効です",
+      "codeExpired": "コードの有効期限が切れました。新しいコードをリクエストしてください。",
+      "failedVerifyCode": "コードの確認に失敗しました。もう一度お試しください。",
+      "enterCodeDigits": "6桁の確認コードを入力してください",
+      "requiredFields": "メールアドレスとパスワードの両方を入力してください",
+      "confirmPasswordRequired": "パスワード確認を入力してください",
+      "passwordMismatch": "パスワードが一致しません",
+      "passwordTooShort": "パスワードは最低6文字である必要があります",
+      "invalidEmailPassword": "メールアドレスまたはパスワードが無効です",
+      "userNotFound": "このメールアドレスのアカウントが見つかりません",
+      "tooManyFailed": "失敗した試行が多すぎます。後でもう一度お試しください。",
+      "failedSignIn": "サインインに失敗しました。もう一度お試しください。",
+      "emailInUse": "このメールアドレスのアカウントは既に存在します",
+      "invalidEmail": "メールアドレスが無効です",
+      "weakPassword": "パスワードが弱すぎます",
+      "failedCreateAccount": "アカウントの作成に失敗しました。もう一度お試しください。",
+      "failedInitPhone": "電話確認の初期化に失敗しました。ページを更新してください。"
+    }
+  },
+  "onboarding": {
+    "welcome": "ようこそ",
+    "stepProgress": "ステップ {current}/{total}",
+    "completeAllFields": "すべてのフィールドを入力してください",
+    "failedSaveProfile": "プロフィール保存に失敗しました。もう一度お試しください。",
+    "emailVerification": {
+      "title": "メールを確認してください",
+      "messageSent": "確認リンクを以下のメールアドレスに送信しました",
+      "clickLink": "メール内のリンクをクリックしてアカウントを確認してください",
+      "waitingForVerification": "確認を待機中...",
+      "verifiedButton": "メール確認を完了しました",
+      "resendEmail": "確認メールを再送信"
+    },
+    "birthdate": {
+      "question": "いつ生まれましたか？",
+      "description": "これにより、学習体験をパーソナライズできます",
+      "month": "月",
+      "year": "年",
+      "selectMonth": "月を選択",
+      "selectYear": "年を選択",
+      "ageGroup": "年齢グループ"
+    },
+    "language": {
+      "question": "母国語は何ですか？",
+      "description": "この言語で翻訳を表示します"
+    },
+    "difficulty": {
+      "question": "レベルを選択",
+      "description": "英語にどの程度対応できていますか？",
+      "levelProgress": "レベル {level}/5",
+      "startLearning": "学習を開始"
+    }
+  },
+  "practice": {
+    "loadingWords": "単語を読み込み中...",
+    "errorLoading": "単語の読み込みエラー",
+    "tryAgainLater": "後でもう一度お試しください。",
+    "sessionComplete": "セッション完了！",
+    "sessionCompleteMessage": "お疲れ様です！このセッションで{count}枚のカードをすべて復習しました。",
+    "startNewSession": "新しいセッションを開始",
+    "noWords": "練習する単語がありません",
+    "comeBackLater": "復習する単語がある場合は後で戻ってきてください。",
+    "cardsRemaining": "残りのカード",
+    "autoPlay": "自動再生",
+    "autoPlayEnable": "自動再生を有効にする",
+    "autoPlayDisable": "自動再生を無効にする",
+    "englishWord": "英単語",
+    "translation": "翻訳",
+    "noTranslation": "翻訳がありません",
+    "exampleSentence": "例文",
+    "showTranslation": "翻訳を表示",
+    "instruction": "「翻訳を表示」をクリックして翻訳と例文を表示し、この単語をどの程度知っていたかを評価してください。",
+    "cardProgress": "カード {current}/{total}",
+    "reps": "反復数: {count}",
+    "ratings": {
+      "again": "もう一度",
+      "hard": "難しい",
+      "good": "良い",
+      "easy": "簡単"
+    },
+    "states": {
+      "new": "新規",
+      "learning": "学習中",
+      "review": "復習",
+      "relearning": "再学習"
+    }
+  },
+  "stories": {
+    "pageTitle": "ストーリーのテーマを選択",
+    "pageDescription": "トピックを選択して読み始めてください",
+    "categories": {
+      "nonfiction": "ノンフィクション",
+      "fiction": "フィクション",
+      "everydayLife": "日常生活"
+    },
+    "domains": {
+      "nonfiction": {
+        "history": {
+          "name": "歴史と考古学",
+          "description": "歴史的出来事、古代文明"
+        },
+        "biology": {
+          "name": "生物学と医学",
+          "description": "動物、生態系、人体、健康"
+        },
+        "physics": {
+          "name": "物理学と工学",
+          "description": "宇宙、物理学、機械の仕組み"
+        },
+        "earth": {
+          "name": "地球と環境",
+          "description": "自然、気候、天気、保全"
+        },
+        "technology": {
+          "name": "技術とイノベーション",
+          "description": "発明、技術的進歩"
+        },
+        "art": {
+          "name": "芸術、文学と文化",
+          "description": "絵画、書籍、芸術運動"
+        },
+        "biography": {
+          "name": "伝記と成就",
+          "description": "科学者、探検家、発明家の物語"
+        },
+        "psychology": {
+          "name": "心理学と行動",
+          "description": "認知科学、人間の行動"
+        }
+      },
+      "fiction": {
+        "adventure_quest": {
+          "name": "冒険とクエスト",
+          "description": "旅、宝探し、探検"
+        },
+        "mystery_detective": {
+          "name": "謎とミステリー",
+          "description": "犯罪解決、秘密を暴露"
+        },
+        "fantasy_magic": {
+          "name": "ファンタジーと魔法",
+          "description": "魔法の世界、伝説の生物"
+        },
+        "sci_fi_future": {
+          "name": "SF と未来",
+          "description": "宇宙冒険、時間旅行、ロボット"
+        },
+        "humor_comedy": {
+          "name": "ユーモアとコメディ",
+          "description": "面白い状況、愉快なキャラクター"
+        }
+      },
+      "everyday": {
+        "relationships": {
+          "name": "人間関係",
+          "description": "ロマンス、デート、友情、家族"
+        },
+        "work_career": {
+          "name": "仕事とキャリア",
+          "description": "職業、職場シナリオ、キャリア決定"
+        },
+        "personal_growth": {
+          "name": "自己成長",
+          "description": "自己啓発、障害を克服する"
+        },
+        "home_lifestyle": {
+          "name": "家と生活スタイル",
+          "description": "日々のルーチン、家族生活、コミュニティ"
+        },
+        "food_culture": {
+          "name": "食べ物と文化",
+          "description": "料理冒険、食文化"
+        }
+      }
+    },
+    "failedLoad": "ストーリーの読み込みに失敗しました。後でもう一度お試しください。"
+  },
+  "navigation": {
+    "home": "ホーム",
+    "account": "アカウント",
+    "logout": "ログアウト"
+  },
+  "modeSelection": {
+    "title": "学習モードを選択",
+    "description": "今日の練習方法を選択してください",
+    "readStories": "ストーリーを読む",
+    "readStoriesDescription": "インタラクティブストーリーで読解力を向上させる",
+    "practiceWords": "単語を練習",
+    "practiceWordsDescription": "ターゲット単語演習で語彙を構築"
+  },
+  "account": {
+    "settings": "アカウント設定",
+    "loadingInfo": "アカウント情報を読み込み中...",
+    "failedLoad": "アカウント情報の読み込みに失敗しました。もう一度お試しください。",
+    "name": "名前",
+    "ageGroup": "年齢グループ",
+    "languageComplexity": "言語複雑性",
+    "backToHome": "ホームに戻る"
+  },
+  "data": {
+    "months": [
+      "1月",
+      "2月",
+      "3月",
+      "4月",
+      "5月",
+      "6月",
+      "7月",
+      "8月",
+      "9月",
+      "10月",
+      "11月",
+      "12月"
+    ],
+    "languages": {
+      "en": "英語",
+      "uk": "ウクライナ語",
+      "es": "スペイン語",
+      "fr": "フランス語",
+      "de": "ドイツ語",
+      "it": "イタリア語",
+      "pt": "ポルトガル語",
+      "pl": "ポーランド語",
+      "zh": "中国語",
+      "ja": "日本語",
+      "ko": "韓国語",
+      "ar": "アラビア語",
+      "hi": "ヒンディー語"
+    },
+    "levels": {
+      "1": {
+        "label": "A1",
+        "description": "初級"
+      },
+      "2": {
+        "label": "A2",
+        "description": "初級レベル"
+      },
+      "3": {
+        "label": "B1",
+        "description": "中級"
+      },
+      "4": {
+        "label": "B2",
+        "description": "中上級"
+      },
+      "5": {
+        "label": "C1",
+        "description": "上級"
+      }
+    }
+  }
+}

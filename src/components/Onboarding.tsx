@@ -9,6 +9,7 @@ import { BirthdateStep } from "./onboarding/BirthdateStep"
 import { LanguageStep } from "./onboarding/LanguageStep"
 import { DifficultyStep } from "./onboarding/DifficultyStep"
 import { auth } from "../config/firebase"
+import { useTranslation } from "../i18n/useTranslation"
 
 type OnboardingStep = "verify" | "birthdate" | "language" | "difficulty"
 
@@ -16,6 +17,7 @@ export function Onboarding() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
+  const { t } = useTranslation()
   const [updateProfile, { isLoading }] = useUpdateUserProfileMutation()
 
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("verify")
@@ -61,7 +63,7 @@ export function Onboarding() {
   const handleComplete = async () => {
     // Validation
     if (!birthMonth || !birthYear || !nativeLanguage || !languageLevel) {
-      setError("Please complete all fields")
+      setError(t('onboarding.completeAllFields'))
       return
     }
 
@@ -83,7 +85,7 @@ export function Onboarding() {
       navigate("/")
     } catch (err) {
       console.error("Failed to save profile:", err)
-      setError("Failed to save profile. Please try again.")
+      setError(t('onboarding.failedSaveProfile'))
     }
   }
 
@@ -120,9 +122,9 @@ export function Onboarding() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md p-8 bg-card shadow-lg">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('onboarding.welcome')}</h1>
           <p className="text-muted-foreground">
-            Step {getStepNumber()} of {getTotalSteps()}
+            {t('onboarding.stepProgress', { current: getStepNumber(), total: getTotalSteps() })}
           </p>
         </div>
 

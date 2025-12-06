@@ -8,6 +8,7 @@ import { fetchWords, submitWordReview, nextWord, clearWords } from "../store/wor
 import { toggleAutoPlay } from "../store/speechSettingsSlice"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { useWordCount } from "../hooks/useWordCount"
+import { useTranslation } from "../i18n/useTranslation"
 import { Word } from "../types"
 
 // FSRS Card data structure for UI
@@ -95,6 +96,7 @@ function calculateNextReview(card: FSRSCard, rating: "again" | "hard" | "good" |
 }
 
 export function PracticeWords() {
+  const { t } = useTranslation()
   const [cards, setCards] = useState<FSRSCard[]>([])
   const [showTranslation, setShowTranslation] = useState(false)
   const [timer, setTimer] = useState(0)
@@ -230,7 +232,7 @@ export function PracticeWords() {
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
               <Brain className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold">Loading words...</h2>
+            <h2 className="text-2xl font-bold">{t('practice.loadingWords')}</h2>
           </CardContent>
         </Card>
       </div>
@@ -242,8 +244,8 @@ export function PracticeWords() {
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
         <Card className="w-full max-w-lg border-2 border-red-200">
           <CardContent className="pt-6 text-center space-y-4">
-            <h2 className="text-2xl font-bold text-red-600">Error loading words</h2>
-            <p className="text-muted-foreground">Please try again later.</p>
+            <h2 className="text-2xl font-bold text-red-600">{t('practice.errorLoading')}</h2>
+            <p className="text-muted-foreground">{t('practice.tryAgainLater')}</p>
           </CardContent>
         </Card>
       </div>
@@ -258,9 +260,9 @@ export function PracticeWords() {
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
               <Brain className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold">Session Complete!</h2>
+            <h2 className="text-2xl font-bold">{t('practice.sessionComplete')}</h2>
             <p className="text-muted-foreground">
-              Great job! You've reviewed all {cards.length} cards in this session.
+              {t('practice.sessionCompleteMessage', { count: cards.length })}
             </p>
             <div className="pt-4">
               <Button
@@ -269,7 +271,7 @@ export function PracticeWords() {
                   window.location.reload()
                 }}
               >
-                Start New Session
+                {t('practice.startNewSession')}
               </Button>
             </div>
           </CardContent>
@@ -286,9 +288,9 @@ export function PracticeWords() {
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
               <Brain className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold">No words to practice</h2>
+            <h2 className="text-2xl font-bold">{t('practice.noWords')}</h2>
             <p className="text-muted-foreground">
-              Come back later when words are due for review.
+              {t('practice.comeBackLater')}
             </p>
           </CardContent>
         </Card>
@@ -308,7 +310,7 @@ export function PracticeWords() {
               <Brain className="w-8 h-8 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-muted-foreground font-medium">Cards Remaining</p>
+              <p className="text-sm text-muted-foreground font-medium">{t('practice.cardsRemaining')}</p>
               <p className="text-4xl font-bold text-primary">{remainingCards}</p>
             </div>
           </div>
@@ -319,17 +321,17 @@ export function PracticeWords() {
                 size="sm"
                 onClick={() => dispatch(toggleAutoPlay())}
                 className="gap-2"
-                title={autoPlayEnabled ? "Disable auto-play" : "Enable auto-play"}
+                title={autoPlayEnabled ? t('practice.autoPlayDisable') : t('practice.autoPlayEnable')}
               >
                 {autoPlayEnabled ? (
                   <>
                     <Volume2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Auto-play</span>
+                    <span className="hidden sm:inline">{t('practice.autoPlay')}</span>
                   </>
                 ) : (
                   <>
                     <VolumeX className="w-4 h-4" />
-                    <span className="hidden sm:inline">Auto-play</span>
+                    <span className="hidden sm:inline">{t('practice.autoPlay')}</span>
                   </>
                 )}
               </Button>
@@ -345,20 +347,20 @@ export function PracticeWords() {
           <CardHeader className="border-b-2 border-border/50 bg-muted/30">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold text-muted-foreground">
-                Card {currentIndex + 1} of {cards.length}
+                {t('practice.cardProgress', { current: currentIndex + 1, total: cards.length })}
               </CardTitle>
               <div className="flex gap-2">
                 <span className="text-sm px-3 py-1.5 bg-primary/20 text-primary rounded-full capitalize font-medium">
-                  {currentCard.state}
+                  {t(`practice.states.${currentCard.state}`)}
                 </span>
-                <span className="text-sm px-3 py-1.5 bg-muted rounded-full font-medium">Reps: {currentCard.reps}</span>
+                <span className="text-sm px-3 py-1.5 bg-muted rounded-full font-medium">{t('practice.reps', { count: currentCard.reps })}</span>
               </div>
             </div>
           </CardHeader>
           <CardContent className="pt-16 pb-8">
             <div className="text-center space-y-8">
               <div className="space-y-4">
-                <p className="text-base text-muted-foreground font-medium">English Word</p>
+                <p className="text-base text-muted-foreground font-medium">{t('practice.englishWord')}</p>
                 <div className="flex items-center justify-center gap-4">
                   <h2 className="text-6xl font-bold text-primary">{currentCard.word}</h2>
                   <SpeakerButton
@@ -371,14 +373,14 @@ export function PracticeWords() {
               {showTranslation ? (
                 <div className="space-y-6 pt-8 border-t-2">
                   <div className="space-y-2">
-                    <p className="text-base text-muted-foreground font-medium">Translation</p>
+                    <p className="text-base text-muted-foreground font-medium">{t('practice.translation')}</p>
                     <h3 className="text-3xl font-bold text-foreground">
-                      {currentCard.translation || "No translation available"}
+                      {currentCard.translation || t('practice.noTranslation')}
                     </h3>
                   </div>
                   {currentCard.sentenceContext && (
                     <div className="space-y-2">
-                      <p className="text-sm text-muted-foreground font-medium">Example Sentence</p>
+                      <p className="text-sm text-muted-foreground font-medium">{t('practice.exampleSentence')}</p>
                       <p className="text-lg text-muted-foreground italic">
                         {currentCard.sentenceContext}
                       </p>
@@ -392,7 +394,7 @@ export function PracticeWords() {
                   onClick={handleShowTranslation}
                   className="mt-8 bg-transparent text-lg px-8 py-6"
                 >
-                  Show Translation
+                  {t('practice.showTranslation')}
                 </Button>
               )}
             </div>
@@ -408,7 +410,7 @@ export function PracticeWords() {
                   disabled={!showTranslation}
                   className="h-24 flex flex-col gap-2 border-2 hover:border-red-500 hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">Again</span>
+                  <span className="font-semibold text-base">{t('practice.ratings.again')}</span>
                   <span className="text-xs text-muted-foreground">&lt;1 day</span>
                 </Button>
                 <Button
@@ -418,7 +420,7 @@ export function PracticeWords() {
                   disabled={!showTranslation}
                   className="h-24 flex flex-col gap-2 border-2 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">Hard</span>
+                  <span className="font-semibold text-base">{t('practice.ratings.hard')}</span>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(Math.max(1, cards[currentIndex].stability * 1.2))}d
                   </span>
@@ -430,7 +432,7 @@ export function PracticeWords() {
                   disabled={!showTranslation}
                   className="h-24 flex flex-col gap-2 border-2 hover:border-green-500 hover:bg-green-50 hover:text-green-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">Good</span>
+                  <span className="font-semibold text-base">{t('practice.ratings.good')}</span>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(
                       Math.max(1, cards[currentIndex].stability === 0 ? 1 : cards[currentIndex].stability * 2.5),
@@ -445,7 +447,7 @@ export function PracticeWords() {
                   disabled={!showTranslation}
                   className="h-24 flex flex-col gap-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">Easy</span>
+                  <span className="font-semibold text-base">{t('practice.ratings.easy')}</span>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(
                       Math.max(1, cards[currentIndex].stability === 0 ? 4 : cards[currentIndex].stability * 4),
@@ -462,7 +464,7 @@ export function PracticeWords() {
         {!showTranslation && (
           <Card className="bg-muted/50 border-primary/20">
             <CardContent className="pt-4 text-center text-sm text-muted-foreground">
-              Click "Show Translation" to see the translation and example, then rate how well you knew this word.
+              {t('practice.instruction')}
             </CardContent>
           </Card>
         )}

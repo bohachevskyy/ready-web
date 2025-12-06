@@ -1,5 +1,6 @@
 import { ChevronLeft } from "lucide-react"
 import { Button } from "../ui/button"
+import { useTranslation } from "../../i18n/useTranslation"
 
 interface LanguageStepProps {
   selectedLanguage: string
@@ -7,27 +8,34 @@ interface LanguageStepProps {
   onBack: () => void
 }
 
-const languages = [
-  { code: "uk", name: "Ukrainian", flag: "🇺🇦" },
-  { code: "es", name: "Spanish", flag: "🇪🇸" },
-  { code: "fr", name: "French", flag: "🇫🇷" },
-  { code: "de", name: "German", flag: "🇩🇪" },
-  { code: "it", name: "Italian", flag: "🇮🇹" },
-  { code: "pt", name: "Portuguese", flag: "🇵🇹" },
-  { code: "pl", name: "Polish", flag: "🇵🇱" },
-  { code: "zh", name: "Chinese", flag: "🇨🇳" },
-  { code: "ja", name: "Japanese", flag: "🇯🇵" },
-  { code: "ko", name: "Korean", flag: "🇰🇷" },
-  { code: "ar", name: "Arabic", flag: "🇸🇦" },
-  { code: "hi", name: "Hindi", flag: "🇮🇳" },
+const languageCodes = [
+  { code: "uk", flag: "🇺🇦" },
+  { code: "es", flag: "🇪🇸" },
+  { code: "fr", flag: "🇫🇷" },
+  { code: "de", flag: "🇩🇪" },
+  { code: "it", flag: "🇮🇹" },
+  { code: "pt", flag: "🇵🇹" },
+  { code: "pl", flag: "🇵🇱" },
+  { code: "zh", flag: "🇨🇳" },
+  { code: "ja", flag: "🇯🇵" },
+  { code: "ko", flag: "🇰🇷" },
+  { code: "ar", flag: "🇸🇦" },
+  { code: "hi", flag: "🇮🇳" },
 ]
 
 export function LanguageStep({ selectedLanguage, onLanguageSelect, onBack }: LanguageStepProps) {
+  const { t } = useTranslation()
+
+  const languages = languageCodes.map((lang) => ({
+    ...lang,
+    name: t(`data.languages.${lang.code}`),
+  }))
+
   return (
     <div className="space-y-6">
       <div className="text-center mb-4">
-        <h2 className="text-xl font-semibold">What's your native language?</h2>
-        <p className="text-sm text-muted-foreground mt-2">We'll show translations in this language</p>
+        <h2 className="text-xl font-semibold">{t('onboarding.language.question')}</h2>
+        <p className="text-sm text-muted-foreground mt-2">{t('onboarding.language.description')}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-1">
@@ -48,7 +56,7 @@ export function LanguageStep({ selectedLanguage, onLanguageSelect, onBack }: Lan
 
       <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
         <ChevronLeft className="h-4 w-4 mr-2" />
-        Back
+        {t('common.back')}
       </Button>
     </div>
   )

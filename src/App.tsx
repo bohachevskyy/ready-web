@@ -10,6 +10,7 @@ import { PracticeWords } from './components/PracticeWords';
 import { Onboarding } from './components/Onboarding';
 import { OnboardingCheck } from './components/OnboardingCheck';
 import { useAuthMonitor } from './hooks/useAuthMonitor';
+import { I18nProvider } from './i18n/i18nContext';
 import './styles/App.css';
 
 function ModeSelectionWithNavigation() {
@@ -43,76 +44,78 @@ function AuthMonitor() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthMonitor />
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/onboarding"
-          element={
-            <ProtectedRoute>
-              <Onboarding />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <OnboardingCheck>
-                <Layout>
-                  <ModeSelectionWithNavigation />
-                </Layout>
-              </OnboardingCheck>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/story/category"
-          element={
-            <ProtectedRoute>
-              <OnboardingCheck>
-                <Layout>
-                  <StoryCategoryWithNavigation />
-                </Layout>
-              </OnboardingCheck>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/story/:domain"
-          element={
-            <ProtectedRoute>
-              <OnboardingCheck>
-                <Layout>
-                  <StoryReader />
-                </Layout>
-              </OnboardingCheck>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/practice"
-          element={
-            <ProtectedRoute>
-              <OnboardingCheck>
-                <Layout>
-                  <PracticeWords />
-                </Layout>
-              </OnboardingCheck>
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute>
-              <AccountSettingsPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <I18nProvider>
+      <BrowserRouter>
+        <AuthMonitor />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/onboarding"
+            element={
+              <ProtectedRoute>
+                <Onboarding />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <OnboardingCheck>
+                  <Layout>
+                    <ModeSelectionWithNavigation />
+                  </Layout>
+                </OnboardingCheck>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/story/category"
+            element={
+              <ProtectedRoute>
+                <OnboardingCheck>
+                  <Layout>
+                    <StoryCategoryWithNavigation />
+                  </Layout>
+                </OnboardingCheck>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/story/:domain"
+            element={
+              <ProtectedRoute>
+                <OnboardingCheck>
+                  <Layout>
+                    <StoryReader />
+                  </Layout>
+                </OnboardingCheck>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/practice"
+            element={
+              <ProtectedRoute>
+                <OnboardingCheck>
+                  <Layout>
+                    <PracticeWords />
+                  </Layout>
+                </OnboardingCheck>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <AccountSettingsPage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </I18nProvider>
   );
 }
 

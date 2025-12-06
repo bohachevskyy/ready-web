@@ -1,0 +1,310 @@
+{
+  "common": {
+    "continue": "Continue",
+    "back": "Back",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "or": "Or",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signingIn": "Signing in...",
+    "signingUp": "Signing up...",
+    "welcome": "Welcome",
+    "home": "Home",
+    "account": "Account",
+    "logout": "Logout"
+  },
+  "auth": {
+    "welcome": "Welcome",
+    "signInPrompt": "Sign in to continue learning",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "continueWithPhone": "Continue with Phone Number",
+    "continueWithEmail": "Continue with Email",
+    "or": "Or",
+    "phone": {
+      "label": "Phone Number",
+      "placeholder": "+1 (555) 000-0000",
+      "sendCode": "Send Verification Code",
+      "sending": "Sending...",
+      "backToOptions": "Back to sign in options",
+      "verificationCode": "Verification Code",
+      "enterCode": "Enter the 6-digit code sent to {phoneNumber}",
+      "codePlaceholder": "000000",
+      "verifying": "Verifying...",
+      "verifyAndContinue": "Verify & Continue",
+      "backToNumber": "Back to phone number"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "you@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "signInButton": "Sign In",
+      "signUpButton": "Sign Up",
+      "noAccount": "Don't have an account? Sign up",
+      "hasAccount": "Already have an account? Sign in",
+      "backToOptions": "Back to sign in options"
+    },
+    "errors": {
+      "invalidPhone": "Please enter a valid phone number",
+      "phoneNotReady": "Phone verification not ready. Please refresh the page.",
+      "invalidPhoneFormat": "Invalid phone number format",
+      "tooManyAttempts": "Too many attempts. Please try again later.",
+      "failedSendCode": "Failed to send verification code. Please try again.",
+      "invalidCode": "Invalid verification code",
+      "codeExpired": "Code expired. Please request a new one.",
+      "failedVerifyCode": "Failed to verify code. Please try again.",
+      "enterCodeDigits": "Please enter the 6-digit verification code",
+      "requiredFields": "Please enter both email and password",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "invalidEmailPassword": "Invalid email or password",
+      "userNotFound": "No account found with this email",
+      "tooManyFailed": "Too many failed attempts. Please try again later.",
+      "failedSignIn": "Failed to sign in. Please try again.",
+      "emailInUse": "An account with this email already exists",
+      "invalidEmail": "Invalid email address",
+      "weakPassword": "Password is too weak",
+      "failedCreateAccount": "Failed to create account. Please try again.",
+      "failedInitPhone": "Failed to initialize phone verification. Please refresh the page."
+    }
+  },
+  "onboarding": {
+    "welcome": "Welcome",
+    "stepProgress": "Step {current} of {total}",
+    "completeAllFields": "Please complete all fields",
+    "failedSaveProfile": "Failed to save profile. Please try again.",
+    "emailVerification": {
+      "title": "Check Your Email",
+      "messageSent": "We sent a verification link to",
+      "clickLink": "Click the link in your email to verify your account",
+      "waitingForVerification": "Waiting for verification...",
+      "verifiedButton": "I've verified my email",
+      "resendEmail": "Resend verification email"
+    },
+    "birthdate": {
+      "question": "When were you born?",
+      "description": "This helps us personalize your learning experience",
+      "month": "Month",
+      "year": "Year",
+      "selectMonth": "Select month",
+      "selectYear": "Select year",
+      "ageGroup": "Age group"
+    },
+    "language": {
+      "question": "What's your native language?",
+      "description": "We'll show translations in this language"
+    },
+    "difficulty": {
+      "question": "Choose your level",
+      "description": "How comfortable are you with English?",
+      "levelProgress": "Level {level} of 5",
+      "startLearning": "Start Learning"
+    }
+  },
+  "practice": {
+    "loadingWords": "Loading words...",
+    "errorLoading": "Error loading words",
+    "tryAgainLater": "Please try again later.",
+    "sessionComplete": "Session Complete!",
+    "sessionCompleteMessage": "Great job! You've reviewed all {count} cards in this session.",
+    "startNewSession": "Start New Session",
+    "noWords": "No words to practice",
+    "comeBackLater": "Come back later when words are due for review.",
+    "cardsRemaining": "Cards Remaining",
+    "autoPlay": "Auto-play",
+    "autoPlayEnable": "Enable auto-play",
+    "autoPlayDisable": "Disable auto-play",
+    "englishWord": "English Word",
+    "translation": "Translation",
+    "noTranslation": "No translation available",
+    "exampleSentence": "Example Sentence",
+    "showTranslation": "Show Translation",
+    "instruction": "Click \"Show Translation\" to see the translation and example, then rate how well you knew this word.",
+    "cardProgress": "Card {current} of {total}",
+    "reps": "Reps: {count}",
+    "ratings": {
+      "again": "Again",
+      "hard": "Hard",
+      "good": "Good",
+      "easy": "Easy"
+    },
+    "states": {
+      "new": "new",
+      "learning": "learning",
+      "review": "review",
+      "relearning": "relearning"
+    }
+  },
+  "stories": {
+    "pageTitle": "Choose Your Story Domain",
+    "pageDescription": "Select a topic to start reading",
+    "categories": {
+      "nonfiction": "Nonfiction",
+      "fiction": "Fiction",
+      "everydayLife": "Everyday Life"
+    },
+    "domains": {
+      "nonfiction": {
+        "history": {
+          "name": "History & Archaeology",
+          "description": "Historical events, ancient civilizations"
+        },
+        "biology": {
+          "name": "Biology & Medicine",
+          "description": "Animals, ecosystems, human body, health"
+        },
+        "physics": {
+          "name": "Physics & Engineering",
+          "description": "Space, physics, how machines work"
+        },
+        "earth": {
+          "name": "Earth & Environment",
+          "description": "Nature, climate, weather, conservation"
+        },
+        "technology": {
+          "name": "Technology & Innovation",
+          "description": "Inventions, technological breakthroughs"
+        },
+        "art": {
+          "name": "Art, Literature & Culture",
+          "description": "Paintings, books, artistic movements"
+        },
+        "biography": {
+          "name": "Biography & Achievement",
+          "description": "Stories of scientists, explorers, inventors"
+        },
+        "psychology": {
+          "name": "Psychology & Behavior",
+          "description": "Cognitive science, human behavior"
+        }
+      },
+      "fiction": {
+        "adventure_quest": {
+          "name": "Adventure & Quest",
+          "description": "Journeys, treasure hunts, exploration"
+        },
+        "mystery_detective": {
+          "name": "Mystery & Detective",
+          "description": "Solving crimes, uncovering secrets"
+        },
+        "fantasy_magic": {
+          "name": "Fantasy & Magic",
+          "description": "Magical worlds, mythical creatures"
+        },
+        "sci_fi_future": {
+          "name": "Sci-Fi & Future",
+          "description": "Space adventures, time travel, robots"
+        },
+        "humor_comedy": {
+          "name": "Humor & Comedy",
+          "description": "Funny situations, silly characters"
+        }
+      },
+      "everyday": {
+        "relationships": {
+          "name": "Relationships",
+          "description": "Romance, dating, friendship, family"
+        },
+        "work_career": {
+          "name": "Work & Career",
+          "description": "Jobs, workplace scenarios, career decisions"
+        },
+        "personal_growth": {
+          "name": "Personal Growth",
+          "description": "Self-improvement, overcoming obstacles"
+        },
+        "home_lifestyle": {
+          "name": "Home & Lifestyle",
+          "description": "Daily routines, family life, community"
+        },
+        "food_culture": {
+          "name": "Food & Culture",
+          "description": "Cooking adventures, culinary traditions"
+        }
+      }
+    },
+    "failedLoad": "Failed to load story. Please try again later."
+  },
+  "navigation": {
+    "home": "Home",
+    "account": "Account",
+    "logout": "Logout"
+  },
+  "modeSelection": {
+    "title": "Choose Your Learning Mode",
+    "description": "Select how you'd like to practice today",
+    "readStories": "Read Stories",
+    "readStoriesDescription": "Improve your reading comprehension with interactive stories",
+    "practiceWords": "Practice Words",
+    "practiceWordsDescription": "Build your vocabulary with targeted word exercises"
+  },
+  "account": {
+    "settings": "Account Settings",
+    "loadingInfo": "Loading account information...",
+    "failedLoad": "Failed to load account information. Please try again.",
+    "name": "Name",
+    "ageGroup": "Age Group",
+    "languageComplexity": "Language Complexity",
+    "backToHome": "Back to Home"
+  },
+  "data": {
+    "months": [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ],
+    "languages": {
+      "en": "English",
+      "uk": "Ukrainian",
+      "es": "Spanish",
+      "fr": "French",
+      "de": "German",
+      "it": "Italian",
+      "pt": "Portuguese",
+      "pl": "Polish",
+      "zh": "Chinese",
+      "ja": "Japanese",
+      "ko": "Korean",
+      "ar": "Arabic",
+      "hi": "Hindi"
+    },
+    "levels": {
+      "1": {
+        "label": "A1",
+        "description": "Beginner"
+      },
+      "2": {
+        "label": "A2",
+        "description": "Elementary"
+      },
+      "3": {
+        "label": "B1",
+        "description": "Intermediate"
+      },
+      "4": {
+        "label": "B2",
+        "description": "Upper Intermediate"
+      },
+      "5": {
+        "label": "C1",
+        "description": "Advanced"
+      }
+    }
+  }
+}

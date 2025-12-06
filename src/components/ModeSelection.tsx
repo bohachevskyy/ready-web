@@ -1,6 +1,7 @@
 import { BookOpen, Brain } from "lucide-react"
 import { Card } from "./ui/card"
 import { useWordCount } from "../hooks/useWordCount"
+import { useTranslation } from "../i18n/useTranslation"
 
 interface ModeSelectionProps {
   onSelectMode: (mode: "read" | "practice") => void
@@ -8,13 +9,14 @@ interface ModeSelectionProps {
 
 export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
   const { wordsCount } = useWordCount()
+  const { t } = useTranslation()
 
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Choose Your Learning Mode</h1>
-          <p className="mt-2 text-muted-foreground">Select how you'd like to practice today</p>
+          <h1 className="text-3xl font-bold text-foreground">{t('modeSelection.title')}</h1>
+          <p className="mt-2 text-muted-foreground">{t('modeSelection.description')}</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -28,9 +30,9 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
                 <BookOpen className="h-16 w-16 text-primary" strokeWidth={1.5} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Read Stories</h2>
+                <h2 className="text-2xl font-bold text-foreground">{t('modeSelection.readStories')}</h2>
                 <p className="mt-2 text-muted-foreground">
-                  Improve your reading comprehension with interactive stories
+                  {t('modeSelection.readStoriesDescription')}
                 </p>
               </div>
             </div>
@@ -51,8 +53,8 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
                 )}
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-foreground">Practice Words</h2>
-                <p className="mt-2 text-muted-foreground">Build your vocabulary with targeted word exercises</p>
+                <h2 className="text-2xl font-bold text-foreground">{t('modeSelection.practiceWords')}</h2>
+                <p className="mt-2 text-muted-foreground">{t('modeSelection.practiceWordsDescription')}</p>
               </div>
             </div>
           </Card>
