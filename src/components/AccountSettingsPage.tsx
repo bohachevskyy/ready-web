@@ -32,6 +32,11 @@ export function AccountSettingsPage() {
       await signOut();
       dispatch(clearAuth());
       await persistor.purge();
+
+      // Broadcast logout to other tabs
+      localStorage.setItem('logout-event', Date.now().toString());
+      localStorage.removeItem('logout-event');
+
       navigate('/login');
     } catch (error) {
       console.error('Error signing out:', error);

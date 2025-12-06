@@ -9,6 +9,7 @@ import { AccountSettingsPage } from './components/AccountSettingsPage';
 import { PracticeWords } from './components/PracticeWords';
 import { Onboarding } from './components/Onboarding';
 import { OnboardingCheck } from './components/OnboardingCheck';
+import { useAuthMonitor } from './hooks/useAuthMonitor';
 import './styles/App.css';
 
 function ModeSelectionWithNavigation() {
@@ -35,9 +36,15 @@ function StoryCategoryWithNavigation() {
   return <StoryCategorySelection onSelectDomain={handleSelectDomain} />;
 }
 
+function AuthMonitor() {
+  useAuthMonitor();
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <AuthMonitor />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route
@@ -98,7 +105,11 @@ function App() {
         />
         <Route
           path="/account"
-          element={<AccountSettingsPage />}
+          element={
+            <ProtectedRoute>
+              <AccountSettingsPage />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </BrowserRouter>

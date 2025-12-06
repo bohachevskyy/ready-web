@@ -27,6 +27,11 @@ export function Layout({ children }: LayoutProps) {
       dispatch(clearAuth());
       // Clear persisted state
       await persistor.purge();
+
+      // Broadcast logout to other tabs
+      localStorage.setItem('logout-event', Date.now().toString());
+      localStorage.removeItem('logout-event');
+
       navigate('/login');
     } catch (error) {
       console.error('Error signing out:', error);
