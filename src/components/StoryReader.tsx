@@ -31,7 +31,7 @@ export function StoryReader() {
   const [saveWords] = useSaveWordsMutation()
 
   const [selectedWord, setSelectedWord] = useState<WordDetailsResponse | null>(null)
-  const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number; showBelow: boolean } | null>(null)
+  const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number; showBelow: boolean; horizontalAlign: 'left' | 'center' | 'right' } | null>(null)
 
   // Track if story has been fetched to prevent duplicate requests
   const hasFetchedStory = useRef(false)
@@ -184,17 +184,38 @@ export function StoryReader() {
     // Position popover near the clicked word
     const rect = target.getBoundingClientRect()
     const popoverHeight = 400 // Approximate height of popover
+    const popoverWidth = 400 // Fixed width from the Card component
     const spaceAbove = rect.top
     const spaceBelow = window.innerHeight - rect.bottom
 
     // Decide whether to show above or below based on available space
     const showBelow = spaceBelow > popoverHeight || spaceBelow > spaceAbove
 
+    // Calculate horizontal positioning to keep popup within viewport
+    const wordCenterX = rect.left + rect.width / 2
+    const halfPopoverWidth = popoverWidth / 2
+    const padding = 16 // Padding from viewport edges
+
+    let horizontalAlign: 'left' | 'center' | 'right' = 'center'
+    let x = wordCenterX
+
+    // Check if popup would overflow on the left
+    if (wordCenterX - halfPopoverWidth < padding) {
+      horizontalAlign = 'left'
+      x = padding + halfPopoverWidth
+    }
+    // Check if popup would overflow on the right
+    else if (wordCenterX + halfPopoverWidth > window.innerWidth - padding) {
+      horizontalAlign = 'right'
+      x = window.innerWidth - padding - halfPopoverWidth
+    }
+
     // Show popover immediately with position
     setPopoverPosition({
-      x: rect.left + rect.width / 2,
+      x: x,
       y: showBelow ? rect.bottom + 4 : rect.top - 4,
       showBelow: showBelow,
+      horizontalAlign: horizontalAlign,
     })
 
     // Clear previous word to show loading state
