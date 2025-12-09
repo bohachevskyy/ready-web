@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../store/store"
 import { setUser } from "../store/authSlice"
-import { useUpdateUserProfileMutation } from "../services/userApi"
+import { updateUserProfile } from "../store/userSlice"
 import { Card } from "./ui/card"
 import { EmailVerificationStep } from "./onboarding/EmailVerificationStep"
 import { BirthdateStep } from "./onboarding/BirthdateStep"
@@ -17,8 +17,8 @@ export function Onboarding() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
+  const isUpdating = useAppSelector((state) => state.user.isUpdating)
   const { t } = useTranslation()
-  const [updateProfile, { isLoading }] = useUpdateUserProfileMutation()
 
   const [currentStep, setCurrentStep] = useState<OnboardingStep>("verify")
   const [birthMonth, setBirthMonth] = useState<number>(user?.birth_month || 0)
@@ -71,12 +71,12 @@ export function Onboarding() {
 
     try {
       // Single API call with all data
-      const result = await updateProfile({
+      const result = await dispatch(updateUserProfile({
         birth_month: birthMonth,
         birth_year: birthYear,
         native_language: nativeLanguage,
         language_level: languageLevel,
-      }).unwrap()
+      })).unwrap()
 
       // Update Redux with backend response
       dispatch(setUser(result.user))
@@ -163,7 +163,7 @@ export function Onboarding() {
             onLevelChange={setLanguageLevel}
             onComplete={handleComplete}
             onBack={handleBackFromDifficulty}
-            isLoading={isLoading}
+            isLoading={isUpdating}
           />
         )}
 

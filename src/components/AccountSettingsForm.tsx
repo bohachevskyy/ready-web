@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Label } from './ui/label';
 import { Toast } from './ui/toast';
 import { setUser, updateUserLanguageLevel } from '../store/authSlice';
-import { useUpdateLanguageLevelMutation } from '../services/userApi';
+import { updateLanguageLevel } from '../store/userSlice';
 
 type MaybeUser = RootState['auth']['user'];
 type UserType = Exclude<MaybeUser, null>;
@@ -24,7 +24,7 @@ const languageLevels = [
 export function useAccountSettings(resetKey?: unknown) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
-  const [updateLanguageLevelMutation, { isLoading: isSaving }] = useUpdateLanguageLevelMutation();
+  const isSaving = useAppSelector((state) => state.user.isUpdating);
 
   const [languageLevel, setLanguageLevel] = useState<number>(user?.language_level ?? 1);
   const [error, setError] = useState<string | null>(null);
@@ -57,9 +57,9 @@ export function useAccountSettings(resetKey?: unknown) {
     setIsSuccess(false);
 
     try {
-      await updateLanguageLevelMutation({
+      await dispatch(updateLanguageLevel({
         language_level: languageLevel,
-      }).unwrap();
+      })).unwrap();
 
       dispatch(updateUserLanguageLevel(languageLevel));
       setIsSuccess(true);
@@ -67,7 +67,7 @@ export function useAccountSettings(resetKey?: unknown) {
       console.error('Failed to update language level', err);
       setError(err instanceof Error ? err.message : 'Failed to update language level');
     }
-  }, [dispatch, languageLevel, updateLanguageLevelMutation]);
+  }, [dispatch, languageLevel]);
 
   return {
     user,

@@ -10,7 +10,7 @@ import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
 import { addWord, removeWord } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
-import { useGenerateStoryMutation, useGetQuestionsMutation, useSubmitFeedbackMutation, useLazyGetWordDetailsQuery, useSaveWordsMutation, type Question, type WordDetailsResponse } from "../services/storiesApi"
+import { generateStory, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import type { SavedWord } from "../types"
 
@@ -23,12 +23,11 @@ export function StoryReader() {
   const storyText = useAppSelector((state) => state.story.text)
   const translations = useAppSelector((state) => state.story.translations)
 
-  // RTK Query hooks
-  const [generateStory, { isLoading: isGeneratingStory, error: storyError }] = useGenerateStoryMutation()
-  const [getQuestions, { isLoading: isLoadingQuestions }] = useGetQuestionsMutation()
-  const [submitFeedback] = useSubmitFeedbackMutation()
-  const [getWordDetails, { isLoading: isLoadingWordDetails }] = useLazyGetWordDetailsQuery()
-  const [saveWords] = useSaveWordsMutation()
+  // Redux Thunk selectors
+  const isGeneratingStory = useAppSelector((state) => state.stories.isGeneratingStory)
+  const isLoadingQuestions = useAppSelector((state) => state.stories.isLoadingQuestions)
+  const isLoadingWordDetails = useAppSelector((state) => state.stories.isLoadingWordDetails)
+  const storyError = useAppSelector((state) => state.stories.error)
 
   const [selectedWord, setSelectedWord] = useState<WordDetailsResponse | null>(null)
   const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number; showBelow: boolean } | null>(null)
@@ -56,12 +55,12 @@ export function StoryReader() {
     const fetchStory = async () => {
       hasFetchedStory.current = true
       try {
-        const result = await generateStory({
+        const result = await dispatch(generateStory({
           level: 1,
           words: ['the'],
           age_bracket: '8-10',
           domain: domain
-        }).unwrap()
+        })).unwrap()
 
         dispatch(setStoryId(result.id))
         dispatch(setStoryText(result.story))
@@ -74,13 +73,13 @@ export function StoryReader() {
     }
 
     fetchStory()
-  }, [generateStory, dispatch, domain])
+  }, [dispatch, domain])
 
   const handleFinish = async () => {
     if (!storyId) return
 
     try {
-      const result = await getQuestions(storyId).unwrap()
+      const result = await dispatch(getQuestions(storyId)).unwrap()
       setQuestions(result.questions)
       setView('questions')
     } catch (err) {
@@ -94,7 +93,7 @@ export function StoryReader() {
     try {
       // Save words to vocabulary if any were added
       if (savedWords.length > 0) {
-        await saveWords({
+        await dispatch(saveWords({
           words: savedWords.map(word => ({
             word: word.word,
             translation: word.translation,
@@ -102,10 +101,10 @@ export function StoryReader() {
             sentence_example: word.example_sentence,
             story_id: storyId
           }))
-        }).unwrap()
+        })).unwrap()
       }
 
-      await submitFeedback({
+      await dispatch(submitFeedback({
         storyId,
         feedback: {
           start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
@@ -116,7 +115,7 @@ export function StoryReader() {
           is_disliked: likeStatus === "dislike",
           feedback_text: likeStatus === "like" ? "Story liked" : likeStatus === "dislike" ? "Story disliked" : "Story completed"
         }
-      }).unwrap()
+      })).unwrap()
 
       // Redirect to main page
       navigate('/')
@@ -139,7 +138,7 @@ export function StoryReader() {
     try {
       // Save words to vocabulary if any were added
       if (savedWords.length > 0) {
-        await saveWords({
+        await dispatch(saveWords({
           words: savedWords.map(word => ({
             word: word.word,
             translation: word.translation,
@@ -147,10 +146,10 @@ export function StoryReader() {
             sentence_example: word.example_sentence,
             story_id: storyId
           }))
-        }).unwrap()
+        })).unwrap()
       }
 
-      await submitFeedback({
+      await dispatch(submitFeedback({
         storyId,
         feedback: {
           start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
@@ -161,7 +160,7 @@ export function StoryReader() {
           is_disliked: likeStatus === "dislike",
           feedback_text: "Story skipped"
         }
-      }).unwrap()
+      })).unwrap()
 
       // Redirect to main page
       navigate('/')
@@ -202,11 +201,11 @@ export function StoryReader() {
 
     // Fetch word details from API
     try {
-      const result = await getWordDetails({
+      const result = await dispatch(getWordDetails({
         storyId,
         start: parseInt(start),
         end: parseInt(end),
-      }).unwrap()
+      })).unwrap()
 
       setSelectedWord(result)
     } catch (error) {

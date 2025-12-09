@@ -1,17 +1,23 @@
 import { useNavigate } from 'react-router-dom';
 import { AccountSettingsForm } from './AccountSettingsForm';
 import { NavigationBar } from './NavigationBar';
-import { useAppDispatch } from '../store/store';
+import { useAppDispatch, useAppSelector } from '../store/store';
 import { clearAuth, setUser } from '../store/authSlice';
 import { signOut } from '../services/firebaseAuth';
 import { persistor } from '../store/store';
-import { useGetUserProfileQuery } from '../services/userApi';
+import { getUserProfile } from '../store/userSlice';
 import { useEffect } from 'react';
 
 export function AccountSettingsPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data: userProfile, isLoading, error } = useGetUserProfileQuery();
+  const userProfile = useAppSelector((state) => state.user.profile);
+  const isLoading = useAppSelector((state) => state.user.isLoading);
+  const error = useAppSelector((state) => state.user.error);
+
+  useEffect(() => {
+    dispatch(getUserProfile());
+  }, [dispatch]);
 
   useEffect(() => {
     if (userProfile) {

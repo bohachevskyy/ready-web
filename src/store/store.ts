@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { setupListeners } from '@reduxjs/toolkit/query'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
@@ -9,10 +8,8 @@ import storyReducer from './storySlice'
 import authReducer from './authSlice'
 import wordsReducer from './wordsSlice'
 import speechSettingsReducer from './speechSettingsSlice'
-import { translationApi } from '../services/translationApi'
-import { storiesApi } from '../services/storiesApi'
-import { userApi } from '../services/userApi'
-import { wordsApi } from '../services/wordsApi'
+import userReducer from './userSlice'
+import storiesReducer from './storiesSlice'
 import { authMiddleware } from './authMiddleware'
 
 // Configure persistence for auth slice
@@ -41,31 +38,18 @@ export const store = configureStore({
     auth: persistedAuthReducer,
     words: wordsReducer,
     speechSettings: persistedSpeechSettingsReducer,
-    // Add the RTK Query API reducers
-    [translationApi.reducerPath]: translationApi.reducer,
-    [storiesApi.reducerPath]: storiesApi.reducer,
-    [userApi.reducerPath]: userApi.reducer,
-    [wordsApi.reducerPath]: wordsApi.reducer,
+    user: userReducer,
+    stories: storiesReducer,
   },
-  // Add the RTK Query middleware
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(
-      translationApi.middleware,
-      storiesApi.middleware,
-      userApi.middleware,
-      wordsApi.middleware,
-      authMiddleware
-    ),
+    }).concat(authMiddleware),
 })
 
 export const persistor = persistStore(store)
-
-// Enable refetchOnFocus and refetchOnReconnect behaviors
-setupListeners(store.dispatch)
 
 // Export types for TypeScript support
 export type RootState = ReturnType<typeof store.getState>
