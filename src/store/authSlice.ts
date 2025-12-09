@@ -119,13 +119,21 @@ export const refreshAccessToken = createAsyncThunk<FirebaseAuthResponse, string>
       })
 
       if (!response.ok) {
-        throw new Error('Token refresh failed')
+        const errorData = await response.json().catch(() => ({}))
+        return rejectWithValue({
+          status: response.status,
+          message: errorData.message || 'Token refresh failed'
+        })
       }
 
       const data = await response.json()
       return data
     } catch (error) {
-      return rejectWithValue('Failed to refresh token')
+      // Network error or other unexpected error
+      return rejectWithValue({
+        status: 0,
+        message: error instanceof Error ? error.message : 'Failed to refresh token'
+      })
     }
   }
 )
@@ -197,18 +205,29 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.token = action.payload.access_token
         state.tokenExpiresAt = action.payload.access_token_expires_at
-        state.refreshToken = action.payload.refresh_token
-        state.refreshTokenExpiresAt = action.payload.refresh_token_expires_at
+        // Keep existing refresh token if backend doesn't return a new one
+        state.refreshToken = action.payload.refresh_token || state.refreshToken
+        state.refreshTokenExpiresAt = action.payload.refresh_token_expires_at || state.refreshTokenExpiresAt
         state.user = action.payload.user
       })
-      .addCase(refreshAccessToken.rejected, (state) => {
+      .addCase(refreshAccessToken.rejected, (state, action) => {
         state.isLoading = false
-        state.token = null
-        state.tokenExpiresAt = null
-        state.refreshToken = null
-        state.refreshTokenExpiresAt = null
-        state.user = null
-        state.error = 'Session expired. Please login again.'
+        const errorPayload = action.payload as { status: number; message: string } | undefined
+
+        // Only clear auth if it's an authentication error (401, 403)
+        // Keep the user logged in for network errors or other transient failures
+        if (errorPayload && (errorPayload.status === 401 || errorPayload.status === 403)) {
+          state.token = null
+          state.tokenExpiresAt = null
+          state.refreshToken = null
+          state.refreshTokenExpiresAt = null
+          state.user = null
+          state.error = 'Session expired. Please login again.'
+        } else {
+          // Network error or other transient failure - keep user logged in but show error
+          state.error = errorPayload?.message || 'Failed to refresh token. Retrying...'
+          console.log('[AuthSlice] Token refresh failed with transient error, will retry')
+        }
       })
   },
 })

@@ -4,6 +4,8 @@
  */
 
 let refreshTimerId: NodeJS.Timeout | null = null
+let lastRefreshTime: number = 0
+const MIN_REFRESH_INTERVAL_MS = 5000 // Minimum 5 seconds between refreshes
 
 /**
  * Calculate milliseconds until a specific time
@@ -54,8 +56,24 @@ export function scheduleTokenRefresh(
   const msUntilRefresh = calculateRefreshTime(expiresAt)
 
   if (msUntilRefresh === 0) {
+    // Check if we just refreshed recently to prevent infinite loops
+    const timeSinceLastRefresh = Date.now() - lastRefreshTime
+    if (timeSinceLastRefresh < MIN_REFRESH_INTERVAL_MS) {
+      console.log(
+        `[TokenRefreshScheduler] Skipping immediate refresh - last refresh was ${Math.round(timeSinceLastRefresh / 1000)}s ago. ` +
+        `Scheduling retry in ${MIN_REFRESH_INTERVAL_MS / 1000}s`
+      )
+      refreshTimerId = setTimeout(() => {
+        console.log('[TokenRefreshScheduler] Triggering deferred token refresh')
+        lastRefreshTime = Date.now()
+        refreshCallback()
+      }, MIN_REFRESH_INTERVAL_MS)
+      return
+    }
+
     // Token expires very soon or already expired, refresh immediately
     console.log('[TokenRefreshScheduler] Token expires soon, refreshing immediately')
+    lastRefreshTime = Date.now()
     refreshCallback()
     return
   }
@@ -69,6 +87,7 @@ export function scheduleTokenRefresh(
 
   refreshTimerId = setTimeout(() => {
     console.log('[TokenRefreshScheduler] Triggering scheduled token refresh')
+    lastRefreshTime = Date.now()
     refreshCallback()
   }, msUntilRefresh)
 }

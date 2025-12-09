@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { Word } from '../types'
+import { fetchWithAuth } from '../utils/fetchWithAuth'
 
 interface WordsState {
   words: Word[]
@@ -37,11 +38,8 @@ export const fetchWords = createAsyncThunk<
   { rejectValue: string }
 >(
   'words/fetchWords',
-  async ({ limit = 15, afterId }, { getState, rejectWithValue }) => {
+  async ({ limit = 15, afterId }, { rejectWithValue }) => {
     try {
-      const state = getState() as any
-      const token = state.auth.token
-
       const params = new URLSearchParams()
       params.append('filter', 'training-due')
       params.append('order', 'desc')
@@ -50,11 +48,7 @@ export const fetchWords = createAsyncThunk<
         params.append('afterId', afterId)
       }
 
-      const response = await fetch(`http://localhost:8080/words?${params.toString()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      })
+      const response = await fetchWithAuth(`http://localhost:8080/words?${params.toString()}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch words')
@@ -89,17 +83,11 @@ export const fetchWordsCount = createAsyncThunk<
         }
       }
 
-      const token = state.auth.token
-
       const params = new URLSearchParams()
       params.append('filter', 'training-due')
       params.append('order', 'desc')
 
-      const response = await fetch(`http://localhost:8080/words/counts?${params.toString()}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      })
+      const response = await fetchWithAuth(`http://localhost:8080/words/counts?${params.toString()}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch words count')
@@ -120,15 +108,11 @@ export const submitWordReview = createAsyncThunk<
   { rejectValue: string }
 >(
   'words/submitReview',
-  async ({ wordId, rating }, { getState, rejectWithValue }) => {
+  async ({ wordId, rating }, { rejectWithValue }) => {
     try {
-      const state = getState() as any
-      const token = state.auth.token
-
-      const response = await fetch(`http://localhost:8080/words/${wordId}/reviews`, {
+      const response = await fetchWithAuth(`http://localhost:8080/words/${wordId}/reviews`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ rating }),

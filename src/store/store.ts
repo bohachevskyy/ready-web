@@ -12,6 +12,7 @@ import speechSettingsReducer from './speechSettingsSlice'
 import { translationApi } from '../services/translationApi'
 import { storiesApi } from '../services/storiesApi'
 import { userApi } from '../services/userApi'
+import { wordsApi } from '../services/wordsApi'
 import { authMiddleware } from './authMiddleware'
 
 // Configure persistence for auth slice
@@ -44,6 +45,7 @@ export const store = configureStore({
     [translationApi.reducerPath]: translationApi.reducer,
     [storiesApi.reducerPath]: storiesApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [wordsApi.reducerPath]: wordsApi.reducer,
   },
   // Add the RTK Query middleware
   middleware: (getDefaultMiddleware) =>
@@ -55,6 +57,7 @@ export const store = configureStore({
       translationApi.middleware,
       storiesApi.middleware,
       userApi.middleware,
+      wordsApi.middleware,
       authMiddleware
     ),
 })
