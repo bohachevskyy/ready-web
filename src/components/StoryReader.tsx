@@ -8,11 +8,13 @@ import { X, Plus } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
+import { SpeakerButton } from "./ui/speaker-button"
 import { addWord, removeWord } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
 import { generateStory, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import type { SavedWord } from "../types"
+import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 
 export function StoryReader() {
   const { domain } = useParams<{ domain: string }>()
@@ -28,6 +30,10 @@ export function StoryReader() {
   const isLoadingQuestions = useAppSelector((state) => state.stories.isLoadingQuestions)
   const isLoadingWordDetails = useAppSelector((state) => state.stories.isLoadingWordDetails)
   const storyError = useAppSelector((state) => state.stories.error)
+
+  // Speech synthesis for word pronunciation
+  const { speak, supported: speechSupported } = useSpeechSynthesis()
+  const { autoPlayEnabled, speechRate } = useAppSelector((state) => state.speechSettings)
 
   const [selectedWord, setSelectedWord] = useState<WordDetailsResponse | null>(null)
   const [popoverPosition, setPopoverPosition] = useState<{ x: number; y: number; showBelow: boolean; horizontalAlign: 'left' | 'center' | 'right' } | null>(null)
@@ -74,6 +80,19 @@ export function StoryReader() {
 
     fetchStory()
   }, [dispatch, domain])
+
+  // Auto-play pronunciation when word popup is shown
+  useEffect(() => {
+    if (autoPlayEnabled && speechSupported && selectedWord) {
+      // Small delay to prevent immediate play and give smooth transition
+      const timer = setTimeout(() => {
+        speak(selectedWord.expression, { rate: speechRate })
+      }, 300)
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [selectedWord, autoPlayEnabled, speechSupported, speak, speechRate])
 
   const handleFinish = async () => {
     if (!storyId) return
@@ -385,9 +404,12 @@ export function StoryReader() {
               <div className="p-4 space-y-4">
                 {/* Header with word and close button */}
                 <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="font-semibold text-lg">{selectedWord.expression}</h3>
-                    <p className="text-muted-foreground text-sm italic">{selectedWord.grammatical_info}</p>
+                  <div className="flex items-center gap-2">
+                    <div>
+                      <h3 className="font-semibold text-lg">{selectedWord.expression}</h3>
+                      <p className="text-muted-foreground text-sm italic">{selectedWord.grammatical_info}</p>
+                    </div>
+                    <SpeakerButton text={selectedWord.expression} size="sm" variant="ghost" />
                   </div>
                   <Button variant="ghost" size="icon" className="h-7 w-7 -mt-1 -mr-1" onClick={() => { setSelectedWord(null); setPopoverPosition(null); }}>
                     <X className="h-4 w-4" />
