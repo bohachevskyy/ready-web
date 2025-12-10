@@ -1,8 +1,25 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { Loader2, ThumbsUp, ThumbsDown } from "lucide-react"
 import type { Question } from "../store/storiesSlice"
+
+// Fisher-Yates shuffle algorithm
+function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array]
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+  }
+  return shuffled
+}
+
+interface ShuffledQuestion {
+  id: string
+  text: string
+  shuffledOptions: string[]
+  correctAnswerIndex: number // Index in the shuffled array where the correct answer is
+}
 
 interface QuizViewProps {
   questions: Question[]
@@ -26,6 +43,32 @@ export function QuizView({
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({})
   const [incorrectAnswers, setIncorrectAnswers] = useState<Record<string, boolean>>({})
   const [correctAnswers, setCorrectAnswers] = useState<Record<string, boolean>>({})
+
+  // Shuffle options once when questions change
+  const shuffledQuestions = useMemo<ShuffledQuestion[]>(() => {
+    return questions.map(question => {
+      // Create array of [option, originalIndex] pairs
+      const optionsWithIndices = question.options.map((option, index) => ({
+        option,
+        originalIndex: index
+      }))
+
+      // Shuffle the array
+      const shuffledWithIndices = shuffleArray(optionsWithIndices)
+
+      // Find where the correct answer ended up after shuffling
+      const correctAnswerIndex = shuffledWithIndices.findIndex(
+        item => item.originalIndex === question.correct_answer
+      )
+
+      return {
+        id: question.id,
+        text: question.text,
+        shuffledOptions: shuffledWithIndices.map(item => item.option),
+        correctAnswerIndex
+      }
+    })
+  }, [questions])
 
   const handleAnswerSelect = (questionId: string, answerIndex: number, correctAnswer: number) => {
     setSelectedAnswers(prev => ({ ...prev, [questionId]: answerIndex }))
@@ -54,13 +97,13 @@ export function QuizView({
 
   return (
     <div className="space-y-6">
-      {questions.map((question, qIndex) => (
+      {shuffledQuestions.map((question, qIndex) => (
         <Card key={question.id} className="p-6 bg-card shadow-sm">
           <h3 className="text-lg font-medium mb-4 text-card-foreground">
             {qIndex + 1}. {question.text}
           </h3>
           <div className="space-y-3">
-            {question.options.map((option, optIndex) => {
+            {question.shuffledOptions.map((option, optIndex) => {
               const isSelected = selectedAnswers[question.id] === optIndex
               const isCorrect = correctAnswers[question.id] && isSelected
               const isIncorrect = incorrectAnswers[question.id] && isSelected
@@ -69,7 +112,7 @@ export function QuizView({
               return (
                 <button
                   key={optIndex}
-                  onClick={() => handleAnswerSelect(question.id, optIndex, question.correct_answer)}
+                  onClick={() => handleAnswerSelect(question.id, optIndex, question.correctAnswerIndex)}
                   disabled={isAnswered}
                   className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                     isCorrect
