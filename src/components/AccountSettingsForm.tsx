@@ -1,15 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { User } from 'lucide-react';
-import { type RootState, useAppDispatch, useAppSelector } from '../store/store';
+import { useAppDispatch, useAppSelector } from '../store/store';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Label } from './ui/label';
 import { Toast } from './ui/toast';
-import { setUser, updateUserLanguageLevel } from '../store/authSlice';
+import { updateUserLanguageLevel } from '../store/authSlice';
 import { updateLanguageLevel } from '../store/userSlice';
-
-type MaybeUser = RootState['auth']['user'];
-type UserType = Exclude<MaybeUser, null>;
 
 type LanguageLevel = 1 | 2 | 3 | 4 | 5;
 

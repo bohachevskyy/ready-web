@@ -29,7 +29,7 @@ export async function fetchWithAuth(
 ): Promise<Response> {
   // Get current auth state
   let state = store.getState()
-  const { tokenExpiresAt, refreshToken, token } = state.auth
+  const { tokenExpiresAt, refreshToken } = state.auth
 
   // Check if token is expired or expiring soon before making request
   if (isTokenExpiringSoon(tokenExpiresAt)) {

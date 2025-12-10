@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { Loader2, ThumbsUp, ThumbsDown } from "lucide-react"
-import type { Question } from "../services/storiesApi"
+import type { Question } from "../store/storiesSlice"
 
 interface QuizViewProps {
   questions: Question[]

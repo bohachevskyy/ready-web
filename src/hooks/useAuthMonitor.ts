@@ -2,11 +2,21 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store/store';
 import { clearAuth, refreshAccessToken } from '../store/authSlice';
-import { isTokenExpired } from '../utils/tokenRefreshScheduler';
+
+/**
+ * Check if token is expired
+ */
+function isTokenExpired(tokenExpiresAt: string | null): boolean {
+  if (!tokenExpiresAt) return true;
+  const expirationTime = new Date(tokenExpiresAt).getTime();
+  const currentTime = Date.now();
+  return currentTime >= expirationTime;
+}
 
 /**
  * Global authentication monitor hook
  * Handles authentication state changes and ensures users are redirected when auth is lost
+ * Note: Token refresh before API requests is now handled by fetchWithAuth utility
  */
 export function useAuthMonitor() {
   const navigate = useNavigate();
