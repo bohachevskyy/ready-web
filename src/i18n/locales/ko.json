@@ -148,6 +148,7 @@
     "categories": {
       "nonfiction": "논픽션",
       "fiction": "소설",
+      "teens": "청소년 스토리",
       "everydayLife": "일상 생활"
     },
     "domains": {
@@ -227,6 +228,60 @@
         "food_culture": {
           "name": "음식 및 문화",
           "description": "요리 모험, 요리 전통"
+        }
+      },
+      "teens": {
+        "teen_friendship": {
+          "name": "우정",
+          "description": "친구 사귀기, 팀워크, 사회적 유대감"
+        },
+        "teen_family": {
+          "name": "가족",
+          "description": "가족 관계, 형제자매, 부모와의 관계"
+        },
+        "teen_school_life": {
+          "name": "학교생활",
+          "description": "수업, 시험, 학교 행사, 학업 도전"
+        },
+        "teen_sports_games": {
+          "name": "스포츠 및 게임",
+          "description": "단체 운동, 경쟁, 운동 성취"
+        },
+        "teen_hobbies_talents": {
+          "name": "취미 및 재능",
+          "description": "음악, 미술, 창작 활동, 기술 개발"
+        },
+        "teen_adventures": {
+          "name": "모험",
+          "description": "여름 캠프, 여행, 야외 탐험"
+        },
+        "teen_animals_pets": {
+          "name": "동물 및 반려동물",
+          "description": "반려동물 돌보기, 야생동물, 동물과의 우정"
+        },
+        "teen_mystery_puzzles": {
+          "name": "미스터리 및 퍼즐",
+          "description": "미스터리 해결, 수수께끼, 탐정 활동"
+        },
+        "teen_technology_digital": {
+          "name": "기술",
+          "description": "코딩, 게임, 디지털 창작, 소셜 미디어"
+        },
+        "teen_money_entrepreneurship": {
+          "name": "창업",
+          "description": "첫 직업, 프로젝트 시작, 금융 이해"
+        },
+        "teen_nature_environment": {
+          "name": "자연",
+          "description": "환경 프로젝트, 지속가능성, 야외 활동"
+        },
+        "teen_culture_traditions": {
+          "name": "문화",
+          "description": "문화적 정체성, 전통, 다문화 경험"
+        },
+        "teen_future_dreams": {
+          "name": "미래와 꿈",
+          "description": "진로 포부, 인생 목표, 미래 계획"
         }
       }
     },

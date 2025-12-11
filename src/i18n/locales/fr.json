@@ -148,7 +148,8 @@
     "categories": {
       "nonfiction": "Non-fiction",
       "fiction": "Fiction",
-      "everydayLife": "Vie quotidienne"
+      "everydayLife": "Vie quotidienne",
+      "teens": "Histoires pour ados"
     },
     "domains": {
       "nonfiction": {
@@ -227,6 +228,60 @@
         "food_culture": {
           "name": "Nourriture et culture",
           "description": "Aventures culinaires, traditions gastronomiques"
+        }
+      },
+      "teens": {
+        "teen_friendship": {
+          "name": "Amitié",
+          "description": "Se faire des amis, travail d'équipe, liens sociaux"
+        },
+        "teen_family": {
+          "name": "Famille",
+          "description": "Dynamiques familiales, frères et sœurs, relations parentales"
+        },
+        "teen_school_life": {
+          "name": "Vie scolaire",
+          "description": "Cours, examens, événements scolaires, défis académiques"
+        },
+        "teen_sports_games": {
+          "name": "Sports et jeux",
+          "description": "Sports d'équipe, compétitions, exploits sportifs"
+        },
+        "teen_hobbies_talents": {
+          "name": "Loisirs et talents",
+          "description": "Musique, art, activités créatives, développement de compétences"
+        },
+        "teen_adventures": {
+          "name": "Aventures",
+          "description": "Colonies de vacances, voyages, exploration en plein air"
+        },
+        "teen_animals_pets": {
+          "name": "Animaux et compagnons",
+          "description": "S'occuper d'animaux, faune, amitiés animales"
+        },
+        "teen_mystery_puzzles": {
+          "name": "Mystères et énigmes",
+          "description": "Résoudre des mystères, devinettes, travail de détective"
+        },
+        "teen_technology_digital": {
+          "name": "Technologie",
+          "description": "Programmation, jeux vidéo, créativité numérique, réseaux sociaux"
+        },
+        "teen_money_entrepreneurship": {
+          "name": "Entrepreneuriat",
+          "description": "Premiers jobs, lancement de projets, culture financière"
+        },
+        "teen_nature_environment": {
+          "name": "Nature",
+          "description": "Projets environnementaux, durabilité, activités de plein air"
+        },
+        "teen_culture_traditions": {
+          "name": "Culture",
+          "description": "Identité culturelle, traditions, expériences multiculturelles"
+        },
+        "teen_future_dreams": {
+          "name": "Avenir et rêves",
+          "description": "Aspirations professionnelles, objectifs de vie, planification"
         }
       }
     },

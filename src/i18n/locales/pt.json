@@ -148,6 +148,7 @@
     "categories": {
       "nonfiction": "Não-Ficção",
       "fiction": "Ficção",
+      "teens": "Histórias para Adolescentes",
       "everydayLife": "Vida Cotidiana"
     },
     "domains": {
@@ -227,6 +228,60 @@
         "food_culture": {
           "name": "Comida & Cultura",
           "description": "Aventuras culinárias, tradições gastronômicas"
+        }
+      },
+      "teens": {
+        "teen_friendship": {
+          "name": "Amizade",
+          "description": "Fazer amigos, trabalho em equipe, laços sociais"
+        },
+        "teen_family": {
+          "name": "Família",
+          "description": "Dinâmica familiar, irmãos, relacionamento com os pais"
+        },
+        "teen_school_life": {
+          "name": "Vida Escolar",
+          "description": "Aulas, provas, eventos escolares, desafios acadêmicos"
+        },
+        "teen_sports_games": {
+          "name": "Esportes & Jogos",
+          "description": "Esportes em equipe, competições, conquistas atléticas"
+        },
+        "teen_hobbies_talents": {
+          "name": "Hobbies & Talentos",
+          "description": "Música, arte, atividades criativas, desenvolvendo habilidades"
+        },
+        "teen_adventures": {
+          "name": "Aventuras",
+          "description": "Acampamentos de verão, viagens, exploração ao ar livre"
+        },
+        "teen_animals_pets": {
+          "name": "Animais & Pets",
+          "description": "Cuidando de animais, vida selvagem, amizades com animais"
+        },
+        "teen_mystery_puzzles": {
+          "name": "Mistério & Enigmas",
+          "description": "Resolvendo mistérios, charadas, trabalho de detetive"
+        },
+        "teen_technology_digital": {
+          "name": "Tecnologia",
+          "description": "Programação, jogos, criatividade digital, redes sociais"
+        },
+        "teen_money_entrepreneurship": {
+          "name": "Empreendedorismo",
+          "description": "Primeiros empregos, iniciando projetos, educação financeira"
+        },
+        "teen_nature_environment": {
+          "name": "Natureza",
+          "description": "Projetos ambientais, sustentabilidade, atividades ao ar livre"
+        },
+        "teen_culture_traditions": {
+          "name": "Cultura",
+          "description": "Identidade cultural, tradições, experiências multiculturais"
+        },
+        "teen_future_dreams": {
+          "name": "Futuro & Sonhos",
+          "description": "Aspirações de carreira, objetivos de vida, planejando o futuro"
         }
       }
     },

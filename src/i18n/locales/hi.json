@@ -148,6 +148,7 @@
     "categories": {
       "nonfiction": "अशानकथा",
       "fiction": "कथा",
+      "teens": "किशोरों की कहानियां",
       "everydayLife": "रोजमर्रा की ज़िंदगी"
     },
     "domains": {
@@ -227,6 +228,60 @@
         "food_culture": {
           "name": "भोजन और संस्कृति",
           "description": "खाना पकाने की साहसिक यात्रा, पाक परंपराएं"
+        }
+      },
+      "teens": {
+        "teen_friendship": {
+          "name": "दोस्ती",
+          "description": "दोस्त बनाना, टीमवर्क, सामाजिक संबंध"
+        },
+        "teen_family": {
+          "name": "परिवार",
+          "description": "पारिवारिक गतिशीलता, भाई-बहन, माता-पिता के रिश्ते"
+        },
+        "teen_school_life": {
+          "name": "स्कूल जीवन",
+          "description": "कक्षाएं, परीक्षाएं, स्कूल की गतिविधियां, शैक्षिक चुनौतियां"
+        },
+        "teen_sports_games": {
+          "name": "खेल और गेम्स",
+          "description": "टीम खेल, प्रतियोगिताएं, खेल उपलब्धियां"
+        },
+        "teen_hobbies_talents": {
+          "name": "शौक और प्रतिभा",
+          "description": "संगीत, कला, रचनात्मक गतिविधियां, कौशल विकास"
+        },
+        "teen_adventures": {
+          "name": "साहसिक यात्राएं",
+          "description": "गर्मियों के कैंप, यात्राएं, बाहरी अन्वेषण"
+        },
+        "teen_animals_pets": {
+          "name": "जानवर और पालतू पशु",
+          "description": "पालतू जानवरों की देखभाल, वन्यजीव, जानवरों के साथ दोस्ती"
+        },
+        "teen_mystery_puzzles": {
+          "name": "रहस्य और पहेलियां",
+          "description": "रहस्यों को सुलझाना, पहेलियां, जासूसी कार्य"
+        },
+        "teen_technology_digital": {
+          "name": "प्रौद्योगिकी",
+          "description": "कोडिंग, गेमिंग, डिजिटल रचनात्मकता, सोशल मीडिया"
+        },
+        "teen_money_entrepreneurship": {
+          "name": "उद्यमिता",
+          "description": "पहली नौकरियां, परियोजनाएं शुरू करना, वित्तीय साक्षरता"
+        },
+        "teen_nature_environment": {
+          "name": "प्रकृति",
+          "description": "पर्यावरण परियोजनाएं, स्थिरता, बाहरी गतिविधियां"
+        },
+        "teen_culture_traditions": {
+          "name": "संस्कृति",
+          "description": "सांस्कृतिक पहचान, परंपराएं, बहुसांस्कृतिक अनुभव"
+        },
+        "teen_future_dreams": {
+          "name": "भविष्य और सपने",
+          "description": "करियर की आकांक्षाएं, जीवन लक्ष्य, आगे की योजना"
         }
       }
     },

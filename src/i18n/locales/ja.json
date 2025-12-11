@@ -148,6 +148,7 @@
     "categories": {
       "nonfiction": "ノンフィクション",
       "fiction": "フィクション",
+      "teens": "ティーンストーリー",
       "everydayLife": "日常生活"
     },
     "domains": {
@@ -227,6 +228,60 @@
         "food_culture": {
           "name": "食べ物と文化",
           "description": "料理冒険、食文化"
+        }
+      },
+      "teens": {
+        "teen_friendship": {
+          "name": "友情",
+          "description": "友達作り、チームワーク、仲間との絆"
+        },
+        "teen_family": {
+          "name": "家族",
+          "description": "家族関係、兄弟姉妹、親子関係"
+        },
+        "teen_school_life": {
+          "name": "学校生活",
+          "description": "授業、テスト、学校行事、勉強のチャレンジ"
+        },
+        "teen_sports_games": {
+          "name": "スポーツとゲーム",
+          "description": "チームスポーツ、競技会、スポーツの成果"
+        },
+        "teen_hobbies_talents": {
+          "name": "趣味と才能",
+          "description": "音楽、アート、創作活動、スキル磨き"
+        },
+        "teen_adventures": {
+          "name": "冒険",
+          "description": "サマーキャンプ、旅行、アウトドア探検"
+        },
+        "teen_animals_pets": {
+          "name": "動物とペット",
+          "description": "ペットのお世話、野生動物、動物との友情"
+        },
+        "teen_mystery_puzzles": {
+          "name": "謎解きとパズル",
+          "description": "ミステリー解決、なぞなぞ、探偵活動"
+        },
+        "teen_technology_digital": {
+          "name": "テクノロジー",
+          "description": "プログラミング、ゲーム、デジタル創作、SNS"
+        },
+        "teen_money_entrepreneurship": {
+          "name": "起業",
+          "description": "初めての仕事、プロジェクト立ち上げ、金融知識"
+        },
+        "teen_nature_environment": {
+          "name": "自然",
+          "description": "環境プロジェト、持続可能性、野外活動"
+        },
+        "teen_culture_traditions": {
+          "name": "文化",
+          "description": "文化的アイデンティティ、伝統、多文化体験"
+        },
+        "teen_future_dreams": {
+          "name": "将来と夢",
+          "description": "キャリア志望、人生の目標、未来計画"
         }
       }
     },

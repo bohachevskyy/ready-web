@@ -9,7 +9,7 @@ import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
 import { SpeakerButton } from "./ui/speaker-button"
-import { addWord, removeWord } from "../store/vocabularySlice"
+import { addWord, removeWord, clearAllWords } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
 import { generateStory, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../store/store"
@@ -136,6 +136,9 @@ export function StoryReader() {
         }
       })).unwrap()
 
+      // Clear vocabulary list after successful submission
+      dispatch(clearAllWords())
+
       // Redirect to main page
       navigate('/')
     } catch (err) {
@@ -180,6 +183,9 @@ export function StoryReader() {
           feedback_text: "Story skipped"
         }
       })).unwrap()
+
+      // Clear vocabulary list after successful submission
+      dispatch(clearAllWords())
 
       // Redirect to main page
       navigate('/')

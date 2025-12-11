@@ -148,6 +148,7 @@
     "categories": {
       "nonfiction": "非虚构类",
       "fiction": "虚构类",
+      "teens": "青少年故事",
       "everydayLife": "日常生活"
     },
     "domains": {
@@ -227,6 +228,60 @@
         "food_culture": {
           "name": "美食与文化",
           "description": "烹饪冒险、烹饪传统"
+        }
+      },
+      "teens": {
+        "teen_friendship": {
+          "name": "友谊",
+          "description": "结交朋友、团队合作、社交关系"
+        },
+        "teen_family": {
+          "name": "家庭",
+          "description": "家庭关系、兄弟姐妹、亲子关系"
+        },
+        "teen_school_life": {
+          "name": "校园生活",
+          "description": "课程、考试、校园活动、学业挑战"
+        },
+        "teen_sports_games": {
+          "name": "运动与竞技",
+          "description": "团队运动、比赛、体育成就"
+        },
+        "teen_hobbies_talents": {
+          "name": "爱好与才能",
+          "description": "音乐、艺术、创意追求、技能培养"
+        },
+        "teen_adventures": {
+          "name": "冒险探索",
+          "description": "夏令营、旅行、户外探险"
+        },
+        "teen_animals_pets": {
+          "name": "动物与宠物",
+          "description": "照顾宠物、野生动物、动物友谊"
+        },
+        "teen_mystery_puzzles": {
+          "name": "悬疑与谜题",
+          "description": "解谜、猜谜、侦探工作"
+        },
+        "teen_technology_digital": {
+          "name": "科技数码",
+          "description": "编程、游戏、数字创作、社交媒体"
+        },
+        "teen_money_entrepreneurship": {
+          "name": "创业实践",
+          "description": "第一份工作、创业项目、财务知识"
+        },
+        "teen_nature_environment": {
+          "name": "自然环保",
+          "description": "环保项目、可持续发展、户外活动"
+        },
+        "teen_culture_traditions": {
+          "name": "文化传统",
+          "description": "文化认同、传统习俗、多元文化体验"
+        },
+        "teen_future_dreams": {
+          "name": "未来与梦想",
+          "description": "职业抱负、人生目标、未来规划"
         }
       }
     },
