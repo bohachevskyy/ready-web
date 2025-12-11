@@ -27,6 +27,9 @@ export function QuizView({
   const [incorrectAnswers, setIncorrectAnswers] = useState<Record<string, boolean>>({})
   const [correctAnswers, setCorrectAnswers] = useState<Record<string, boolean>>({})
 
+  // Test mode: highlights correct answers for local testing
+  const isTestMode = process.env.REACT_APP_TEST_MODE === 'true'
+
   const handleAnswerSelect = (questionId: string, answerIndex: number, correctAnswer: number) => {
     setSelectedAnswers(prev => ({ ...prev, [questionId]: answerIndex }))
 
@@ -65,6 +68,7 @@ export function QuizView({
               const isCorrect = correctAnswers[question.id] && isSelected
               const isIncorrect = incorrectAnswers[question.id] && isSelected
               const isAnswered = correctAnswers[question.id]
+              const isCorrectAnswer = optIndex === question.correct_answer
 
               return (
                 <button
@@ -76,9 +80,14 @@ export function QuizView({
                       ? "bg-green-500/20 border-green-500 text-green-700"
                       : isIncorrect
                         ? "bg-red-500/20 border-red-500 text-red-700"
-                        : "border-border hover:border-primary hover:bg-primary/5"
+                        : isTestMode && isCorrectAnswer
+                          ? "border-yellow-400 bg-yellow-50/50 hover:bg-yellow-100/50"
+                          : "border-border hover:border-primary hover:bg-primary/5"
                   } ${isAnswered ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                 >
+                  {isTestMode && isCorrectAnswer && !isAnswered && (
+                    <span className="inline-block mr-2 text-yellow-600">✓</span>
+                  )}
                   {option}
                 </button>
               )
