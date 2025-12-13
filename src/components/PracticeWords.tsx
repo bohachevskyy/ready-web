@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
 import { SpeakerButton } from "./ui/speaker-button"
@@ -97,6 +98,7 @@ function calculateNextReview(card: FSRSCard, rating: "again" | "hard" | "good" |
 
 export function PracticeWords() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [cards, setCards] = useState<FSRSCard[]>([])
   const [showTranslation, setShowTranslation] = useState(false)
   const [timer, setTimer] = useState(0)
@@ -222,8 +224,6 @@ export function PracticeWords() {
     setShowTranslation(true)
   }
 
-  const remainingCards = wordsCount || cards.length - currentIndex
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
@@ -246,6 +246,33 @@ export function PracticeWords() {
           <CardContent className="pt-6 text-center space-y-4">
             <h2 className="text-2xl font-bold text-red-600">{t('practice.errorLoading')}</h2>
             <p className="text-muted-foreground">{t('practice.tryAgainLater')}</p>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Check for empty state: no words to practice
+  if ((apiWords.length === 0 && !isLoading) || cards.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-lg border-2 border-primary/20">
+          <CardContent className="pt-6 text-center space-y-4">
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+              <Brain className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-2xl font-bold">{t('practice.noWords')}</h2>
+            <p className="text-muted-foreground">
+              {t('practice.comeBackLater')}
+            </p>
+            <div className="pt-4">
+              <Button
+                size="lg"
+                onClick={() => navigate('/')}
+              >
+                {t('practice.goHome')}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -280,23 +307,7 @@ export function PracticeWords() {
     )
   }
 
-  if (cards.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg border-2 border-primary/20">
-          <CardContent className="pt-6 text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Brain className="w-8 h-8 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold">{t('practice.noWords')}</h2>
-            <p className="text-muted-foreground">
-              {t('practice.comeBackLater')}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  const remainingCards = wordsCount || cards.length - currentIndex
 
   const currentCard = cards[currentIndex]
 

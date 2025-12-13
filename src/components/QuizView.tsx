@@ -112,7 +112,7 @@ export function QuizView({
               const isCorrect = correctAnswers[question.id] && isSelected
               const isIncorrect = incorrectAnswers[question.id] && isSelected
               const isAnswered = correctAnswers[question.id]
-              const isCorrectAnswer = optIndex === question.correct_answer
+              const isCorrectAnswer = optIndex === question.correctAnswerIndex
 
               return (
                 <button

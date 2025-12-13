@@ -135,9 +135,6 @@ const TEEN_DOMAINS: Record<string, DomainConfig> = {
   teen_money_entrepreneurship: {
     icon: TrendingUp,
   },
-  teen_nature_environment: {
-    icon: Leaf,
-  },
   teen_culture_traditions: {
     icon: Globe,
   },
