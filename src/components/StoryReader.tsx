@@ -40,6 +40,9 @@ export function StoryReader() {
 
   // Track if story has been fetched to prevent duplicate requests
   const hasFetchedStory = useRef(false)
+  
+  // Ref for the popover element to detect outside clicks
+  const popoverRef = useRef<HTMLDivElement>(null)
 
   // Questions state
   const [view, setView] = useState<'story' | 'questions'>('story')
@@ -61,17 +64,10 @@ export function StoryReader() {
     const fetchStory = async () => {
       hasFetchedStory.current = true
       try {
-        // Determine story type based on domain
-        // Fiction domains: teen_* domains and explicit fiction domains
-        const fictionDomains = ['adventure_quest', 'mystery_detective', 'sci_fi_future', 'humor_comedy']
-        const isTeenDomain = domain?.startsWith('teen_')
-        const isFictionDomain = domain && fictionDomains.includes(domain)
-        const storyType: 'fiction' | 'nonfiction' = (isTeenDomain || isFictionDomain) ? 'fiction' : 'nonfiction'
-        
         const result = await dispatch(generateStory({
           level: 1,
           age_bracket: '8-10',
-          type: storyType
+          domain: domain
         })).unwrap()
 
         dispatch(setStoryId(result.id))
@@ -99,6 +95,35 @@ export function StoryReader() {
       }
     }
   }, [selectedWord, autoPlayEnabled, speechSupported, speak, speechRate])
+
+  // Close popover when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+        // Check if the click is on a word (which should open a new popover, not close the current one)
+        const target = event.target as HTMLElement
+        const isWordClick = target.closest('[data-start][data-end]') !== null
+        
+        // Only close if it's not a word click
+        if (!isWordClick) {
+          setSelectedWord(null)
+          setPopoverPosition(null)
+        }
+      }
+    }
+
+    if (popoverPosition) {
+      // Add event listener with a small delay to prevent immediate closure
+      const timer = setTimeout(() => {
+        document.addEventListener('mousedown', handleClickOutside)
+      }, 100)
+      
+      return () => {
+        clearTimeout(timer)
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [popoverPosition])
 
   const handleFinish = async () => {
     if (!storyId) return
@@ -396,6 +421,7 @@ export function StoryReader() {
       {/* Translation popover */}
       {popoverPosition && (
         <div
+          ref={popoverRef}
           className="fixed z-50 animate-in fade-in zoom-in-95 duration-200"
           style={{
             left: `${popoverPosition.x}px`,

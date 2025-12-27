@@ -103,8 +103,8 @@ export const generateStory = createAsyncThunk<StoryResponse, StoryRequest, { rej
   'stories/generateStory',
   async (request, { rejectWithValue }) => {
     try {
-      // Exclude words and domain from request body
-      const { words, domain, ...requestBody } = request
+      // Exclude words and type from request body
+      const { words, type, ...requestBody } = request
       const response = await fetchWithAuth('http://localhost:8080/stories', {
         method: 'POST',
         headers: {
