@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { clearAuth } from './authSlice'
 import { Word } from '../types'
 import { fetchWithAuth } from '../utils/fetchWithAuth'
 
 interface WordsState {
   words: Word[]
   wordsCount: number | undefined
+  sessionTotal: number | undefined // Fixed total for current session
   countLastFetched: number | null  // Timestamp for cache invalidation
   isLoading: boolean
   isCountLoading: boolean  // Separate loading flag for count
@@ -18,6 +20,7 @@ interface WordsState {
 const initialState: WordsState = {
   words: [],
   wordsCount: undefined,
+  sessionTotal: undefined,
   countLastFetched: null,
   isLoading: false,
   isCountLoading: false,
@@ -137,12 +140,19 @@ export const wordsSlice = createSlice({
     // Synchronous action to clear words (e.g., on logout or session complete)
     clearWords: (state) => {
       state.words = []
-      state.wordsCount = undefined
-      state.countLastFetched = null
+      // state.wordsCount = undefined
+      // state.countLastFetched = null
+      state.sessionTotal = undefined
       state.lastWordId = undefined
       state.hasNextPage = true
       state.currentIndex = 0
       state.error = null
+    },
+    setSessionTotal: (state, action) => {
+      // Only set if not already set, to prevent overwriting mid-session
+      if (state.sessionTotal === undefined) {
+        state.sessionTotal = action.payload
+      }
     },
     // Move to next word in practice session
     nextWord: (state) => {
@@ -213,7 +223,7 @@ export const wordsSlice = createSlice({
       .addCase(submitWordReview.fulfilled, (state, action) => {
         state.isSubmitting = false
         // Reset count to undefined to trigger refetch
-        state.wordsCount = undefined
+        // state.wordsCount = undefined
       })
       .addCase(submitWordReview.rejected, (state, action) => {
         state.isSubmitting = false
@@ -223,9 +233,21 @@ export const wordsSlice = createSlice({
           state.wordsCount += 1
         }
       })
+
+      // Handle logout
+      .addCase(clearAuth, (state) => {
+        state.wordsCount = undefined
+        state.countLastFetched = null
+        state.sessionTotal = undefined
+        state.words = []
+        state.lastWordId = undefined
+        state.hasNextPage = true
+        state.currentIndex = 0
+        state.error = null
+      })
   },
 })
 
-export const { clearWords, nextWord, resetIndex } = wordsSlice.actions
+export const { clearWords, nextWord, resetIndex, setSessionTotal } = wordsSlice.actions
 
 export default wordsSlice.reducer

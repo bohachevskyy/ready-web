@@ -61,11 +61,17 @@ export function StoryReader() {
     const fetchStory = async () => {
       hasFetchedStory.current = true
       try {
+        // Determine story type based on domain
+        // Fiction domains: teen_* domains and explicit fiction domains
+        const fictionDomains = ['adventure_quest', 'mystery_detective', 'sci_fi_future', 'humor_comedy']
+        const isTeenDomain = domain?.startsWith('teen_')
+        const isFictionDomain = domain && fictionDomains.includes(domain)
+        const storyType: 'fiction' | 'nonfiction' = (isTeenDomain || isFictionDomain) ? 'fiction' : 'nonfiction'
+        
         const result = await dispatch(generateStory({
           level: 1,
-          words: ['the'],
           age_bracket: '8-10',
-          domain: domain
+          type: storyType
         })).unwrap()
 
         dispatch(setStoryId(result.id))

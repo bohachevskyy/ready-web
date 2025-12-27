@@ -13,17 +13,24 @@ import { fetchWordsCount } from '../store/wordsSlice'
 export function useWordCount() {
   const dispatch = useAppDispatch()
   const { wordsCount, isCountLoading } = useAppSelector(state => state.words)
-  const hasFetchedRef = useRef(false)
+  const hasCheckedCache = useRef(false)
+  const hasFetchedRef = useRef(false) // Protection for undefined loop
 
   useEffect(() => {
-    // Auto-fetch if count is undefined and not already loading
-    // Use ref to prevent duplicate dispatches in StrictMode
-    if (wordsCount === undefined && !isCountLoading && !hasFetchedRef.current) {
-      hasFetchedRef.current = true
-      dispatch(fetchWordsCount({ force: true }))
+    if (!isCountLoading) {
+      // 1. Initial check on mount (respects cache)
+      if (!hasCheckedCache.current) {
+        hasCheckedCache.current = true
+        dispatch(fetchWordsCount({ force: false }))
+      } 
+      // 2. Retry if undefined and haven't tried yet in this cycle
+      else if (wordsCount === undefined && !hasFetchedRef.current) {
+        hasFetchedRef.current = true
+        dispatch(fetchWordsCount({ force: false }))
+      }
     }
 
-    // Reset ref when count becomes defined (successful fetch)
+    // Reset loop protection when count becomes defined
     if (wordsCount !== undefined) {
       hasFetchedRef.current = false
     }

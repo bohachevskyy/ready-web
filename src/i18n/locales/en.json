@@ -149,8 +149,7 @@
     "categories": {
       "nonfiction": "Nonfiction",
       "fiction": "Fiction",
-      "teens": "Teen Stories",
-      "everydayLife": "Everyday Life"
+      "teens": "Teen Stories"
     },
     "domains": {
       "nonfiction": {
@@ -190,45 +189,19 @@
       "fiction": {
         "adventure_quest": {
           "name": "Adventure & Quest",
-          "description": "Journeys, treasure hunts, exploration"
+          "description": "Journeys, treasure hunts, survival challenges, exploration missions"
         },
         "mystery_detective": {
           "name": "Mystery & Detective",
-          "description": "Solving crimes, uncovering secrets"
-        },
-        "fantasy_magic": {
-          "name": "Fantasy & Magic",
-          "description": "Magical worlds, mythical creatures"
+          "description": "Solving crimes, uncovering secrets, detective investigations, puzzles"
         },
         "sci_fi_future": {
           "name": "Sci-Fi & Future",
-          "description": "Space adventures, time travel, robots"
+          "description": "Space adventures, time travel, robots and AI, futuristic worlds"
         },
         "humor_comedy": {
           "name": "Humor & Comedy",
-          "description": "Funny situations, silly characters"
-        }
-      },
-      "everyday": {
-        "relationships": {
-          "name": "Relationships",
-          "description": "Romance, dating, friendship, family"
-        },
-        "work_career": {
-          "name": "Work & Career",
-          "description": "Jobs, workplace scenarios, career decisions"
-        },
-        "personal_growth": {
-          "name": "Personal Growth",
-          "description": "Self-improvement, overcoming obstacles"
-        },
-        "home_lifestyle": {
-          "name": "Home & Lifestyle",
-          "description": "Daily routines, family life, community"
-        },
-        "food_culture": {
-          "name": "Food & Culture",
-          "description": "Cooking adventures, culinary traditions"
+          "description": "Funny situations, silly characters, pranks and mishaps, laugh-out-loud moments"
         }
       },
       "teens": {

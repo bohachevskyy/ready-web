@@ -1,5 +1,6 @@
 import { Card } from "./ui/card"
 import { useTranslation } from "../i18n/useTranslation"
+import { useUserAge } from "../hooks/useUserAge"
 import {
   BookOpen,
   Sparkles,
@@ -75,9 +76,6 @@ const FICTION_DOMAINS: Record<string, DomainConfig> = {
   mystery_detective: {
     icon: Search,
   },
-  fantasy_magic: {
-    icon: Wand2,
-  },
   sci_fi_future: {
     icon: Rocket,
   },
@@ -86,23 +84,7 @@ const FICTION_DOMAINS: Record<string, DomainConfig> = {
   },
 }
 
-const EVERYDAY_DOMAINS: Record<string, DomainConfig> = {
-  relationships: {
-    icon: Heart,
-  },
-  work_career: {
-    icon: Briefcase,
-  },
-  personal_growth: {
-    icon: TrendingUp,
-  },
-  home_lifestyle: {
-    icon: Home,
-  },
-  food_culture: {
-    icon: UtensilsCrossed,
-  },
-}
+
 
 const TEEN_DOMAINS: Record<string, DomainConfig> = {
   teen_friendship: {
@@ -145,6 +127,47 @@ const TEEN_DOMAINS: Record<string, DomainConfig> = {
 
 export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectionProps) {
   const { t } = useTranslation()
+  const { isBelow16 } = useUserAge()
+
+  // Render a category section
+  const renderCategorySection = (
+    title: string,
+    icon: React.ComponentType<{ className?: string }>,
+    domains: Record<string, DomainConfig>,
+    categoryKey: 'nonfiction' | 'fiction' | 'teens'
+  ) => {
+    const Icon = icon
+    return (
+      <div>
+        <div className="flex items-center gap-3 mb-6">
+          <Icon className="h-6 w-6 text-primary" />
+          <h2 className="text-2xl font-bold text-foreground">{title}</h2>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
+          {Object.entries(domains).map(([key, domain]) => {
+            const DomainIcon = domain.icon
+            return (
+              <Card
+                key={key}
+                className="group cursor-pointer border-2 border-border bg-card p-6 transition-all duration-200 hover:scale-105 hover:border-primary hover:shadow-lg w-full max-w-xs"
+                onClick={() => onSelectDomain(key)}
+              >
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
+                    <DomainIcon className="h-8 w-8 text-primary" />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="font-semibold text-foreground text-sm leading-tight">{t(`stories.domains.${categoryKey}.${key}.name`)}</h3>
+                    <p className="text-xs text-muted-foreground line-clamp-2">{t(`stories.domains.${categoryKey}.${key}.description`)}</p>
+                  </div>
+                </div>
+              </Card>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -154,125 +177,50 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
           <p className="text-muted-foreground">{t('stories.pageDescription')}</p>
         </div>
 
-
-
-
         <div className="space-y-12">
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <BookOpen className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">{t('stories.categories.nonfiction')}</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-              {Object.entries(NONFICTION_DOMAINS).map(([key, domain]) => {
-                const Icon = domain.icon
-                return (
-                  <Card
-                    key={key}
-                    className="group cursor-pointer border-2 border-border bg-card p-6 transition-all duration-200 hover:scale-105 hover:border-primary hover:shadow-lg w-full max-w-xs"
-                    onClick={() => onSelectDomain(key)}
-                  >
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-                        <Icon className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-foreground text-sm leading-tight">{t(`stories.domains.nonfiction.${key}.name`)}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{t(`stories.domains.nonfiction.${key}.description`)}</p>
-                      </div>
-                    </div>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Sparkles className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">{t('stories.categories.fiction')}</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-              {Object.entries(FICTION_DOMAINS).map(([key, domain]) => {
-                const Icon = domain.icon
-                return (
-                  <Card
-                    key={key}
-                    className="group cursor-pointer border-2 border-border bg-card p-6 transition-all duration-200 hover:scale-105 hover:border-primary hover:shadow-lg w-full max-w-xs"
-                    onClick={() => onSelectDomain(key)}
-                  >
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-                        <Icon className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-foreground text-sm leading-tight">{t(`stories.domains.fiction.${key}.name`)}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{t(`stories.domains.fiction.${key}.description`)}</p>
-                      </div>
-                    </div>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Users className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">{t('stories.categories.teens')}</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-              {Object.entries(TEEN_DOMAINS).map(([key, domain]) => {
-                const Icon = domain.icon
-                return (
-                  <Card
-                    key={key}
-                    className="group cursor-pointer border-2 border-border bg-card p-6 transition-all duration-200 hover:scale-105 hover:border-primary hover:shadow-lg w-full max-w-xs"
-                    onClick={() => onSelectDomain(key)}
-                  >
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-                        <Icon className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-foreground text-sm leading-tight">{t(`stories.domains.teens.${key}.name`)}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{t(`stories.domains.teens.${key}.description`)}</p>
-                      </div>
-                    </div>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-3 mb-6">
-              <Heart className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl font-bold text-foreground">{t('stories.categories.everydayLife')}</h2>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 justify-items-center">
-              {Object.entries(EVERYDAY_DOMAINS).map(([key, domain]) => {
-                const Icon = domain.icon
-                return (
-                  <Card
-                    key={key}
-                    className="group cursor-pointer border-2 border-border bg-card p-6 transition-all duration-200 hover:scale-105 hover:border-primary hover:shadow-lg w-full max-w-xs"
-                    onClick={() => onSelectDomain(key)}
-                  >
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className="rounded-full bg-primary/10 p-4 transition-colors group-hover:bg-primary/20">
-                        <Icon className="h-8 w-8 text-primary" />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="font-semibold text-foreground text-sm leading-tight">{t(`stories.domains.everyday.${key}.name`)}</h3>
-                        <p className="text-xs text-muted-foreground line-clamp-2">{t(`stories.domains.everyday.${key}.description`)}</p>
-                      </div>
-                    </div>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
+          {isBelow16 ? (
+            <>
+              {renderCategorySection(
+                t('stories.categories.teens'),
+                Users,
+                TEEN_DOMAINS,
+                'teens'
+              )}
+              {renderCategorySection(
+                t('stories.categories.nonfiction'),
+                BookOpen,
+                NONFICTION_DOMAINS,
+                'nonfiction'
+              )}
+              {renderCategorySection(
+                t('stories.categories.fiction'),
+                Sparkles,
+                FICTION_DOMAINS,
+                'fiction'
+              )}
+            </>
+          ) : (
+            <>
+              {renderCategorySection(
+                t('stories.categories.nonfiction'),
+                BookOpen,
+                NONFICTION_DOMAINS,
+                'nonfiction'
+              )}
+              {renderCategorySection(
+                t('stories.categories.fiction'),
+                Sparkles,
+                FICTION_DOMAINS,
+                'fiction'
+              )}
+              {renderCategorySection(
+                t('stories.categories.teens'),
+                Users,
+                TEEN_DOMAINS,
+                'teens'
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

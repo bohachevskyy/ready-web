@@ -4,9 +4,10 @@ import { fetchWithAuth } from '../utils/fetchWithAuth'
 // Story types
 export interface StoryRequest {
   level: number
-  words: string[]
+  words?: string[]
   age_bracket: '8-10' | '11-12' | '13-15' | '16-17' | '18+'
   domain?: string
+  type?: 'fiction' | 'nonfiction'
 }
 
 interface ApiStoryResponse {
@@ -102,12 +103,14 @@ export const generateStory = createAsyncThunk<StoryResponse, StoryRequest, { rej
   'stories/generateStory',
   async (request, { rejectWithValue }) => {
     try {
+      // Exclude words and domain from request body
+      const { words, domain, ...requestBody } = request
       const response = await fetchWithAuth('http://localhost:8080/stories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(requestBody),
       })
 
       if (!response.ok) {

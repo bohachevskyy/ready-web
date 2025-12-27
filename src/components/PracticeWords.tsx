@@ -5,7 +5,7 @@ import { Button } from "./ui/button"
 import { SpeakerButton } from "./ui/speaker-button"
 import { Brain, Clock, Volume2, VolumeX } from "lucide-react"
 import { useAppDispatch, useAppSelector } from "../store/store"
-import { fetchWords, submitWordReview, nextWord, clearWords } from "../store/wordsSlice"
+import { fetchWords, submitWordReview, nextWord, clearWords, setSessionTotal } from "../store/wordsSlice"
 import { toggleAutoPlay } from "../store/speechSettingsSlice"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { useWordCount } from "../hooks/useWordCount"
@@ -113,7 +113,8 @@ export function PracticeWords() {
     error,
     lastWordId,
     hasNextPage,
-    currentIndex
+    currentIndex,
+    sessionTotal
   } = useAppSelector((state) => state.words)
 
   const { autoPlayEnabled, speechRate } = useAppSelector((state) => state.speechSettings)
@@ -131,6 +132,13 @@ export function PracticeWords() {
     // Fetch fresh data
     dispatch(fetchWords({ limit: 15 }))
   }, [dispatch])
+
+  // Initialize session total when words count is available
+  useEffect(() => {
+    if (wordsCount !== undefined && wordsCount > 0) {
+      dispatch(setSessionTotal(wordsCount))
+    }
+  }, [wordsCount, dispatch])
 
   // Update cards when apiWords changes
   useEffect(() => {
@@ -307,7 +315,17 @@ export function PracticeWords() {
     )
   }
 
-  const remainingCards = wordsCount || cards.length - currentIndex
+  // Use sessionTotal if available, fallback to wordsCount or calculated remaining
+  const remainingCards = wordsCount !== undefined ? wordsCount : cards.length - currentIndex
+  
+  const displayTotal = sessionTotal && wordsCount !== undefined 
+    ? sessionTotal 
+    : (cards.length > 0 ? cards.length : 0)
+
+  // Ensure current card number doesn't exceed total
+  const currentCardNumber = sessionTotal && wordsCount !== undefined 
+    ? Math.min((sessionTotal - wordsCount) + 1, sessionTotal)
+    : currentIndex + 1
 
   const currentCard = cards[currentIndex]
 
@@ -358,7 +376,7 @@ export function PracticeWords() {
           <CardHeader className="border-b-2 border-border/50 bg-muted/30">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base font-semibold text-muted-foreground">
-                {t('practice.cardProgress', { current: currentIndex + 1, total: cards.length })}
+                {t('practice.cardProgress', { current: currentCardNumber, total: displayTotal })}
               </CardTitle>
               <div className="flex gap-2">
                 <span className="text-sm px-3 py-1.5 bg-primary/20 text-primary rounded-full capitalize font-medium">
