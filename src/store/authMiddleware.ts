@@ -30,6 +30,11 @@ export const authMiddleware: Middleware = (storeAPI) => (next) => (action) => {
       if (isExpired) {
         // Token already expired, refresh immediately
         storeAPI.dispatch(refreshAccessToken(refreshToken) as any)
+          .catch((error: unknown) => {
+            // Network errors are handled by the reducer (sets networkError flag)
+            // Don't clear auth - let user see the error banner
+            console.log('[AuthMiddleware] Token refresh failed on startup:', error)
+          })
       }
     }
 

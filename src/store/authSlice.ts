@@ -24,6 +24,7 @@ interface AuthState {
   user: User | null
   isLoading: boolean
   error: string | null
+  networkError: boolean
   uiLanguage: string | null
 }
 
@@ -35,6 +36,7 @@ const initialState: AuthState = {
   user: null,
   isLoading: false,
   error: null,
+  networkError: false,
   uiLanguage: null,
 }
 
@@ -162,6 +164,7 @@ export const authSlice = createSlice({
       state.refreshToken = null
       state.refreshTokenExpiresAt = null
       state.user = null
+      state.networkError = false
     },
   },
   extraReducers: (builder) => {
@@ -203,6 +206,7 @@ export const authSlice = createSlice({
       })
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
         state.isLoading = false
+        state.networkError = false
         state.token = action.payload.access_token
         state.tokenExpiresAt = action.payload.access_token_expires_at
         // Keep existing refresh token if backend doesn't return a new one
@@ -215,7 +219,6 @@ export const authSlice = createSlice({
         const errorPayload = action.payload as { status: number; message: string } | undefined
 
         // Only clear auth if it's an authentication error (401, 403)
-        // Keep the user logged in for network errors or other transient failures
         if (errorPayload && (errorPayload.status === 401 || errorPayload.status === 403)) {
           state.token = null
           state.tokenExpiresAt = null
@@ -223,8 +226,14 @@ export const authSlice = createSlice({
           state.refreshTokenExpiresAt = null
           state.user = null
           state.error = 'Session expired. Please login again.'
+          state.networkError = false
+        } else if (errorPayload && errorPayload.status === 0) {
+          // Network error - set networkError flag but keep user logged in
+          state.networkError = true
+          state.error = errorPayload?.message || 'Network connection failed'
         } else {
-          // Network error or other transient failure - keep user logged in but show error
+          // Other transient failures - keep user logged in but show error
+          state.networkError = false
           state.error = errorPayload?.message || 'Failed to refresh token. Retrying...'
           console.log('[AuthSlice] Token refresh failed with transient error, will retry')
         }

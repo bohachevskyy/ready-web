@@ -4,6 +4,7 @@ import { useAppDispatch } from '../store/store';
 import { clearAuth } from '../store/authSlice';
 import { signOut } from '../services/firebaseAuth';
 import { persistor } from '../store/store';
+import { NetworkErrorBanner } from './NetworkErrorBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -40,6 +41,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <NetworkErrorBanner />
       <NavigationBar
         onHomeClick={handleHomeClick}
         onLogout={handleLogout}

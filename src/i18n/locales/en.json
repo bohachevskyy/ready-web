@@ -72,8 +72,11 @@
       "invalidEmail": "Invalid email address",
       "weakPassword": "Password is too weak",
       "failedCreateAccount": "Failed to create account. Please try again.",
-      "failedInitPhone": "Failed to initialize phone verification. Please refresh the page."
-    }
+      "failedInitPhone": "Failed to initialize phone verification. Please refresh the page.",
+      "networkError": "Network connection failed",
+      "networkErrorDescription": "Unable to refresh your session. Please check your internet connection."
+    },
+    "retry": "Retry"
   },
   "onboarding": {
     "welcome": "Welcome",

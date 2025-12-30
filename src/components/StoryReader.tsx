@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { X, Plus } from "lucide-react"
+import { X, Plus, Loader2 } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
@@ -410,8 +410,20 @@ export function StoryReader() {
 
           {view === 'story' && !storyError && (
             <div className="flex justify-center mt-8">
-              <Button onClick={handleFinish} size="lg" className="px-8 bg-primary text-primary-foreground hover:bg-primary/90">
-                Finish
+              <Button 
+                onClick={handleFinish} 
+                size="lg" 
+                className="px-8 bg-primary text-primary-foreground hover:bg-primary/90"
+                disabled={isLoadingQuestions}
+              >
+                {isLoadingQuestions ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Loading questions...
+                  </>
+                ) : (
+                  'Finish'
+                )}
               </Button>
             </div>
           )}
