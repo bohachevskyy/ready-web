@@ -101,6 +101,18 @@ export const fetchWordsCount = createAsyncThunk<
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch count')
     }
+  },
+  {
+    // Condition: don't dispatch if already loading
+    condition: ({ force = false }, { getState }) => {
+      const state = getState() as any
+      const { isCountLoading } = state.words
+      // If already loading and not forced, skip this dispatch
+      if (isCountLoading && !force) {
+        return false
+      }
+      return true
+    },
   }
 )
 
