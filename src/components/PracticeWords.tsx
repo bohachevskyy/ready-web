@@ -10,91 +10,7 @@ import { toggleAutoPlay } from "../store/speechSettingsSlice"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { useWordCount } from "../hooks/useWordCount"
 import { useTranslation } from "../i18n/useTranslation"
-import { Word } from "../types"
-
-// FSRS Card data structure for UI
-type FSRSCard = {
-  id: string
-  word: string
-  translation?: string
-  sentenceContext?: string
-  sentenceTranslation?: string
-  due: Date
-  stability: number
-  difficulty: number
-  elapsedDays: number
-  scheduledDays: number
-  reps: number
-  lapses: number
-  state: "new" | "learning" | "review" | "relearning"
-}
-
-// Convert API Word to FSRSCard
-function wordToCard(word: Word): FSRSCard {
-  return {
-    id: word.id,
-    word: word.name,
-    translation: word.translation,
-    sentenceContext: word.sentence_context,
-    sentenceTranslation: word.sentence_translation,
-    due: new Date(word.due_at),
-    stability: word.stability,
-    difficulty: word.difficulty,
-    elapsedDays: word.elapsed_days,
-    scheduledDays: word.scheduled_days,
-    reps: word.reps,
-    lapses: word.lapses,
-    state: word.state ? word.state.toLowerCase() as "new" | "learning" | "review" | "relearning" : "new",
-  }
-}
-
-// Simplified FSRS algorithm for UI preview (actual calculation is server-side)
-function calculateNextReview(card: FSRSCard, rating: "again" | "hard" | "good" | "easy"): FSRSCard {
-  const now = new Date()
-  let newStability = card.stability
-  let newDifficulty = card.difficulty
-  let scheduledDays = 0
-
-  // Initialize difficulty for new cards
-  if (card.state === "new") {
-    newDifficulty = 5
-  }
-
-  switch (rating) {
-    case "again":
-      newStability = Math.max(1, card.stability * 0.5)
-      newDifficulty = Math.min(10, card.difficulty + 2)
-      scheduledDays = 0.1 // 2.4 hours
-      break
-    case "hard":
-      newStability = card.stability * 1.2
-      newDifficulty = Math.min(10, card.difficulty + 0.5)
-      scheduledDays = Math.max(1, card.stability * 1.2)
-      break
-    case "good":
-      newStability = card.stability === 0 ? 1 : card.stability * 2.5
-      scheduledDays = Math.max(1, newStability)
-      break
-    case "easy":
-      newStability = card.stability === 0 ? 4 : card.stability * 4
-      newDifficulty = Math.max(1, card.difficulty - 1)
-      scheduledDays = Math.max(1, newStability)
-      break
-  }
-
-  const dueDate = new Date(now.getTime() + scheduledDays * 24 * 60 * 60 * 1000)
-
-  return {
-    ...card,
-    stability: newStability,
-    difficulty: newDifficulty,
-    scheduledDays,
-    due: dueDate,
-    reps: card.reps + 1,
-    lapses: rating === "again" ? card.lapses + 1 : card.lapses,
-    state: rating === "again" ? "relearning" : card.state === "new" ? "learning" : "review",
-  }
-}
+import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
 
 export function PracticeWords() {
   const { t } = useTranslation()
@@ -451,7 +367,7 @@ export function PracticeWords() {
                 >
                   <span className="font-semibold text-base">{t('practice.ratings.hard')}</span>
                   <span className="text-xs text-muted-foreground">
-                    {Math.round(Math.max(1, cards[currentIndex].stability * 1.2))}d
+                    {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'hard'))}d
                   </span>
                 </Button>
                 <Button
@@ -463,10 +379,7 @@ export function PracticeWords() {
                 >
                   <span className="font-semibold text-base">{t('practice.ratings.good')}</span>
                   <span className="text-xs text-muted-foreground">
-                    {Math.round(
-                      Math.max(1, cards[currentIndex].stability === 0 ? 1 : cards[currentIndex].stability * 2.5),
-                    )}
-                    d
+                    {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'good'))}d
                   </span>
                 </Button>
                 <Button
@@ -478,10 +391,7 @@ export function PracticeWords() {
                 >
                   <span className="font-semibold text-base">{t('practice.ratings.easy')}</span>
                   <span className="text-xs text-muted-foreground">
-                    {Math.round(
-                      Math.max(1, cards[currentIndex].stability === 0 ? 4 : cards[currentIndex].stability * 4),
-                    )}
-                    d
+                    {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'easy'))}d
                   </span>
                 </Button>
               </div>
