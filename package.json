@@ -28,6 +28,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false --testPathIgnorePatterns=e2e",
+    "test:coverage:logic": "react-scripts test --coverage --watchAll=false --testPathIgnorePatterns=e2e --collectCoverageFrom='src/{hooks,store,utils,services}/**/*.{ts,tsx}' --collectCoverageFrom='!**/*.test.{ts,tsx}'",
     "eject": "react-scripts eject",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
