@@ -6,7 +6,7 @@ import {
   setSessionTotal,
   clearWords,
 } from '../../store/wordsSlice'
-import { createTestStore, createMockWord } from './testUtils'
+import { createTestStore, createMockWord } from '../../test-utils/wordsSliceHelpers'
 
 describe('wordsSlice - Synchronous Actions', () => {
   let store: ReturnType<typeof createTestStore>

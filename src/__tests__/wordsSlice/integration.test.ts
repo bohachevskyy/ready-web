@@ -10,7 +10,7 @@ import {
   createMockWord,
   createSuccessResponse,
   mockFetchWithAuth,
-} from './testUtils'
+} from '../../test-utils/wordsSliceHelpers'
 
 describe('wordsSlice - Cross-Slice Integration', () => {
   let store: ReturnType<typeof createTestStore>

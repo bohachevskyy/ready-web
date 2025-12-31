@@ -10,7 +10,7 @@ import {
   createSuccessResponse,
   createErrorResponse,
   mockFetchWithAuth,
-} from './testUtils'
+} from '../../test-utils/wordsSliceHelpers'
 
 describe('wordsSlice - fetchWords (Pagination Logic)', () => {
   let store: ReturnType<typeof createTestStore>

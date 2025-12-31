@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import wordsReducer from '../../store/wordsSlice'
-import authReducer from '../../store/authSlice'
-import { Word } from '../../types'
-import { fetchWithAuth } from '../../utils/fetchWithAuth'
+import wordsReducer from '../store/wordsSlice'
+import authReducer from '../store/authSlice'
+import { Word } from '../types'
+import { fetchWithAuth } from '../utils/fetchWithAuth'
 
 export const mockFetchWithAuth = fetchWithAuth as jest.MockedFunction<typeof fetchWithAuth>
 
