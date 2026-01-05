@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { fetchWithAuth } from '../utils/fetchWithAuth'
+import { API_BASE_URL } from '../config/api'
 
 // User type (matches the one in authSlice)
 interface User {
@@ -52,7 +53,7 @@ export const getUserProfile = createAsyncThunk<User, void, { rejectValue: string
   'user/getUserProfile',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth('http://localhost:8080/auth/me')
+      const response = await fetchWithAuth(`${API_BASE_URL}/auth/me`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch user profile')
@@ -75,7 +76,7 @@ export const updateLanguageLevel = createAsyncThunk<
   'user/updateLanguageLevel',
   async (body, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth('http://localhost:8080/users', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/users`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +104,7 @@ export const updateUserProfile = createAsyncThunk<
   'user/updateUserProfile',
   async (body, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth('http://localhost:8080/users', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/users`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { fetchWithAuth } from '../utils/fetchWithAuth'
+import { API_BASE_URL } from '../config/api'
 
 // Story types
 export interface StoryRequest {
@@ -105,7 +106,7 @@ export const generateStory = createAsyncThunk<StoryResponse, StoryRequest, { rej
     try {
       // Exclude words and type from request body
       const { words, type, ...requestBody } = request
-      const response = await fetchWithAuth('http://localhost:8080/stories', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/stories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -136,7 +137,7 @@ export const getQuestions = createAsyncThunk<QuestionsResponse, string, { reject
   'stories/getQuestions',
   async (storyId, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth(`http://localhost:8080/stories/${storyId}/questions`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/stories/${storyId}/questions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +180,7 @@ export const submitFeedback = createAsyncThunk<
   'stories/submitFeedback',
   async ({ storyId, feedback }, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth(`http://localhost:8080/stories/${storyId}/feedbacks`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/stories/${storyId}/feedbacks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -208,7 +209,7 @@ export const getWordDetails = createAsyncThunk<
   async ({ storyId, start, end }, { rejectWithValue }) => {
     try {
       const response = await fetchWithAuth(
-        `http://localhost:8080/stories/${storyId}/words?start=${start}&end=${end}`
+        `${API_BASE_URL}/stories/${storyId}/words?start=${start}&end=${end}`
       )
 
       if (!response.ok) {
@@ -228,7 +229,7 @@ export const saveWords = createAsyncThunk<void, SaveWordsRequest, { rejectValue:
   'stories/saveWords',
   async (request, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth('http://localhost:8080/words', {
+      const response = await fetchWithAuth(`${API_BASE_URL}/words`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

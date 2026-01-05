@@ -4,6 +4,7 @@
 jest.mock('../../utils/fetchWithAuth')
 
 import { submitWordReview } from '../../store/wordsSlice'
+import { API_BASE_URL } from '../../config/api'
 import {
   createTestStore,
   createMockWord,
@@ -38,7 +39,7 @@ describe('wordsSlice - submitWordReview (Critical Business Logic)', () => {
       expect(result.type).toBe('words/submitReview/fulfilled')
       expect(result.payload).toEqual(mockWord)
       expect(mockFetchWithAuth).toHaveBeenCalledWith(
-        'http://localhost:8080/words/word-1/reviews',
+        `${API_BASE_URL}/words/word-1/reviews`,
         expect.objectContaining({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -3,6 +3,8 @@ allowed-tools: Bash(git add:*), Bash(git status:*), Bash(git commit:*), Bash(git
 description: Commit changes and make a new pr to main
 ---
 
-Commit all current changes. Make message commit in one sentance, max 10 words. Push a branch to origin and make a PR into main branch.
+Commit all current changes with a concise commit message (one sentence, max 10 words). Push the branch to origin and create a PR targeting the main branch.
 
-If current branch is main ask how to name a branch
+Stage all files using `git add .` without reviewing git history.
+
+If the current branch is main, prompt the user for a new branch name before proceeding.

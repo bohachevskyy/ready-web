@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { clearAuth } from './authSlice'
 import { Word } from '../types'
 import { fetchWithAuth } from '../utils/fetchWithAuth'
+import { API_BASE_URL } from '../config/api'
 
 interface WordsState {
   words: Word[]
@@ -51,7 +52,7 @@ export const fetchWords = createAsyncThunk<
         params.append('afterId', afterId)
       }
 
-      const response = await fetchWithAuth(`http://localhost:8080/words?${params.toString()}`)
+      const response = await fetchWithAuth(`${API_BASE_URL}/words?${params.toString()}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch words')
@@ -90,7 +91,7 @@ export const fetchWordsCount = createAsyncThunk<
       params.append('filter', 'training-due')
       params.append('order', 'desc')
 
-      const response = await fetchWithAuth(`http://localhost:8080/words/counts?${params.toString()}`)
+      const response = await fetchWithAuth(`${API_BASE_URL}/words/counts?${params.toString()}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch words count')
@@ -125,7 +126,7 @@ export const submitWordReview = createAsyncThunk<
   'words/submitReview',
   async ({ wordId, rating }, { rejectWithValue }) => {
     try {
-      const response = await fetchWithAuth(`http://localhost:8080/words/${wordId}/reviews`, {
+      const response = await fetchWithAuth(`${API_BASE_URL}/words/${wordId}/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
