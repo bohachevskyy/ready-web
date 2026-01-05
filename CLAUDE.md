@@ -4,30 +4,27 @@ This a react application for enhancing vocabulary.
 
 Don't look at the node modules during the planning stage. Only rely on the code. In case you need to know a library behavior search online.
 
-## Auto-approved commands
-- `npm install`
-- `npm start`
-- `npm run build`
-- `npm run test`
-- `npm run lint`
-- `git status`
-- `git add .`
-- `git commit -m "..."`
-- `mcp__playwright__browser_navigate`
-- `mcp__playwright__browser_click`
-- `mcp__playwright__browser_fill_form`
-- `mcp__playwright__browser_type`
-- `mcp__playwright__browser_select_option`
-- `mcp__playwright__browser_evaluate`
-- `mcp__playwright__browser_take_screenshot`
-- `mcp__playwright__browser_snapshot`
-- `mcp__playwright__browser_run_code`
-- `mcp__playwright__browser_console_message`
-- `mcp__playwright__browser_network_requests`
+# Workflow
 
-## Auto-approved MCP tools
-- All Playwright browser tools (navigate, click, snapshot, type, etc.) for testing at `http://localhost:3000`
-- Use the following credeintals for MCP testing: email: `test@gmail.com`, password: `password123`
+### Component Design
+- Keep components extremely simple
+- Place all logic in **hooks**, **services**, or **store**
+
+### I8N
+
+Whenever you add new text to the UI, make sure to add its translation to i18n as well. Avoid displaying untranslated text directly on the screen.
+
+### Unit Testing
+- Cover added business logic with unit tests
+- Ensure tests pass before committing
+- Be pragmatic—focus on testing the core business logic
+- Avoid over-testing; keep tests concise and meaningful
+
+### Async Operations
+- Use **Redux Thunk** for async API calls
+
+### Verification
+- After finishing a feature, test it in the browser to ensure correct operation
 
 ## Testing
 

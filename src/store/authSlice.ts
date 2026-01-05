@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
+import { API_BASE_URL } from '../config/api'
 
 interface User {
   id: string
@@ -65,7 +66,7 @@ export interface FirebaseAuthResponse {
 export const login = createAsyncThunk<LoginResponse, LoginRequest>(
   'auth/login',
   async (credentials) => {
-    const response = await fetch('http://localhost:8080/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +87,7 @@ export const login = createAsyncThunk<LoginResponse, LoginRequest>(
 export const loginWithFirebase = createAsyncThunk<FirebaseAuthResponse, FirebaseAuthRequest>(
   'auth/loginWithFirebase',
   async (request) => {
-    const response = await fetch('http://localhost:8080/auth/firebase', {
+    const response = await fetch(`${API_BASE_URL}/auth/firebase`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +111,7 @@ export const refreshAccessToken = createAsyncThunk<FirebaseAuthResponse, string>
   'auth/refreshToken',
   async (refreshToken, { rejectWithValue }) => {
     try {
-      const response = await fetch('http://localhost:8080/auth/refresh', {
+      const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
