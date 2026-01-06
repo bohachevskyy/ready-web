@@ -21,6 +21,7 @@ export function PracticeWords() {
   const [timer, setTimer] = useState(0)
   const [isActive, setIsActive] = useState(true)
   const [sessionComplete, setSessionComplete] = useState(false)
+  const [highlightedRating, setHighlightedRating] = useState<string | null>(null)
 
   // Redux state and dispatch
   const dispatch = useAppDispatch()
@@ -149,11 +150,20 @@ export function PracticeWords() {
     setShowTranslation(true)
   }, [])
 
+  // Keyboard rating with visual feedback
+  const handleKeyboardRate = useCallback((rating: "again" | "hard" | "good" | "easy") => {
+    setHighlightedRating(rating)
+    setTimeout(() => {
+      setHighlightedRating(null)
+      handleRating(rating)
+    }, 300)
+  }, [handleRating])
+
   // Keyboard navigation hook
   usePracticeKeyboard({
     showTranslation,
     onShowTranslation: handleShowTranslation,
-    onRate: handleRating,
+    onRate: handleKeyboardRate,
   })
 
   if (isLoading) {
@@ -361,11 +371,13 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("again")}
                   disabled={!showTranslation}
-                  className="group h-24 flex flex-col gap-2 border-2 hover:border-red-500 hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none"
+                  className={`group h-24 flex flex-col gap-2 border-2 transition-all duration-150 hover:border-red-500 hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none ${
+                    highlightedRating === 'again' ? 'border-red-500 bg-red-100 text-red-700 scale-105' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-1.5">
                     <span className="font-semibold text-base">{t('practice.ratings.again')}</span>
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(1)</span>
+                    <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'again' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(1)</span>
                   </div>
                   <span className="text-xs text-muted-foreground">&lt;1 day</span>
                 </Button>
@@ -374,11 +386,13 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("hard")}
                   disabled={!showTranslation}
-                  className="group h-24 flex flex-col gap-2 border-2 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 disabled:pointer-events-none"
+                  className={`group h-24 flex flex-col gap-2 border-2 transition-all duration-150 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 disabled:pointer-events-none ${
+                    highlightedRating === 'hard' ? 'border-orange-500 bg-orange-100 text-orange-700 scale-105' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-1.5">
                     <span className="font-semibold text-base">{t('practice.ratings.hard')}</span>
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(2)</span>
+                    <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'hard' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(2)</span>
                   </div>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'hard'))}d
@@ -389,11 +403,13 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("good")}
                   disabled={!showTranslation}
-                  className="group h-24 flex flex-col gap-2 border-2 hover:border-green-500 hover:bg-green-50 hover:text-green-700 disabled:pointer-events-none"
+                  className={`group h-24 flex flex-col gap-2 border-2 transition-all duration-150 hover:border-green-500 hover:bg-green-50 hover:text-green-700 disabled:pointer-events-none ${
+                    highlightedRating === 'good' ? 'border-green-500 bg-green-100 text-green-700 scale-105' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-1.5">
                     <span className="font-semibold text-base">{t('practice.ratings.good')}</span>
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(3)</span>
+                    <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'good' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(3)</span>
                   </div>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'good'))}d
@@ -404,11 +420,13 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("easy")}
                   disabled={!showTranslation}
-                  className="group h-24 flex flex-col gap-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 disabled:pointer-events-none"
+                  className={`group h-24 flex flex-col gap-2 border-2 transition-all duration-150 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 disabled:pointer-events-none ${
+                    highlightedRating === 'easy' ? 'border-blue-500 bg-blue-100 text-blue-700 scale-105' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-1.5">
                     <span className="font-semibold text-base">{t('practice.ratings.easy')}</span>
-                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(4)</span>
+                    <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'easy' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(4)</span>
                   </div>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'easy'))}d
