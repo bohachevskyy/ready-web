@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 import { Button } from "./ui/button"
@@ -9,6 +9,7 @@ import { fetchWords, submitWordReview, nextWord, clearWords, setSessionTotal } f
 import { toggleAutoPlay } from "../store/speechSettingsSlice"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { useWordCount } from "../hooks/useWordCount"
+import { usePracticeKeyboard } from "../hooks/usePracticeKeyboard"
 import { useTranslation } from "../i18n/useTranslation"
 import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
 
@@ -144,9 +145,16 @@ export function PracticeWords() {
     }
   }
 
-  const handleShowTranslation = () => {
+  const handleShowTranslation = useCallback(() => {
     setShowTranslation(true)
-  }
+  }, [])
+
+  // Keyboard navigation hook
+  usePracticeKeyboard({
+    showTranslation,
+    onShowTranslation: handleShowTranslation,
+    onRate: handleRating,
+  })
 
   if (isLoading) {
     return (
@@ -353,9 +361,12 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("again")}
                   disabled={!showTranslation}
-                  className="h-24 flex flex-col gap-2 border-2 hover:border-red-500 hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none"
+                  className="group h-24 flex flex-col gap-2 border-2 hover:border-red-500 hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">{t('practice.ratings.again')}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-base">{t('practice.ratings.again')}</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(1)</span>
+                  </div>
                   <span className="text-xs text-muted-foreground">&lt;1 day</span>
                 </Button>
                 <Button
@@ -363,9 +374,12 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("hard")}
                   disabled={!showTranslation}
-                  className="h-24 flex flex-col gap-2 border-2 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 disabled:pointer-events-none"
+                  className="group h-24 flex flex-col gap-2 border-2 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">{t('practice.ratings.hard')}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-base">{t('practice.ratings.hard')}</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(2)</span>
+                  </div>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'hard'))}d
                   </span>
@@ -375,9 +389,12 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("good")}
                   disabled={!showTranslation}
-                  className="h-24 flex flex-col gap-2 border-2 hover:border-green-500 hover:bg-green-50 hover:text-green-700 disabled:pointer-events-none"
+                  className="group h-24 flex flex-col gap-2 border-2 hover:border-green-500 hover:bg-green-50 hover:text-green-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">{t('practice.ratings.good')}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-base">{t('practice.ratings.good')}</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(3)</span>
+                  </div>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'good'))}d
                   </span>
@@ -387,9 +404,12 @@ export function PracticeWords() {
                   size="lg"
                   onClick={() => handleRating("easy")}
                   disabled={!showTranslation}
-                  className="h-24 flex flex-col gap-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 disabled:pointer-events-none"
+                  className="group h-24 flex flex-col gap-2 border-2 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 disabled:pointer-events-none"
                 >
-                  <span className="font-semibold text-base">{t('practice.ratings.easy')}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-semibold text-base">{t('practice.ratings.easy')}</span>
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-xs text-muted-foreground">(4)</span>
+                  </div>
                   <span className="text-xs text-muted-foreground">
                     {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'easy'))}d
                   </span>

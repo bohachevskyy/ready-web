@@ -130,7 +130,7 @@
     "noTranslation": "No translation available",
     "exampleSentence": "Example Sentence",
     "showTranslation": "Show Translation",
-    "instruction": "Click \"Show Translation\" to see the translation and example, then rate how well you knew this word.",
+    "instruction": "Press Space to show translation, then 1-4 to rate how well you knew this word.",
     "cardProgress": "Card {current} of {total}",
     "reps": "Reps: {count}",
     "ratings": {

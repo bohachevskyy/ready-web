@@ -126,7 +126,7 @@
     "noTranslation": "没有可用的翻译",
     "exampleSentence": "例句",
     "showTranslation": "显示翻译",
-    "instruction": "单击\"显示翻译\"以查看翻译和例句，然后评估您对此单词的掌握程度。",
+    "instruction": "按空格键显示翻译，然后按1-4评估您对此单词的掌握程度。",
     "cardProgress": "卡片 {current}，共 {total}",
     "reps": "重复：{count}",
     "ratings": {

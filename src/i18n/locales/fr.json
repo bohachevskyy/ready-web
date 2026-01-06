@@ -126,7 +126,7 @@
     "noTranslation": "Aucune traduction disponible",
     "exampleSentence": "Phrase exemple",
     "showTranslation": "Afficher la traduction",
-    "instruction": "Cliquez sur \"Afficher la traduction\" pour voir la traduction et l'exemple, puis évaluez votre connaissance de ce mot.",
+    "instruction": "Appuyez sur Espace pour afficher la traduction, puis 1-4 pour évaluer votre connaissance de ce mot.",
     "cardProgress": "Carte {current} sur {total}",
     "reps": "Rép. : {count}",
     "ratings": {

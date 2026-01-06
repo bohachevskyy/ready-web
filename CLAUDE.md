@@ -11,8 +11,7 @@ Don't look at the node modules during the planning stage. Only rely on the code.
 - Place all logic in **hooks**, **services**, or **store**
 
 ### I8N
-
-Whenever you add new text to the UI, make sure to add its translation to i18n as well. Avoid displaying untranslated text directly on the screen.
+- Whenever you add new text to the UI, make sure to add its translation to i18n as well. Avoid displaying untranslated text directly on the screen.
 
 ### Unit Testing
 - Cover added business logic with unit tests
