@@ -126,7 +126,7 @@
     "noTranslation": "翻訳がありません",
     "exampleSentence": "例文",
     "showTranslation": "翻訳を表示",
-    "instruction": "「翻訳を表示」をクリックして翻訳と例文を表示し、この単語をどの程度知っていたかを評価してください。",
+    "instruction": "スペースキーで翻訳を表示し、1-4キーでこの単語をどの程度知っていたかを評価してください。",
     "cardProgress": "カード {current}/{total}",
     "reps": "反復数: {count}",
     "ratings": {

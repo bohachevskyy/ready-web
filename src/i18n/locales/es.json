@@ -126,7 +126,7 @@
     "noTranslation": "No hay traducción disponible",
     "exampleSentence": "Oración de ejemplo",
     "showTranslation": "Mostrar traducción",
-    "instruction": "Haz clic en \"Mostrar traducción\" para ver la traducción y ejemplo, luego califica qué tan bien conocías esta palabra.",
+    "instruction": "Presiona Espacio para mostrar la traducción, luego 1-4 para calificar qué tan bien conocías esta palabra.",
     "cardProgress": "Tarjeta {current} de {total}",
     "reps": "Repeticiones: {count}",
     "ratings": {

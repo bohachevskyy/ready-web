@@ -126,7 +126,7 @@
     "noTranslation": "사용 가능한 번역이 없습니다",
     "exampleSentence": "예문",
     "showTranslation": "번역 보기",
-    "instruction": "\"번역 보기\"를 클릭하여 번역과 예문을 본 다음, 이 단어를 얼마나 잘 알고 있는지 평가하세요.",
+    "instruction": "스페이스 키를 눌러 번역을 표시하고, 1-4 키로 이 단어를 얼마나 잘 알고 있는지 평가하세요.",
     "cardProgress": "{total}개 중 {current}개",
     "reps": "반복: {count}",
     "ratings": {
