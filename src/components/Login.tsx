@@ -15,7 +15,7 @@ export function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isLoading, error } = useAppSelector((state) => state.auth);
+  const { error } = useAppSelector((state) => state.auth);
 
   const [authError, setAuthError] = useState<string | null>(null);
   const [method, setMethod] = useState<'choice' | 'phone' | 'email'>('choice');
@@ -62,7 +62,7 @@ export function Login() {
         }
       };
     }
-  }, []);
+  }, [t]);
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;

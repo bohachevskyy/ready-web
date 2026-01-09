@@ -23,12 +23,10 @@ export function StoryReader() {
   const savedWords = useAppSelector((state) => state.vocabulary.savedWords)
   const storyId = useAppSelector((state) => state.story.id)
   const storyText = useAppSelector((state) => state.story.text)
-  const translations = useAppSelector((state) => state.story.translations)
 
   // Redux Thunk selectors
   const isGeneratingStory = useAppSelector((state) => state.stories.isGeneratingStory)
   const isLoadingQuestions = useAppSelector((state) => state.stories.isLoadingQuestions)
-  const isLoadingWordDetails = useAppSelector((state) => state.stories.isLoadingWordDetails)
   const storyError = useAppSelector((state) => state.stories.error)
 
   // Speech synthesis for word pronunciation
@@ -47,15 +45,9 @@ export function StoryReader() {
   // Questions state
   const [view, setView] = useState<'story' | 'questions'>('story')
   const [questions, setQuestions] = useState<Question[]>([])
-  const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({})
-  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
+  const [attemptCounts] = useState<Record<string, number>>({})
+  const [feedbackSubmitted] = useState(false)
   const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
-
-  // Helper function to clean word and get translation
-  const getTranslation = (word: string): string | null => {
-    const cleanWord = word.trim().replace(/[.,!?;:"""''()[\]{}]/g, '')
-    return translations[cleanWord] || null
-  }
 
   // Fetch story on component mount
   useEffect(() => {

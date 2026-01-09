@@ -113,7 +113,7 @@ export function PracticeWords() {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handleRating = async (rating: "again" | "hard" | "good" | "easy") => {
+  const handleRating = useCallback(async (rating: "again" | "hard" | "good" | "easy") => {
     const currentCard = cards[currentIndex]
     const updatedCard = calculateNextReview(currentCard, rating)
 
@@ -144,7 +144,7 @@ export function PracticeWords() {
       console.error('Failed to submit review:', error)
       // Optimistic update already rolled back in rejected state
     }
-  }
+  }, [cards, currentIndex, cancel, dispatch])
 
   const handleShowTranslation = useCallback(() => {
     setShowTranslation(true)

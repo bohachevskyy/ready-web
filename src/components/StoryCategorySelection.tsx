@@ -6,14 +6,10 @@ import {
   Sparkles,
   Compass,
   Search,
-  Wand2,
   Rocket,
   Laugh,
-  Heart,
-  Briefcase,
   TrendingUp,
   Home,
-  UtensilsCrossed,
   Clock,
   Microscope,
   Atom,
@@ -29,7 +25,6 @@ import {
   Dog,
   Puzzle,
   Code,
-  Leaf,
 } from "lucide-react"
 
 type StoryDomain = string
