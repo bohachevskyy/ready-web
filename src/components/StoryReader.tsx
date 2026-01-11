@@ -570,8 +570,8 @@ export function StoryReader() {
 
       {/* Mobile Bottom Drawer */}
       {isVocabDrawerOpen && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
-          <div className="sticky top-0 bg-card p-4 border-b border-border flex items-center justify-between">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-sidebar rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
+          <div className="sticky top-0 bg-sidebar p-4 border-b border-border flex items-center justify-between">
             <h2 className="font-semibold">Vocabulary List</h2>
             <Button
               variant="ghost"
