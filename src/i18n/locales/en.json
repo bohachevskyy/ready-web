@@ -338,5 +338,11 @@
         "description": "Advanced"
       }
     }
+  },
+  "vocabulary": {
+    "title": "Vocabulary List",
+    "emptyState": "No words saved yet",
+    "emptyStateHelp": "Click on words in the text to add them here",
+    "closeDrawer": "Close vocabulary list"
   }
 }

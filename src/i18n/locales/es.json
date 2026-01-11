@@ -361,5 +361,11 @@
         "description": "Avanzado"
       }
     }
+  },
+  "vocabulary": {
+    "title": "Lista de vocabulario",
+    "emptyState": "Aún no hay palabras guardadas",
+    "emptyStateHelp": "Haz clic en las palabras del texto para añadirlas aquí",
+    "closeDrawer": "Cerrar lista de vocabulario"
   }
 }

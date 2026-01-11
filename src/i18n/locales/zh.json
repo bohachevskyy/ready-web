@@ -361,5 +361,11 @@
         "description": "高级"
       }
     }
+  },
+  "vocabulary": {
+    "title": "词汇表",
+    "emptyState": "还没有保存的单词",
+    "emptyStateHelp": "点击文本中的单词以将其添加到这里",
+    "closeDrawer": "关闭词汇表"
   }
 }

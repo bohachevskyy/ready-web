@@ -361,5 +361,11 @@
         "description": "Zaawansowany"
       }
     }
+  },
+  "vocabulary": {
+    "title": "Lista słówek",
+    "emptyState": "Nie zapisano jeszcze żadnych słów",
+    "emptyStateHelp": "Kliknij słowa w tekście, aby dodać je tutaj",
+    "closeDrawer": "Zamknij listę słówek"
   }
 }

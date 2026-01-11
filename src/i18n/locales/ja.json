@@ -361,5 +361,11 @@
         "description": "上級"
       }
     }
+  },
+  "vocabulary": {
+    "title": "語彙リスト",
+    "emptyState": "保存された単語はまだありません",
+    "emptyStateHelp": "テキスト内の単語をクリックしてここに追加してください",
+    "closeDrawer": "語彙リストを閉じる"
   }
 }
