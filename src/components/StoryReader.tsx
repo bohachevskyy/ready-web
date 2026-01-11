@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { X, Plus, Loader2 } from "lucide-react"
+import { X, Plus, Loader2, BookOpen } from "lucide-react"
 import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
@@ -48,6 +48,7 @@ export function StoryReader() {
   const [attemptCounts] = useState<Record<string, number>>({})
   const [feedbackSubmitted] = useState(false)
   const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
+  const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
 
   // Fetch story on component mount
   useEffect(() => {
@@ -493,8 +494,51 @@ export function StoryReader() {
         </div>
       )}
 
-      {/* Vocabulary list sidebar */}
-      <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} />
+      {/* Desktop Vocabulary Sidebar */}
+      <div className="hidden lg:block w-80 border-l border-border">
+        <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} />
+      </div>
+
+      {/* Mobile Floating Action Button */}
+      <button
+        onClick={() => setIsVocabDrawerOpen(true)}
+        className="lg:hidden fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg z-40 flex items-center gap-2"
+        aria-label="Open vocabulary list"
+      >
+        <BookOpen className="h-5 w-5" />
+        {savedWords.length > 0 && (
+          <span className="bg-white text-primary text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+            {savedWords.length}
+          </span>
+        )}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isVocabDrawerOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={() => setIsVocabDrawerOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile Bottom Drawer */}
+      {isVocabDrawerOpen && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-sidebar rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
+          <div className="sticky top-0 bg-sidebar p-4 border-b border-border flex items-center justify-between">
+            <h2 className="font-semibold">Vocabulary List</h2>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsVocabDrawerOpen(false)}
+              aria-label="Close vocabulary list"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+          <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} />
+        </div>
+      )}
     </div>
   )
 }

@@ -361,5 +361,11 @@
         "description": "Avancé"
       }
     }
+  },
+  "vocabulary": {
+    "title": "Liste de vocabulaire",
+    "emptyState": "Aucun mot enregistré pour le moment",
+    "emptyStateHelp": "Cliquez sur les mots du texte pour les ajouter ici",
+    "closeDrawer": "Fermer la liste de vocabulaire"
   }
 }

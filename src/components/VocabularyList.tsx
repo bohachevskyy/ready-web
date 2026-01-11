@@ -16,7 +16,7 @@ interface VocabularyListProps {
 
 export function VocabularyList({ savedWords, onRemoveWord }: VocabularyListProps) {
   return (
-    <div className="w-80 border-l border-border bg-sidebar overflow-auto">
+    <div className="bg-sidebar overflow-auto">
       <div className="p-6">
         <h2 className="text-xl font-semibold mb-4 text-sidebar-foreground">Vocabulary List</h2>
         <p className="text-sm text-muted-foreground mb-6">Click on words in the text to add them here</p>

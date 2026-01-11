@@ -361,5 +361,11 @@
         "description": "Avanzato"
       }
     }
+  },
+  "vocabulary": {
+    "title": "Elenco vocaboli",
+    "emptyState": "Nessuna parola salvata ancora",
+    "emptyStateHelp": "Fai clic sulle parole nel testo per aggiungerle qui",
+    "closeDrawer": "Chiudi elenco vocaboli"
   }
 }
