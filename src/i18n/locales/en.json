@@ -344,5 +344,8 @@
     "emptyState": "No words saved yet",
     "emptyStateHelp": "Click on words in the text to add them here",
     "closeDrawer": "Close vocabulary list"
+  },
+  "storyReader": {
+    "translationError": "Failed to load word translation. Please try again."
   }
 }

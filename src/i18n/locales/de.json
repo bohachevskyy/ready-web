@@ -367,5 +367,8 @@
     "emptyState": "Noch keine Wörter gespeichert",
     "emptyStateHelp": "Klicken Sie auf Wörter im Text, um sie hier hinzuzufügen",
     "closeDrawer": "Vokabelliste schließen"
+  },
+  "storyReader": {
+    "translationError": "Wortübersetzung konnte nicht geladen werden. Bitte versuchen Sie es erneut."
   }
 }

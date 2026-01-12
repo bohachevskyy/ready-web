@@ -367,5 +367,8 @@
     "emptyState": "Aucun mot enregistré pour le moment",
     "emptyStateHelp": "Cliquez sur les mots du texte pour les ajouter ici",
     "closeDrawer": "Fermer la liste de vocabulaire"
+  },
+  "storyReader": {
+    "translationError": "Échec du chargement de la traduction du mot. Veuillez réessayer."
   }
 }

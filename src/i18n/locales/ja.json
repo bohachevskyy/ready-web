@@ -367,5 +367,8 @@
     "emptyState": "保存された単語はまだありません",
     "emptyStateHelp": "テキスト内の単語をクリックしてここに追加してください",
     "closeDrawer": "語彙リストを閉じる"
+  },
+  "storyReader": {
+    "translationError": "単語の翻訳を読み込めませんでした。もう一度お試しください。"
   }
 }

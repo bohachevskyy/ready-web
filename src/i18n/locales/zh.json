@@ -367,5 +367,8 @@
     "emptyState": "还没有保存的单词",
     "emptyStateHelp": "点击文本中的单词以将其添加到这里",
     "closeDrawer": "关闭词汇表"
+  },
+  "storyReader": {
+    "translationError": "无法加载单词翻译。请重试。"
   }
 }
