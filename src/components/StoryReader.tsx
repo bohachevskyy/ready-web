@@ -49,6 +49,8 @@ export function StoryReader() {
   const [feedbackSubmitted] = useState(false)
   const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
   const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
+  const [isWordDrawerOpen, setIsWordDrawerOpen] = useState<boolean>(false)
+  const clickedWordRef = useRef<HTMLElement | null>(null)
 
   // Fetch story on component mount
   useEffect(() => {
@@ -79,15 +81,16 @@ export function StoryReader() {
   // Auto-play pronunciation when word popup is shown
   useEffect(() => {
     if (autoPlayEnabled && speechSupported && selectedWord) {
-      // Small delay to prevent immediate play and give smooth transition
+      // Longer delay for mobile to account for drawer animation + scroll
+      const delay = isWordDrawerOpen ? 500 : 300
       const timer = setTimeout(() => {
         speak(selectedWord.expression, { rate: speechRate })
-      }, 300)
+      }, delay)
       return () => {
         clearTimeout(timer)
       }
     }
-  }, [selectedWord, autoPlayEnabled, speechSupported, speak, speechRate])
+  }, [selectedWord, autoPlayEnabled, speechSupported, speak, speechRate, isWordDrawerOpen])
 
   // Close popover when clicking outside
   useEffect(() => {
@@ -220,6 +223,29 @@ export function StoryReader() {
     }
   }
 
+  const scrollWordIntoView = (wordElement: HTMLElement) => {
+    // Wait for drawer animation to start
+    setTimeout(() => {
+      const rect = wordElement.getBoundingClientRect()
+      const drawerHeight = window.innerHeight * 0.7 // 70vh
+      const visibleAreaBottom = window.innerHeight - drawerHeight
+      const padding = 20 // Extra padding from drawer top
+
+      // Check if word is below the visible area (would be covered by drawer)
+      if (rect.bottom > visibleAreaBottom - padding) {
+        // Scroll word to safe position (1/3 from top of viewport)
+        const targetY = window.innerHeight / 3
+        const scrollAmount = rect.top - targetY
+
+        window.scrollBy({
+          top: scrollAmount,
+          behavior: 'smooth'
+        })
+      }
+      // If word is already visible above drawer, don't scroll
+    }, 100)
+  }
+
   const handleWordClick = async (event: React.MouseEvent) => {
     if (!storyId) return
 
@@ -229,59 +255,79 @@ export function StoryReader() {
 
     if (!start || !end) return
 
-    // Position popover near the clicked word
-    const rect = target.getBoundingClientRect()
-    const popoverHeight = 400 // Approximate height of popover
-    const popoverWidth = 400 // Fixed width from the Card component
-    const spaceAbove = rect.top
-    const spaceBelow = window.innerHeight - rect.bottom
+    // Store reference to clicked word for scroll positioning
+    clickedWordRef.current = target
 
-    // Decide whether to show above or below based on available space
-    const showBelow = spaceBelow > popoverHeight || spaceBelow > spaceAbove
+    // Detect if mobile or desktop
+    const isMobile = window.innerWidth < 1024
 
-    // Calculate horizontal positioning to keep popup within viewport
-    const wordCenterX = rect.left + rect.width / 2
-    const halfPopoverWidth = popoverWidth / 2
-    const padding = 16 // Padding from viewport edges
+    if (isMobile) {
+      // Mobile: Open bottom drawer
+      setIsWordDrawerOpen(true)
+      setSelectedWord(null) // Show loading state
 
-    let horizontalAlign: 'left' | 'center' | 'right' = 'center'
-    let x = wordCenterX
+      try {
+        const result = await dispatch(getWordDetails({
+          storyId,
+          start: parseInt(start),
+          end: parseInt(end),
+        })).unwrap()
 
-    // Check if popup would overflow on the left
-    if (wordCenterX - halfPopoverWidth < padding) {
-      horizontalAlign = 'left'
-      x = padding + halfPopoverWidth
-    }
-    // Check if popup would overflow on the right
-    else if (wordCenterX + halfPopoverWidth > window.innerWidth - padding) {
-      horizontalAlign = 'right'
-      x = window.innerWidth - padding - halfPopoverWidth
-    }
+        setSelectedWord(result)
 
-    // Show popover immediately with position
-    setPopoverPosition({
-      x: x,
-      y: showBelow ? rect.bottom + 4 : rect.top - 4,
-      showBelow: showBelow,
-      horizontalAlign: horizontalAlign,
-    })
+        // Smart scroll to keep word visible
+        scrollWordIntoView(target)
+      } catch (error) {
+        console.error('Failed to fetch word details:', error)
+        // Close drawer on error
+        setIsWordDrawerOpen(false)
+      }
+    } else {
+      // Desktop: Keep existing popover logic
+      const rect = target.getBoundingClientRect()
+      const popoverHeight = 400
+      const popoverWidth = 400
+      const spaceAbove = rect.top
+      const spaceBelow = window.innerHeight - rect.bottom
 
-    // Clear previous word to show loading state
-    setSelectedWord(null)
+      const showBelow = spaceBelow > popoverHeight || spaceBelow > spaceAbove
 
-    // Fetch word details from API
-    try {
-      const result = await dispatch(getWordDetails({
-        storyId,
-        start: parseInt(start),
-        end: parseInt(end),
-      })).unwrap()
+      const wordCenterX = rect.left + rect.width / 2
+      const halfPopoverWidth = popoverWidth / 2
+      const padding = 16
 
-      setSelectedWord(result)
-    } catch (error) {
-      console.error('Failed to fetch word details:', error)
-      // Hide popover on error
-      setPopoverPosition(null)
+      let horizontalAlign: 'left' | 'center' | 'right' = 'center'
+      let x = wordCenterX
+
+      if (wordCenterX - halfPopoverWidth < padding) {
+        horizontalAlign = 'left'
+        x = padding + halfPopoverWidth
+      } else if (wordCenterX + halfPopoverWidth > window.innerWidth - padding) {
+        horizontalAlign = 'right'
+        x = window.innerWidth - padding - halfPopoverWidth
+      }
+
+      setPopoverPosition({
+        x: x,
+        y: showBelow ? rect.bottom + 4 : rect.top - 4,
+        showBelow: showBelow,
+        horizontalAlign: horizontalAlign,
+      })
+
+      setSelectedWord(null)
+
+      try {
+        const result = await dispatch(getWordDetails({
+          storyId,
+          start: parseInt(start),
+          end: parseInt(end),
+        })).unwrap()
+
+        setSelectedWord(result)
+      } catch (error) {
+        console.error('Failed to fetch word details:', error)
+        setPopoverPosition(null)
+      }
     }
   }
 
@@ -427,7 +473,7 @@ export function StoryReader() {
       {popoverPosition && (
         <div
           ref={popoverRef}
-          className="fixed z-50 animate-in fade-in zoom-in-95 duration-200"
+          className="hidden lg:block fixed z-50 animate-in fade-in zoom-in-95 duration-200"
           style={{
             left: `${popoverPosition.x}px`,
             top: `${popoverPosition.y}px`,
@@ -524,8 +570,8 @@ export function StoryReader() {
 
       {/* Mobile Bottom Drawer */}
       {isVocabDrawerOpen && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-sidebar rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
-          <div className="sticky top-0 bg-sidebar p-4 border-b border-border flex items-center justify-between">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
+          <div className="sticky top-0 bg-card p-4 border-b border-border flex items-center justify-between">
             <h2 className="font-semibold">Vocabulary List</h2>
             <Button
               variant="ghost"
@@ -538,6 +584,125 @@ export function StoryReader() {
           </div>
           <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} />
         </div>
+      )}
+
+      {/* Mobile Word Details Drawer */}
+      {isWordDrawerOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => {
+              setIsWordDrawerOpen(false)
+              setSelectedWord(null)
+              clickedWordRef.current = null
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Drawer */}
+          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
+            {/* Sticky Header */}
+            <div className="sticky top-0 bg-card p-4 border-b border-border flex items-center justify-between">
+              {selectedWord ? (
+                <div className="flex items-center gap-2 flex-1">
+                  <h3 className="font-semibold text-lg">{selectedWord.expression}</h3>
+                  <SpeakerButton
+                    text={selectedWord.expression}
+                    size="sm"
+                    variant="ghost"
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span className="text-muted-foreground">Loading...</span>
+                </div>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  setIsWordDrawerOpen(false)
+                  setSelectedWord(null)
+                  clickedWordRef.current = null
+                }}
+                aria-label="Close word details"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Content */}
+            {selectedWord && (
+              <div className="p-6 space-y-4">
+                {/* Grammatical info */}
+                <p className="text-muted-foreground text-sm italic">
+                  {selectedWord.grammatical_info}
+                </p>
+
+                {/* Translation */}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">
+                    Translation
+                  </p>
+                  <p className="text-base">{selectedWord.translation}</p>
+                </div>
+
+                {/* Sentence translation */}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">
+                    Sentence translation
+                  </p>
+                  <p className="text-sm text-card-foreground">
+                    {selectedWord.sentence_translation}
+                  </p>
+                </div>
+
+                {/* Example sentence */}
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">
+                    Example
+                  </p>
+                  <p className="text-sm italic text-card-foreground">
+                    {selectedWord.example_sentence}
+                  </p>
+                </div>
+
+                {/* Add to vocabulary button */}
+                <Button
+                  className="w-full gap-2"
+                  onClick={() => {
+                    if (!selectedWord) return
+                    const newWord = {
+                      id: `${Date.now()}-${selectedWord.expression}`,
+                      word: selectedWord.expression,
+                      translation: selectedWord.translation,
+                      timestamp: Date.now(),
+                      grammatical_info: selectedWord.grammatical_info,
+                      sentence_translation: selectedWord.sentence_translation,
+                      example_sentence: selectedWord.example_sentence,
+                    }
+                    dispatch(addWord(newWord))
+                    setIsWordDrawerOpen(false)
+                    setSelectedWord(null)
+                    clickedWordRef.current = null
+                  }}
+                  disabled={savedWords.some(w =>
+                    w.word.toLowerCase() === selectedWord.expression.toLowerCase()
+                  )}
+                >
+                  <Plus className="h-4 w-4" />
+                  {savedWords.some(w =>
+                    w.word.toLowerCase() === selectedWord.expression.toLowerCase()
+                  )
+                    ? "Already in list"
+                    : "Add to vocabulary list"}
+                </Button>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   )
