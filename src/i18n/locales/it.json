@@ -367,5 +367,8 @@
     "emptyState": "Nessuna parola salvata ancora",
     "emptyStateHelp": "Fai clic sulle parole nel testo per aggiungerle qui",
     "closeDrawer": "Chiudi elenco vocaboli"
+  },
+  "storyReader": {
+    "translationError": "Impossibile caricare la traduzione della parola. Per favore riprova."
   }
 }

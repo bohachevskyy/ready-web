@@ -85,6 +85,7 @@ interface StoriesState {
   isSavingWords: boolean
   isSubmittingFeedback: boolean
   error: string | null
+  wordDetailsError: string | null
 }
 
 const initialState: StoriesState = {
@@ -97,6 +98,7 @@ const initialState: StoriesState = {
   isSavingWords: false,
   isSubmittingFeedback: false,
   error: null,
+  wordDetailsError: null,
 }
 
 // Async thunk to generate a story
@@ -257,9 +259,13 @@ export const storiesSlice = createSlice({
       state.questions = []
       state.wordDetails = null
       state.error = null
+      state.wordDetailsError = null
     },
     clearWordDetails: (state) => {
       state.wordDetails = null
+    },
+    clearWordDetailsError: (state) => {
+      state.wordDetailsError = null
     },
   },
   extraReducers: (builder) => {
@@ -308,7 +314,7 @@ export const storiesSlice = createSlice({
       // Get word details
       .addCase(getWordDetails.pending, (state) => {
         state.isLoadingWordDetails = true
-        state.error = null
+        state.wordDetailsError = null
       })
       .addCase(getWordDetails.fulfilled, (state, action) => {
         state.isLoadingWordDetails = false
@@ -316,7 +322,7 @@ export const storiesSlice = createSlice({
       })
       .addCase(getWordDetails.rejected, (state, action) => {
         state.isLoadingWordDetails = false
-        state.error = action.payload || 'Failed to get word details'
+        state.wordDetailsError = action.payload || 'Failed to get word details'
       })
 
       // Save words
@@ -334,6 +340,6 @@ export const storiesSlice = createSlice({
   },
 })
 
-export const { clearStory, clearWordDetails } = storiesSlice.actions
+export const { clearStory, clearWordDetails, clearWordDetailsError } = storiesSlice.actions
 
 export default storiesSlice.reducer

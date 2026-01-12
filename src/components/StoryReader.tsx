@@ -9,17 +9,20 @@ import { VocabularyList } from "./VocabularyList"
 import { QuizView } from "./QuizView"
 import { StoryLoading } from "./StoryLoading"
 import { SpeakerButton } from "./ui/speaker-button"
+import { Toast } from "./ui/toast"
 import { addWord, removeWord, clearAllWords } from "../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../store/storySlice"
 import { generateStory, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import type { SavedWord } from "../types"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
+import { useTranslation } from "../i18n/useTranslation"
 
 export function StoryReader() {
   const { domain } = useParams<{ domain: string }>()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const { t } = useTranslation()
   const savedWords = useAppSelector((state) => state.vocabulary.savedWords)
   const storyId = useAppSelector((state) => state.story.id)
   const storyText = useAppSelector((state) => state.story.text)
@@ -50,6 +53,7 @@ export function StoryReader() {
   const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
   const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
   const [isWordDrawerOpen, setIsWordDrawerOpen] = useState<boolean>(false)
+  const [translationError, setTranslationError] = useState<string | null>(null)
   const clickedWordRef = useRef<HTMLElement | null>(null)
 
   // Fetch story on component mount
@@ -279,8 +283,9 @@ export function StoryReader() {
         scrollWordIntoView(target)
       } catch (error) {
         console.error('Failed to fetch word details:', error)
-        // Close drawer on error
+        // Close drawer and show error toast
         setIsWordDrawerOpen(false)
+        setTranslationError(t('storyReader.translationError'))
       }
     } else {
       // Desktop: Keep existing popover logic
@@ -327,6 +332,7 @@ export function StoryReader() {
       } catch (error) {
         console.error('Failed to fetch word details:', error)
         setPopoverPosition(null)
+        setTranslationError(t('storyReader.translationError'))
       }
     }
   }
@@ -703,6 +709,14 @@ export function StoryReader() {
             )}
           </div>
         </>
+      )}
+
+      {/* Translation error toast */}
+      {translationError && (
+        <Toast
+          message={translationError}
+          onClose={() => setTranslationError(null)}
+        />
       )}
     </div>
   )
