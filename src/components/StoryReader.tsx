@@ -41,7 +41,7 @@ export function StoryReader() {
 
   // Track if story has been fetched to prevent duplicate requests
   const hasFetchedStory = useRef(false)
-  
+
   // Ref for the popover element to detect outside clicks
   const popoverRef = useRef<HTMLDivElement>(null)
 
@@ -103,7 +103,7 @@ export function StoryReader() {
         // Check if the click is on a word (which should open a new popover, not close the current one)
         const target = event.target as HTMLElement
         const isWordClick = target.closest('[data-start][data-end]') !== null
-        
+
         // Only close if it's not a word click
         if (!isWordClick) {
           setSelectedWord(null)
@@ -117,7 +117,7 @@ export function StoryReader() {
       const timer = setTimeout(() => {
         document.addEventListener('mousedown', handleClickOutside)
       }, 100)
-      
+
       return () => {
         clearTimeout(timer)
         document.removeEventListener('mousedown', handleClickOutside)
@@ -455,9 +455,9 @@ export function StoryReader() {
 
           {view === 'story' && !storyError && (
             <div className="flex justify-center mt-8">
-              <Button 
-                onClick={handleFinish} 
-                size="lg" 
+              <Button
+                onClick={handleFinish}
+                size="lg"
                 className="px-8 bg-primary text-primary-foreground hover:bg-primary/90"
                 disabled={isLoadingQuestions}
               >
