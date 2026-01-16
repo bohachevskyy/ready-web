@@ -1,14 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RecaptchaVerifier } from 'firebase/auth';
-import { AsYouType } from 'libphonenumber-js';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail, initializeRecaptcha, sendPhoneOTP, verifyPhoneOTP } from '../services/firebaseAuth';
+import { signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail } from '../services/firebaseAuth';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Apple, Phone, Mail, Eye, EyeOff } from 'lucide-react';
+import { Apple, Mail, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
 
 export function Login() {
@@ -18,125 +16,14 @@ export function Login() {
   const { error } = useAppSelector((state) => state.auth);
 
   const [authError, setAuthError] = useState<string | null>(null);
-  const [method, setMethod] = useState<'choice' | 'phone' | 'email'>('choice');
-  const [step, setStep] = useState<'input' | 'otp'>('input');
+  const [method, setMethod] = useState<'choice' | 'email'>('choice');
   const [emailMode, setEmailMode] = useState<'signin' | 'signup'>('signin');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [otp, setOtp] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
-  const recaptchaInitialized = useRef(false);
-
-  useEffect(() => {
-    // Initialize reCAPTCHA only once when component mounts
-    if (!recaptchaInitialized.current) {
-      // Small delay to ensure DOM is ready
-      const timer = setTimeout(() => {
-        try {
-          // Use 'invisible' for better UX - it will automatically verify
-          recaptchaVerifierRef.current = initializeRecaptcha('recaptcha-container', 'invisible');
-          recaptchaInitialized.current = true;
-          console.log('reCAPTCHA initialized successfully');
-        } catch (err) {
-          console.error('Failed to initialize reCAPTCHA:', err);
-          setAuthError(t('auth.errors.recaptchaInit'));
-        }
-      }, 100);
-
-      return () => {
-        clearTimeout(timer);
-        // Clean up reCAPTCHA on component unmount
-        if (recaptchaVerifierRef.current) {
-          try {
-            recaptchaVerifierRef.current.clear();
-            recaptchaVerifierRef.current = null;
-          } catch (err) {
-            console.error('Error clearing reCAPTCHA:', err);
-          }
-        }
-      };
-    }
-  }, [t]);
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value;
-    const formatter = new AsYouType('US');
-    const formatted = formatter.input(input);
-    setPhoneNumber(formatted);
-  };
-
-  const handlePhoneSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!phoneNumber || phoneNumber.length < 10) {
-      setAuthError(t('auth.errors.invalidPhone'));
-      return;
-    }
-
-    if (!recaptchaVerifierRef.current) {
-      setAuthError(t('auth.errors.recaptchaNotReady'));
-      return;
-    }
-
-    setIsSubmitting(true);
-    setAuthError(null);
-
-    try {
-      // Convert formatted number to E.164 format for Firebase
-      const cleanNumber = phoneNumber.replace(/\D/g, '');
-      const e164Number = cleanNumber.startsWith('1') ? `+${cleanNumber}` : `+1${cleanNumber}`;
-
-      await sendPhoneOTP(e164Number, recaptchaVerifierRef.current);
-      setStep('otp');
-    } catch (err: any) {
-      console.error('Error sending OTP:', err);
-      if (err.code === 'auth/invalid-phone-number') {
-        setAuthError(t('auth.errors.invalidPhoneFormat'));
-      } else if (err.code === 'auth/too-many-requests') {
-        setAuthError(t('auth.errors.tooManyAttempts'));
-      } else {
-        setAuthError(t('auth.errors.sendCodeFailed'));
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleOtpSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!otp || otp.length !== 6) {
-      setAuthError(t('auth.errors.invalidCode'));
-      return;
-    }
-
-    setIsSubmitting(true);
-    setAuthError(null);
-
-    try {
-      await verifyPhoneOTP(otp, dispatch);
-      navigate('/');
-    } catch (err: any) {
-      console.error('Error verifying OTP:', err);
-      if (err.code === 'auth/invalid-verification-code') {
-        setAuthError(t('auth.errors.invalidVerificationCode'));
-      } else if (err.code === 'auth/code-expired') {
-        setAuthError(t('auth.errors.codeExpired'));
-        setStep('input');
-        setOtp('');
-      } else {
-        setAuthError(t('auth.errors.verifyCodeFailed'));
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const handleSocialLogin = async (provider: 'google' | 'apple') => {
     try {
@@ -216,7 +103,7 @@ export function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md p-8 bg-card shadow-lg">
+      <Card className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl p-8 bg-card shadow-lg">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">{t('auth.welcome')}</h1>
           <p className="text-muted-foreground">{t('auth.signInPrompt')}</p>
@@ -267,104 +154,12 @@ export function Login() {
               variant="outline"
               className="w-full bg-transparent"
               size="lg"
-              onClick={() => {
-                setMethod('phone');
-                setStep('input');
-              }}
-            >
-              <Phone className="h-5 w-5" />
-              {t('auth.continueWithPhone')}
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full bg-transparent"
-              size="lg"
-              onClick={() => {
-                setMethod('email');
-                setStep('input');
-              }}
+              onClick={() => setMethod('email')}
             >
               <Mail className="h-5 w-5" />
               {t('auth.continueWithEmail')}
             </Button>
           </div>
-        )}
-
-        {method === 'phone' && step === 'input' && (
-          <form onSubmit={handlePhoneSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="phone">{t('auth.phone.label')}</Label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder={t('auth.phone.placeholder')}
-                value={phoneNumber}
-                onChange={handlePhoneChange}
-                disabled={isSubmitting}
-                className="text-base"
-              />
-            </div>
-
-            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-              {isSubmitting ? t('auth.phone.sending') : t('auth.phone.sendCode')}
-            </Button>
-
-            <Button
-              type="button"
-              variant="ghost"
-              className="w-full"
-              onClick={() => {
-                setMethod('choice');
-                setPhoneNumber('');
-                setAuthError(null);
-              }}
-            >
-              {t('auth.phone.backToOptions')}
-            </Button>
-          </form>
-        )}
-
-        {method === 'phone' && step === 'otp' && (
-          <form onSubmit={handleOtpSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="otp">{t('auth.phone.verificationCode')}</Label>
-              <p className="text-sm text-muted-foreground mb-4">
-                {t('auth.phone.enterCode', { phoneNumber })}
-              </p>
-              <Input
-                id="otp"
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                placeholder={t('auth.phone.codePlaceholder')}
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                disabled={isSubmitting}
-                className="text-center text-2xl tracking-widest"
-                autoFocus
-              />
-            </div>
-
-            <Button type="submit" className="w-full" size="lg" disabled={isSubmitting || otp.length !== 6}>
-              {isSubmitting ? t('auth.phone.verifying') : t('auth.phone.verifyAndContinue')}
-            </Button>
-
-            <Button
-              type="button"
-              variant="ghost"
-              className="w-full"
-              onClick={() => {
-                setStep('input');
-                setOtp('');
-                setAuthError(null);
-              }}
-            >
-              {t('auth.phone.backToNumber')}
-            </Button>
-          </form>
         )}
 
         {method === 'email' && (
@@ -471,9 +266,6 @@ export function Login() {
             {error || authError}
           </div>
         )}
-
-        {/* reCAPTCHA container - Firebase requires this element for phone auth */}
-        <div id="recaptcha-container" className="mt-4"></div>
       </Card>
     </div>
   );
