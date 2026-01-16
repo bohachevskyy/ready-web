@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#34D399"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Clean rounded square background -->
+  <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#grad)"/>
+  
+  <!-- Bold minimalist R -->
+  <text 
+    x="256" 
+    y="300" 
+    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+    font-size="340" 
+    font-weight="800" 
+    fill="white" 
+    text-anchor="middle" 
+    dominant-baseline="middle"
+    letter-spacing="-0.02em">R</text>
+</svg>
