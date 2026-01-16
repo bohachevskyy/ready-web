@@ -40,7 +40,8 @@ Please use playwright MCP to test any feature you are adding. Rely on it and tes
 - **Test**: `npm test`
 - **Build**: `npm run build`
 - **Lint**: `npm run lint`
-- **Start dev server**: `npm start`
+- **Start dev server**: `npm run dev`
+- **Start production server**: `npm start` (serves built files)
 
 ## Preferences
 - Use conventional commit messages
