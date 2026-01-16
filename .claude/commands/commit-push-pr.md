@@ -7,4 +7,4 @@ Commit all current changes with a concise commit message (one sentence, max 10 w
 
 Stage all files using `git add .` without reviewing git history.
 
-If the current branch is main, prompt the user for a new branch name before proceeding.
+If the current branch is main, use best judgment to name a new branch and create it.
