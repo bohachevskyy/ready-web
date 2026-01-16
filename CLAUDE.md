@@ -6,10 +6,16 @@ Don't look at the node modules during the planning stage. Only rely on the code.
 
 # Workflow
 
+### Git and github
+- Use github MCP to make a PR;
+- Never include testing plan to Github description;
+- Make PR description and commit messages short and concise. Only include what has been changed;
+
 ### Component Design
 - Keep components extremely simple
 - Place all logic in **hooks**, **services**, or **store**
-- Cover all the bsuiness logic with unit tests
+- Cover all the business logic with unit tests
+- Keep business logic related to components in hook. User services only for reusable business logic (authentication)
 
 ### I8N
 - Whenever you add new text to the UI, make sure to add its translation to i18n as well. Avoid displaying untranslated text directly on the screen.
