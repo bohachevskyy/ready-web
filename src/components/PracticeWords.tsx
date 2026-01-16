@@ -10,6 +10,7 @@ import { toggleAutoPlay } from "../store/speechSettingsSlice"
 import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { useWordCount } from "../hooks/useWordCount"
 import { usePracticeKeyboard } from "../hooks/usePracticeKeyboard"
+import { usePracticeSession } from "../hooks/usePracticeSession"
 import { useTranslation } from "../i18n/useTranslation"
 import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
 
@@ -42,6 +43,9 @@ export function PracticeWords() {
 
   // Word count hook (auto-fetches when undefined)
   const { wordsCount } = useWordCount()
+
+  // Practice session hook
+  const { shouldContinueSession } = usePracticeSession()
 
   // Initialize cards from Redux state - fetch on mount
   useEffect(() => {
@@ -129,8 +133,20 @@ export function PracticeWords() {
       newCards[currentIndex] = updatedCard
       setCards(newCards)
 
+      // Calculate what wordsCount will be after optimistic decrement
+      // submitWordReview.pending decrements wordsCount by 1
+      const updatedWordsCount = wordsCount !== undefined && wordsCount > 0 ? wordsCount - 1 : wordsCount
+
+      // Determine if we should continue to next word or complete session
+      const shouldContinue = shouldContinueSession({
+        currentIndex,
+        totalCards: cards.length,
+        sessionTotal,
+        wordsCount: updatedWordsCount,
+      })
+
       // Move to next card - Redux manages currentIndex
-      if (currentIndex < cards.length - 1) {
+      if (shouldContinue) {
         dispatch(nextWord())
         setShowTranslation(false)
         setTimer(0)
@@ -144,7 +160,7 @@ export function PracticeWords() {
       console.error('Failed to submit review:', error)
       // Optimistic update already rolled back in rejected state
     }
-  }, [cards, currentIndex, cancel, dispatch])
+  }, [cards, currentIndex, cancel, dispatch, sessionTotal, wordsCount, shouldContinueSession])
 
   const handleShowTranslation = useCallback(() => {
     setShowTranslation(true)
