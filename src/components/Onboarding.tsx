@@ -120,7 +120,7 @@ export function Onboarding() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md p-8 bg-card shadow-lg">
+      <Card className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl mx-auto p-8 bg-card shadow-lg">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">{t('onboarding.welcome')}</h1>
           <p className="text-muted-foreground">
