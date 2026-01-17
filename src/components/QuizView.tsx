@@ -32,7 +32,6 @@ export function QuizView({
     correctAnswers,
     allQuestionsCorrect,
     handleAnswerSelect,
-    isQuestionAnswered,
   } = useQuizState({ questions, onAttempt })
 
   // Test mode: highlights correct answers for local testing
