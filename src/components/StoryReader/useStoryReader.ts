@@ -8,6 +8,7 @@ import type { SavedWord } from "../../types"
 import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis"
 import { useTranslation } from "../../i18n/useTranslation"
 import type { PopoverPosition } from "./types"
+import { incrementAttempt, buildQuestionAttempts } from "../../utils/attemptTracking"
 
 export function useStoryReader() {
   const { domain } = useParams<{ domain: string }>()
@@ -33,13 +34,16 @@ export function useStoryReader() {
   // Track if story has been fetched to prevent duplicate requests
   const hasFetchedStory = useRef(false)
 
+  // Track session start time for feedback
+  const sessionStartTime = useRef<number | null>(null)
+
   // Ref for the popover element to detect outside clicks
   const popoverRef = useRef<HTMLDivElement>(null)
 
   // Questions state
   const [view, setView] = useState<'story' | 'questions'>('story')
   const [questions, setQuestions] = useState<Question[]>([])
-  const [attemptCounts] = useState<Record<string, number>>({})
+  const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({})
   const [feedbackSubmitted] = useState(false)
   const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
   const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
@@ -63,6 +67,7 @@ export function useStoryReader() {
         dispatch(setStoryId(result.id))
         dispatch(setStoryText(result.story))
         dispatch(setTranslations(result.translations))
+        sessionStartTime.current = Date.now()
       } catch (err) {
         console.error('Failed to fetch story:', err)
         // Fallback to sample text if API fails
@@ -148,10 +153,12 @@ export function useStoryReader() {
       await dispatch(submitFeedback({
         storyId,
         feedback: {
-          start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          start_time: sessionStartTime.current
+            ? new Date(sessionStartTime.current).toISOString()
+            : new Date().toISOString(),
           end_time: new Date().toISOString(),
           is_skipped: false,
-          question_attempts: questions.map(q => attemptCounts[q.id] || 0),
+          question_attempts: buildQuestionAttempts(questions, attemptCounts),
           is_liked: likeStatus === "like",
           is_disliked: likeStatus === "dislike",
           feedback_text: likeStatus === "like" ? "Story liked" : likeStatus === "dislike" ? "Story disliked" : "Story completed"
@@ -176,6 +183,10 @@ export function useStoryReader() {
     setLikeStatus(newStatus)
   }, [likeStatus])
 
+  const handleAttempt = useCallback((questionId: string) => {
+    setAttemptCounts(prev => incrementAttempt(prev, questionId))
+  }, [])
+
   const handleSkip = useCallback(async () => {
     if (!storyId) return
 
@@ -196,10 +207,12 @@ export function useStoryReader() {
       await dispatch(submitFeedback({
         storyId,
         feedback: {
-          start_time: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+          start_time: sessionStartTime.current
+            ? new Date(sessionStartTime.current).toISOString()
+            : new Date().toISOString(),
           end_time: new Date().toISOString(),
           is_skipped: true,
-          question_attempts: questions.map(q => attemptCounts[q.id] || 0),
+          question_attempts: buildQuestionAttempts(questions, attemptCounts),
           is_liked: likeStatus === "like",
           is_disliked: likeStatus === "dislike",
           feedback_text: "Story skipped"
@@ -417,6 +430,7 @@ export function useStoryReader() {
     handleComplete,
     handleSkip,
     handleLikeFeedback,
+    handleAttempt,
     handleRemoveWord,
     addWordToList,
     addWordToListAndCloseDrawer,

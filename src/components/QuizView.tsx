@@ -1,9 +1,8 @@
-import { useState, useMemo } from "react"
 import { Card } from "./ui/card"
 import { Button } from "./ui/button"
 import { Loader2, ThumbsUp, ThumbsDown } from "lucide-react"
 import type { Question } from "../store/storiesSlice"
-import { prepareQuizQuestions, checkAllQuestionsCorrect } from "../utils/quizUtils"
+import { useQuizState } from "../hooks/useQuizState"
 
 interface QuizViewProps {
   questions: Question[]
@@ -11,6 +10,7 @@ interface QuizViewProps {
   onComplete: () => void
   onSkip: () => void
   onLikeFeedback: (status: "like" | "dislike") => void
+  onAttempt: (questionId: string) => void
   likeStatus: "like" | "dislike" | null
   feedbackSubmitted: boolean
 }
@@ -21,38 +21,22 @@ export function QuizView({
   onComplete,
   onSkip,
   onLikeFeedback,
+  onAttempt,
   likeStatus,
   feedbackSubmitted
 }: QuizViewProps) {
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({})
-  const [incorrectAnswers, setIncorrectAnswers] = useState<Record<string, boolean>>({})
-  const [correctAnswers, setCorrectAnswers] = useState<Record<string, boolean>>({})
+  const {
+    shuffledQuestions,
+    selectedAnswers,
+    incorrectAnswers,
+    correctAnswers,
+    allQuestionsCorrect,
+    handleAnswerSelect,
+    isQuestionAnswered,
+  } = useQuizState({ questions, onAttempt })
 
-  // Shuffle options once when questions change
-  const shuffledQuestions = useMemo(
-    () => prepareQuizQuestions(questions),
-    [questions]
-  )
-
-          
   // Test mode: highlights correct answers for local testing
   const isTestMode = process.env.REACT_APP_TEST_MODE === 'true'
-
-  const handleAnswerSelect = (questionId: string, answerIndex: number, correctAnswer: number) => {
-    setSelectedAnswers(prev => ({ ...prev, [questionId]: answerIndex }))
-
-    if (answerIndex === correctAnswer) {
-      // Correct answer
-      setCorrectAnswers(prev => ({ ...prev, [questionId]: true }))
-      setIncorrectAnswers(prev => ({ ...prev, [questionId]: false }))
-    } else {
-      // Incorrect answer
-      setIncorrectAnswers(prev => ({ ...prev, [questionId]: true }))
-      setCorrectAnswers(prev => ({ ...prev, [questionId]: false }))
-    }
-  }
-
-  const allQuestionsCorrect = checkAllQuestionsCorrect(questions, correctAnswers)
 
   if (isLoading) {
     return (
