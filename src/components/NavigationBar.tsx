@@ -27,7 +27,7 @@ export function NavigationBar({ onHomeClick, onLogout, onAccountClick }: Navigat
             variant="ghost"
             size="sm"
             onClick={onAccountClick}
-            className="gap-2 hover:bg-secondary/10"
+            className="gap-2 hover:bg-secondary/10 hover:text-secondary-foreground"
           >
             <UserRoundCog className="h-5 w-5" />
             <span className="font-medium">{t('navigation.account')}</span>
