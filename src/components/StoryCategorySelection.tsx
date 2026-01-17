@@ -1,6 +1,6 @@
 import { Card } from "./ui/card"
 import { useTranslation } from "../i18n/useTranslation"
-import { useUserAge } from "../hooks/useUserAge"
+import { useStoryCategories, CategoryType } from "../hooks/useStoryCategories"
 import {
   BookOpen,
   Sparkles,
@@ -120,20 +120,25 @@ const TEEN_DOMAINS: Record<string, DomainConfig> = {
   },
 }
 
+const CATEGORY_CONFIGS: Record<CategoryType, {
+  domains: Record<string, DomainConfig>
+  icon: React.ComponentType<{ className?: string }>
+}> = {
+  teens: { domains: TEEN_DOMAINS, icon: Users },
+  nonfiction: { domains: NONFICTION_DOMAINS, icon: BookOpen },
+  fiction: { domains: FICTION_DOMAINS, icon: Sparkles },
+}
+
 export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectionProps) {
   const { t } = useTranslation()
-  const { isBelow16 } = useUserAge()
+  const { visibleCategories } = useStoryCategories()
 
-  // Render a category section
-  const renderCategorySection = (
-    title: string,
-    icon: React.ComponentType<{ className?: string }>,
-    domains: Record<string, DomainConfig>,
-    categoryKey: 'nonfiction' | 'fiction' | 'teens'
-  ) => {
-    const Icon = icon
+  const renderCategorySection = (categoryKey: CategoryType) => {
+    const { domains, icon: Icon } = CATEGORY_CONFIGS[categoryKey]
+    const title = t(`stories.categories.${categoryKey}`)
+
     return (
-      <div>
+      <div key={categoryKey}>
         <div className="flex items-center gap-3 mb-6">
           <Icon className="h-6 w-6 text-primary" />
           <h2 className="text-2xl font-bold text-foreground">{title}</h2>
@@ -173,49 +178,7 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
         </div>
 
         <div className="space-y-12">
-          {isBelow16 ? (
-            <>
-              {renderCategorySection(
-                t('stories.categories.teens'),
-                Users,
-                TEEN_DOMAINS,
-                'teens'
-              )}
-              {renderCategorySection(
-                t('stories.categories.nonfiction'),
-                BookOpen,
-                NONFICTION_DOMAINS,
-                'nonfiction'
-              )}
-              {renderCategorySection(
-                t('stories.categories.fiction'),
-                Sparkles,
-                FICTION_DOMAINS,
-                'fiction'
-              )}
-            </>
-          ) : (
-            <>
-              {renderCategorySection(
-                t('stories.categories.nonfiction'),
-                BookOpen,
-                NONFICTION_DOMAINS,
-                'nonfiction'
-              )}
-              {renderCategorySection(
-                t('stories.categories.fiction'),
-                Sparkles,
-                FICTION_DOMAINS,
-                'fiction'
-              )}
-              {renderCategorySection(
-                t('stories.categories.teens'),
-                Users,
-                TEEN_DOMAINS,
-                'teens'
-              )}
-            </>
-          )}
+          {visibleCategories.map(renderCategorySection)}
         </div>
       </div>
     </div>
