@@ -10,6 +10,7 @@ Don't look at the node modules during the planning stage. Only rely on the code.
 - Use github MCP to make a PR;
 - Never include testing plan to Github description;
 - Make PR description and commit messages short and concise. Only include what has been changed;
+- If you see changes in CLAUDE.md include them to commit. CLAUDE.md is committable and stored inside git
 
 ### Component Design
 - Keep components extremely simple
@@ -32,6 +33,7 @@ Don't look at the node modules during the planning stage. Only rely on the code.
 
 ### Verification
 - After finishing a feature, test it in the browser to ensure correct operation
+- For sign in use the following credentials: `claude@gmail.com` and `Password1!`
 
 ## Testing
 
