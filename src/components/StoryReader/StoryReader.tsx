@@ -1,3 +1,4 @@
+import { useRef, useEffect } from "react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
@@ -12,6 +13,8 @@ import { WordDrawer } from "./WordDrawer"
 import { VocabDrawer } from "./VocabDrawer"
 
 export function StoryReader() {
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
   const {
     // State
     view,
@@ -47,6 +50,13 @@ export function StoryReader() {
     clearTranslationError,
   } = useStoryReader()
 
+  // Scroll to top when transitioning to questions view
+  useEffect(() => {
+    if (view === 'questions' && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'auto' })
+    }
+  }, [view])
+
   // Show full-screen loading animation while generating story
   if (isGeneratingStory) {
     return <StoryLoading />
@@ -55,7 +65,7 @@ export function StoryReader() {
   return (
     <div className="flex h-screen bg-background">
       {/* Main reading area */}
-      <div className="flex-1 flex flex-col p-8 overflow-auto">
+      <div ref={scrollContainerRef} className="flex-1 flex flex-col p-8 overflow-auto">
         <h1 className="text-2xl font-semibold mb-8 text-foreground">
           {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
         </h1>
