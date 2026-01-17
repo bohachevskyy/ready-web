@@ -2,16 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../store/store';
 import { clearAuth, refreshAccessToken } from '../store/authSlice';
-
-/**
- * Check if token is expired
- */
-function isTokenExpired(tokenExpiresAt: string | null): boolean {
-  if (!tokenExpiresAt) return true;
-  const expirationTime = new Date(tokenExpiresAt).getTime();
-  const currentTime = Date.now();
-  return currentTime >= expirationTime;
-}
+import { isTokenExpired } from '../utils/tokenUtils';
 
 /**
  * Global authentication monitor hook
