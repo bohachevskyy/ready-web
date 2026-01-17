@@ -11,6 +11,7 @@ import { useSpeechSynthesis } from "../hooks/useSpeechSynthesis"
 import { useWordCount } from "../hooks/useWordCount"
 import { usePracticeKeyboard } from "../hooks/usePracticeKeyboard"
 import { usePracticeSession } from "../hooks/usePracticeSession"
+import { useAutoPlayPronunciation } from "../hooks/useAutoPlayPronunciation"
 import { useTranslation } from "../i18n/useTranslation"
 import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
 
@@ -84,17 +85,15 @@ export function PracticeWords() {
   }, [currentIndex, hasNextPage, lastWordId, dispatch])
 
   // Auto-play pronunciation when card changes
-  useEffect(() => {
-    if (autoPlayEnabled && supported && cards.length > 0 && cards[currentIndex]) {
-      // Small delay to prevent immediate play on mount and give smooth transition
-      const timer = setTimeout(() => {
-        speak(cards[currentIndex].word, { rate: speechRate })
-      }, 300)
-      return () => {
-        clearTimeout(timer)
-      }
-    }
-  }, [currentIndex, autoPlayEnabled, supported, cards, speak, speechRate])
+  useAutoPlayPronunciation({
+    autoPlayEnabled,
+    supported,
+    cards,
+    currentIndex,
+    speechRate,
+    sessionComplete,
+    speak,
+  })
 
   // Timer effect
   useEffect(() => {
