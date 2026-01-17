@@ -1,19 +1,27 @@
 import { useMemo } from 'react'
 import { useAppSelector } from '../store/store'
 
+export type AgeGroup = 'under15' | '15-17' | 'adult'
+
+export function getAgeGroup(age: number | null): AgeGroup {
+  if (age === null || age >= 18) return 'adult'
+  if (age < 15) return 'under15'
+  return '15-17'
+}
+
 /**
  * Custom hook to calculate user's age from birth date
  *
  * @returns Object containing:
  *   - age: number | null - The calculated age, or null if birth date is not available
- *   - isBelow16: boolean - Whether the user is below 16 years old
+ *   - ageGroup: AgeGroup - 'under15', '15-17', or 'adult'
  */
 export function useUserAge() {
   const userProfile = useAppSelector((state) => state.user.profile)
 
-  const { age, isBelow16 } = useMemo(() => {
+  const { age, ageGroup } = useMemo(() => {
     if (!userProfile?.birth_year || !userProfile?.birth_month) {
-      return { age: null, isBelow16: false }
+      return { age: null, ageGroup: 'adult' as AgeGroup }
     }
 
     const today = new Date()
@@ -29,9 +37,9 @@ export function useUserAge() {
 
     return {
       age: calculatedAge,
-      isBelow16: calculatedAge < 16
+      ageGroup: getAgeGroup(calculatedAge)
     }
   }, [userProfile?.birth_year, userProfile?.birth_month])
 
-  return { age, isBelow16 }
+  return { age, ageGroup }
 }
