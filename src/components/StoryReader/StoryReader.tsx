@@ -36,6 +36,7 @@ export function StoryReader() {
     handleComplete,
     handleSkip,
     handleLikeFeedback,
+    handleAttempt,
     handleRemoveWord,
     addWordToList,
     addWordToListAndCloseDrawer,
@@ -75,6 +76,7 @@ export function StoryReader() {
                 onComplete={handleComplete}
                 onSkip={handleSkip}
                 onLikeFeedback={handleLikeFeedback}
+                onAttempt={handleAttempt}
                 likeStatus={likeStatus}
                 feedbackSubmitted={feedbackSubmitted}
               />

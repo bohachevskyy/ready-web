@@ -25,6 +25,7 @@ Don't look at the node modules during the planning stage. Only rely on the code.
 - Ensure tests pass before committing
 - Be pragmatic—focus on testing the core business logic
 - Avoid over-testing; keep tests concise and meaningful
+- Don't render components in the tests. Focus on testing hooks.
 
 ### Async Operations
 - Use **Redux Thunk** for async API calls
