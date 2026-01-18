@@ -54,11 +54,6 @@ export function Onboarding() {
     }
   }
 
-  const handleResendEmail = () => {
-    // Backend handles email sending, just show a message
-    console.log("Resend email requested")
-  }
-
   const handleBirthdateNext = () => {
     if (birthMonth > 0 && birthYear > 0) {
       setCurrentStep("language")
@@ -188,7 +183,6 @@ export function Onboarding() {
           <EmailVerificationStep
             email={user?.email || ""}
             onVerified={handleEmailVerified}
-            onResendEmail={handleResendEmail}
           />
         )}
 
