@@ -1,0 +1,10 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B0F1A"/>
+  <rect x="140" y="150" width="920" height="330" rx="36" fill="#111827" stroke="rgba(255,255,255,0.12)"/>
+  <text x="200" y="290" fill="#FFFFFF" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="600">
+    Readerly
+  </text>
+  <text x="200" y="360" fill="#D1D5DB" font-family="Inter, Arial, sans-serif" font-size="32">
+    Learn words in context
+  </text>
+</svg>
