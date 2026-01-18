@@ -17,10 +17,10 @@ export function getAgeGroup(age: number | null): AgeGroup {
  *   - ageGroup: AgeGroup - 'under15', '15-17', or 'adult'
  */
 export function useUserAge() {
-  const userProfile = useAppSelector((state) => state.user.profile)
+  const user = useAppSelector((state) => state.auth.user)
 
   const { age, ageGroup } = useMemo(() => {
-    if (!userProfile?.birth_year || !userProfile?.birth_month) {
+    if (!user?.birth_year || !user?.birth_month) {
       return { age: null, ageGroup: 'adult' as AgeGroup }
     }
 
@@ -28,10 +28,10 @@ export function useUserAge() {
     const currentYear = today.getFullYear()
     const currentMonth = today.getMonth() + 1 // getMonth() returns 0-11
 
-    let calculatedAge = currentYear - userProfile.birth_year
+    let calculatedAge = currentYear - user.birth_year
 
     // Adjust age if birthday hasn't occurred this year yet
-    if (currentMonth < userProfile.birth_month || (currentMonth === userProfile.birth_month && today.getDate() < 1)) {
+    if (currentMonth < user.birth_month || (currentMonth === user.birth_month && today.getDate() < 1)) {
       calculatedAge--
     }
 
@@ -39,7 +39,7 @@ export function useUserAge() {
       age: calculatedAge,
       ageGroup: getAgeGroup(calculatedAge)
     }
-  }, [userProfile?.birth_year, userProfile?.birth_month])
+  }, [user?.birth_year, user?.birth_month])
 
   return { age, ageGroup }
 }
