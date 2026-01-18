@@ -89,7 +89,14 @@
       "clickLink": "Click the link in your email to verify your account",
       "waitingForVerification": "Waiting for verification...",
       "verifiedButton": "I've verified my email",
-      "resendEmail": "Resend verification email"
+      "resendEmail": "Resend verification email",
+      "checking": "Checking...",
+      "checkingStatus": "Checking verification status...",
+      "skip": "Skip for now",
+      "verified": "Email Verified!",
+      "verifiedMessage": "Your email has been successfully verified",
+      "redirecting": "Redirecting in 2 seconds...",
+      "sending": "Sending..."
     },
     "name": {
       "question": "What's your name?",
