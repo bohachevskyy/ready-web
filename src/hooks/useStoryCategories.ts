@@ -8,7 +8,7 @@ export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
     case 'under15':
       return ['teens', 'nonfiction']
     case '15-17':
-      return ['teens', 'nonfiction']
+      return ['teens', 'nonfiction', 'fiction']
     case 'adult':
       return ['nonfiction', 'fiction']
   }
