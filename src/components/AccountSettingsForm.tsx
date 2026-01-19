@@ -7,8 +7,20 @@ import { Label } from './ui/label';
 import { Toast } from './ui/toast';
 import { updateUserLanguageLevel } from '../store/authSlice';
 import { updateLanguageLevel } from '../store/userSlice';
+import { useUserAge, AgeGroup } from '../hooks/useUserAge';
 
 type LanguageLevel = 1 | 2 | 3 | 4 | 5;
+
+export function getAgeGroupDisplay(ageGroup: AgeGroup): string {
+  switch (ageGroup) {
+    case 'under15':
+      return "10-14";
+    case '15-17':
+      return "15-17";
+    case 'adult':
+      return "18+";
+  }
+}
 
 const languageLevels = [
   { level: 1, label: "A1", color: "bg-emerald-400", description: "Beginner" },
@@ -22,10 +34,13 @@ export function useAccountSettings(resetKey?: unknown) {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.user);
   const isSaving = useAppSelector((state) => state.user.isUpdating);
+  const { ageGroup } = useUserAge();
 
   const [languageLevel, setLanguageLevel] = useState<number>(user?.language_level ?? 1);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const ageGroupDisplay = getAgeGroupDisplay(ageGroup);
 
   const fullName = useMemo(() => {
     if (!user) return 'Unknown';
@@ -69,6 +84,7 @@ export function useAccountSettings(resetKey?: unknown) {
   return {
     user,
     fullName,
+    ageGroupDisplay,
     languageLevel,
     setLanguageLevel,
     isSaving,
@@ -93,12 +109,10 @@ export function AccountSettingsForm({
   closeLabel = 'Cancel',
   showCloseButton = true,
 }: AccountSettingsFormProps) {
-  const { user, fullName, languageLevel, setLanguageLevel, isSaving, error, isSuccess, handleSave } =
+  const { fullName, ageGroupDisplay, languageLevel, setLanguageLevel, isSaving, error, isSuccess, handleSave } =
     useAccountSettings(resetKey);
 
   const [showToast, setShowToast] = useState(false);
-
-  const ageGroup = user?.age ? (user.age < 15 ? "10-14" : user.age < 18 ? "15-17" : "18+") : "18+";
 
   useEffect(() => {
     if (isSuccess) {
@@ -131,7 +145,7 @@ export function AccountSettingsForm({
           <div className="space-y-3">
             <Label className="text-base font-semibold">Age Group</Label>
             <div className="rounded-lg border-2 border-primary bg-primary/10 px-6 py-4 text-center text-lg font-medium text-foreground">
-              {ageGroup}
+              {ageGroupDisplay}
             </div>
           </div>
 

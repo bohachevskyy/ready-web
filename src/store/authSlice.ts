@@ -10,7 +10,6 @@ interface User {
   first_name?: string
   last_name?: string
   name?: string
-  age?: number
   language_level?: number
   birth_month?: number
   birth_year?: number
