@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { StoryReader } from './components/StoryReader';
 import { ModeSelection } from './components/ModeSelection';
@@ -10,8 +11,13 @@ import { PracticeWords } from './components/PracticeWords';
 import { Onboarding } from './components/Onboarding';
 import { OnboardingCheck } from './components/OnboardingCheck';
 import { useAuthMonitor } from './hooks/useAuthMonitor';
+import { useSentryUser } from './hooks/useSentryUser';
 import { I18nProvider } from './i18n/i18nContext';
+import { ErrorFallback } from './components/ErrorFallback';
 import './styles/App.css';
+
+// Wrap Routes with Sentry for automatic navigation tracking
+const SentryRoutes = Sentry.withSentryRouting(Routes);
 
 function ModeSelectionWithNavigation() {
   const navigate = useNavigate();
@@ -39,15 +45,17 @@ function StoryCategoryWithNavigation() {
 
 function AuthMonitor() {
   useAuthMonitor();
+  useSentryUser();
   return null;
 }
 
 function App() {
   return (
-    <I18nProvider>
-      <BrowserRouter>
-        <AuthMonitor />
-        <Routes>
+    <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+      <I18nProvider>
+        <BrowserRouter>
+          <AuthMonitor />
+          <SentryRoutes>
           <Route path="/login" element={<Login />} />
           <Route
             path="/onboarding"
@@ -113,9 +121,10 @@ function App() {
               </ProtectedRoute>
             }
           />
-        </Routes>
+        </SentryRoutes>
       </BrowserRouter>
     </I18nProvider>
+    </Sentry.ErrorBoundary>
   );
 }
 
