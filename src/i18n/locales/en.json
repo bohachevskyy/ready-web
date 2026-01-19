@@ -91,6 +91,14 @@
       "verifiedButton": "I've verified my email",
       "resendEmail": "Resend verification email"
     },
+    "name": {
+      "question": "What's your name?",
+      "description": "We'll use this to personalize your experience",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "firstNamePlaceholder": "Enter your first name",
+      "lastNamePlaceholder": "Enter your last name"
+    },
     "birthdate": {
       "question": "When were you born?",
       "description": "This helps us personalize your learning experience",

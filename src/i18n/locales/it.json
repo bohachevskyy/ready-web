@@ -88,6 +88,14 @@
       "verifiedButton": "Ho verificato la mia email",
       "resendEmail": "Reinvia email di verifica"
     },
+    "name": {
+      "question": "Come ti chiami?",
+      "description": "Lo useremo per personalizzare la tua esperienza",
+      "firstName": "Nome",
+      "lastName": "Cognome",
+      "firstNamePlaceholder": "Inserisci il tuo nome",
+      "lastNamePlaceholder": "Inserisci il tuo cognome"
+    },
     "birthdate": {
       "question": "Quando sei nato?",
       "description": "Questo ci aiuta a personalizzare la tua esperienza di apprendimento",

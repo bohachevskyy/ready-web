@@ -88,6 +88,14 @@
       "verifiedButton": "Zweryfikowałem mój email",
       "resendEmail": "Wyślij email weryfikacyjny ponownie"
     },
+    "name": {
+      "question": "Jak masz na imię?",
+      "description": "Użyjemy tego do personalizacji Twojego doświadczenia",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "firstNamePlaceholder": "Wpisz swoje imię",
+      "lastNamePlaceholder": "Wpisz swoje nazwisko"
+    },
     "birthdate": {
       "question": "Kiedy się urodziłeś?",
       "description": "Pomaga nam to spersonalizować Twoje doświadczenie nauki",

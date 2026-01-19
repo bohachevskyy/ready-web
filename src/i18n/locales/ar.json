@@ -88,6 +88,14 @@
       "verifiedButton": "تم تأكيد بريدي الإلكتروني",
       "resendEmail": "إعادة إرسال بريد التحقق"
     },
+    "name": {
+      "question": "ما اسمك؟",
+      "description": "سنستخدم هذا لتخصيص تجربتك",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "firstNamePlaceholder": "أدخل اسمك الأول",
+      "lastNamePlaceholder": "أدخل اسم عائلتك"
+    },
     "birthdate": {
       "question": "متى ولدت؟",
       "description": "هذا يساعدنا على تخصيص تجربة التعلم الخاصة بك",
