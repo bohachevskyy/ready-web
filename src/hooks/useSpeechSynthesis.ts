@@ -26,11 +26,13 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       const loadVoices = () => {
         const availableVoices = window.speechSynthesis.getVoices()
-        // Filter for English (US) voices, or fallback to all English voices
-        const enVoices = availableVoices.filter(
-          voice => voice.lang.startsWith('en-US') || voice.lang.startsWith('en')
-        )
-        setVoices(enVoices.length > 0 ? enVoices : availableVoices)
+        // Filter for English voices only - prioritize en-US, then en-GB, then other English
+        const enUSVoices = availableVoices.filter(v => v.lang.startsWith('en-US'))
+        const enGBVoices = availableVoices.filter(v => v.lang.startsWith('en-GB'))
+        const enOtherVoices = availableVoices.filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
+        const englishVoices = [...enUSVoices, ...enGBVoices, ...enOtherVoices]
+        // Only store English voices - speak() function handles fallback if empty
+        setVoices(englishVoices)
       }
 
       // Load voices immediately
@@ -73,20 +75,34 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Set speech rate
       utterance.rate = options?.rate ?? 1.0
+      
+      // IMPORTANT: Always set language to English to prevent using system locale
+      // This ensures pronunciation is in English even if no English voice is found
+      utterance.lang = 'en-US'
 
-      // Select voice
+      // Get all available voices (fresh fetch to handle async loading)
+      const allVoices = window.speechSynthesis.getVoices()
+      
+      // Filter for English voices with priority: en-US > en-GB > any en-*
+      const enUSVoices = allVoices.filter(v => v.lang.startsWith('en-US'))
+      const enGBVoices = allVoices.filter(v => v.lang.startsWith('en-GB'))
+      const enOtherVoices = allVoices.filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
+      const englishVoices = [...enUSVoices, ...enGBVoices, ...enOtherVoices]
+      
+      // Priority 1: Use user-selected voice if it exists
       if (options?.voice) {
-        const selectedVoice = voices.find(v => v.voiceURI === options.voice)
+        const selectedVoice = allVoices.find(v => v.voiceURI === options.voice)
         if (selectedVoice) {
           utterance.voice = selectedVoice
         }
-      } else {
-        // Default to first en-US voice if available
-        const defaultVoice = voices.find(v => v.lang.startsWith('en-US'))
-        if (defaultVoice) {
-          utterance.voice = defaultVoice
-        }
       }
+      
+      // Priority 2: If no voice set yet, use first available English voice
+      if (!utterance.voice && englishVoices.length > 0) {
+        utterance.voice = englishVoices[0]
+      }
+      
+      // Priority 3: If still no voice, let browser use default with lang=en-US hint
 
       // Event handlers
       utterance.onstart = () => {
@@ -106,9 +122,16 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Store reference and speak
       utteranceRef.current = utterance
+      
+      // Chrome bug workaround: resume synthesis if it got paused
+      // This is a known Chrome issue where speechSynthesis gets stuck after ~15s or when tab is backgrounded
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume()
+      }
+      
       window.speechSynthesis.speak(utterance)
     },
-    [supported, voices, cancel]
+    [supported, cancel]
   )
 
   // Cleanup on unmount
