@@ -16,7 +16,7 @@ import { authMiddleware } from './authMiddleware'
 const authPersistConfig = {
   key: 'auth',
   storage,
-  whitelist: ['token', 'tokenExpiresAt', 'refreshToken', 'refreshTokenExpiresAt', 'user'], // Only persist these fields
+  whitelist: ['token', 'tokenExpiresAt', 'refreshToken', 'refreshTokenExpiresAt', 'user', 'uiLanguage'], // Only persist these fields
 }
 
 const persistedAuthReducer = persistReducer(authPersistConfig, authReducer)

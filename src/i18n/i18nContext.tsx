@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { setUILanguage } from '../store/authSlice';
+import { detectBrowserLanguage } from './languageDetection';
 
 // Import all translation files
 import en from './locales/en.json';
@@ -52,6 +53,15 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const uiLanguage = useSelector((state: RootState) => state.auth.uiLanguage);
   const [language, setLanguageState] = useState<SupportedLanguage>((uiLanguage as SupportedLanguage) || 'en');
   const [isRTL, setIsRTL] = useState(false);
+
+  // Auto-detect browser language on first visit
+  useEffect(() => {
+    if (!uiLanguage) {
+      const detected = detectBrowserLanguage();
+      dispatch(setUILanguage(detected));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
 
   useEffect(() => {
     if (uiLanguage && uiLanguage !== language) {
