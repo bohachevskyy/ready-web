@@ -88,6 +88,14 @@
       "verifiedButton": "メール確認を完了しました",
       "resendEmail": "確認メールを再送信"
     },
+    "name": {
+      "question": "お名前は何ですか？",
+      "description": "これを使用して体験をパーソナライズします",
+      "firstName": "名",
+      "lastName": "姓",
+      "firstNamePlaceholder": "名を入力してください",
+      "lastNamePlaceholder": "姓を入力してください"
+    },
     "birthdate": {
       "question": "いつ生まれましたか？",
       "description": "これにより、学習体験をパーソナライズできます",

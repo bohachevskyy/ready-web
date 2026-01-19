@@ -37,6 +37,8 @@ export interface UpdateLanguageLevelRequest {
 }
 
 export interface UpdateUserProfileRequest {
+  first_name?: string
+  last_name?: string
   birth_month?: number
   birth_year?: number
   native_language?: string

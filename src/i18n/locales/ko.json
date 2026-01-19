@@ -88,6 +88,14 @@
       "verifiedButton": "이메일을 확인했습니다",
       "resendEmail": "인증 이메일 다시 보내기"
     },
+    "name": {
+      "question": "이름이 무엇인가요?",
+      "description": "이를 사용하여 경험을 맞춤화하겠습니다",
+      "firstName": "이름",
+      "lastName": "성",
+      "firstNamePlaceholder": "이름을 입력하세요",
+      "lastNamePlaceholder": "성을 입력하세요"
+    },
     "birthdate": {
       "question": "생년월일은 언제인가요?",
       "description": "이는 당신의 학습 경험을 맞춤화하는 데 도움이 됩니다",

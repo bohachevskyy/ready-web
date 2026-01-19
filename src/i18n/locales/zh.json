@@ -88,6 +88,14 @@
       "verifiedButton": "我已验证我的电子邮件",
       "resendEmail": "重新发送验证电子邮件"
     },
+    "name": {
+      "question": "您叫什么名字？",
+      "description": "我们将使用此信息来个性化您的体验",
+      "firstName": "名字",
+      "lastName": "姓氏",
+      "firstNamePlaceholder": "请输入您的名字",
+      "lastNamePlaceholder": "请输入您的姓氏"
+    },
     "birthdate": {
       "question": "您何时出生？",
       "description": "这有助于我们个性化您的学习体验",

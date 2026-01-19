@@ -88,6 +88,14 @@
       "verifiedButton": "Ich habe meine E-Mail verifiziert",
       "resendEmail": "Bestätigungsemail erneut senden"
     },
+    "name": {
+      "question": "Wie heißen Sie?",
+      "description": "Wir verwenden dies, um Ihre Erfahrung zu personalisieren",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "firstNamePlaceholder": "Geben Sie Ihren Vornamen ein",
+      "lastNamePlaceholder": "Geben Sie Ihren Nachnamen ein"
+    },
     "birthdate": {
       "question": "Wann sind Sie geboren?",
       "description": "Dies hilft uns, Ihr Lernerlebnis zu personalisieren",
