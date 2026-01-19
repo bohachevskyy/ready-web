@@ -7,20 +7,9 @@ import { Label } from './ui/label';
 import { Toast } from './ui/toast';
 import { updateUserLanguageLevel } from '../store/authSlice';
 import { updateLanguageLevel } from '../store/userSlice';
-import { useUserAge, AgeGroup } from '../hooks/useUserAge';
+import { useUserAge } from '../hooks/useUserAge';
 
 type LanguageLevel = 1 | 2 | 3 | 4 | 5;
-
-export function getAgeGroupDisplay(ageGroup: AgeGroup): string {
-  switch (ageGroup) {
-    case 'under15':
-      return "10-14";
-    case '15-17':
-      return "15-17";
-    case 'adult':
-      return "18+";
-  }
-}
 
 const languageLevels = [
   { level: 1, label: "A1", color: "bg-emerald-400", description: "Beginner" },
@@ -39,8 +28,6 @@ export function useAccountSettings(resetKey?: unknown) {
   const [languageLevel, setLanguageLevel] = useState<number>(user?.language_level ?? 1);
   const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  const ageGroupDisplay = getAgeGroupDisplay(ageGroup);
 
   const fullName = useMemo(() => {
     if (!user) return 'Unknown';
@@ -84,7 +71,7 @@ export function useAccountSettings(resetKey?: unknown) {
   return {
     user,
     fullName,
-    ageGroupDisplay,
+    ageGroup,
     languageLevel,
     setLanguageLevel,
     isSaving,
@@ -109,7 +96,7 @@ export function AccountSettingsForm({
   closeLabel = 'Cancel',
   showCloseButton = true,
 }: AccountSettingsFormProps) {
-  const { fullName, ageGroupDisplay, languageLevel, setLanguageLevel, isSaving, error, isSuccess, handleSave } =
+  const { fullName, ageGroup, languageLevel, setLanguageLevel, isSaving, error, isSuccess, handleSave } =
     useAccountSettings(resetKey);
 
   const [showToast, setShowToast] = useState(false);
@@ -145,7 +132,7 @@ export function AccountSettingsForm({
           <div className="space-y-3">
             <Label className="text-base font-semibold">Age Group</Label>
             <div className="rounded-lg border-2 border-primary bg-primary/10 px-6 py-4 text-center text-lg font-medium text-foreground">
-              {ageGroupDisplay}
+              {ageGroup}
             </div>
           </div>
 

@@ -5,11 +5,11 @@ export type CategoryType = 'teens' | 'nonfiction' | 'fiction'
 
 export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
   switch (ageGroup) {
-    case 'under15':
+    case '10-14':
       return ['teens', 'nonfiction']
     case '15-17':
       return ['teens', 'nonfiction', 'fiction']
-    case 'adult':
+    case '18+':
       return ['nonfiction', 'fiction']
   }
 }
