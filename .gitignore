@@ -30,3 +30,5 @@ playwright-report
 test-results
 
 *.png
+
+.cursor/*.log
