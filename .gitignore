@@ -33,3 +33,5 @@ test-results
 # Allow favicon and icon PNG files
 !public/favicon*.png
 !public/apple-touch-icon.png
+
+.cursor/*.log
