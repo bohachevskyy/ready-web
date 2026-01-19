@@ -27,11 +27,16 @@ yarn-error.log*
 
 # playwright
 playwright-report
+.playwright-mcp
 test-results
 
 *.png
 # Allow favicon and icon PNG files
 !public/favicon*.png
+<<<<<<< HEAD
 !public/apple-touch-icon.png
 
 .cursor/*.log
+=======
+!public/apple-touch-icon.png
+>>>>>>> 990c68d (fix: whitelist icon PNG files in gitignore)
