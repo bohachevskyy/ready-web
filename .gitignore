@@ -27,8 +27,10 @@ yarn-error.log*
 
 # playwright
 playwright-report
+.playwright-mcp
 test-results
 
 *.png
-
-.cursor/*.log
+# Allow favicon and icon PNG files
+!public/favicon*.png
+!public/apple-touch-icon.png
