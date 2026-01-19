@@ -2,10 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import * as Sentry from '@sentry/react';
 import { store, persistor } from './store/store';
 import './styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { initializeSentry } from './config/sentry';
+
+// Initialize Sentry BEFORE React root creation
+initializeSentry();
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
@@ -18,7 +23,10 @@ root.render(
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// Send Web Vitals to Sentry for performance monitoring
+reportWebVitals((metric: any) => {
+  // Send to Sentry if initialized
+  if (metric && Sentry.getClient()) {
+    Sentry.setMeasurement(metric.name, metric.value, metric.unit);
+  }
+});

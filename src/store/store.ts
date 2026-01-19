@@ -11,6 +11,7 @@ import speechSettingsReducer from './speechSettingsSlice'
 import userReducer from './userSlice'
 import storiesReducer from './storiesSlice'
 import { authMiddleware } from './authMiddleware'
+import { sentryMiddleware } from './sentryMiddleware'
 
 // Configure persistence for auth slice
 const authPersistConfig = {
@@ -46,7 +47,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(authMiddleware),
+    }).concat(authMiddleware, sentryMiddleware),
 })
 
 export const persistor = persistStore(store)
