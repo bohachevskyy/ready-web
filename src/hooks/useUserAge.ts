@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { useAppSelector } from '../store/store'
 
-export type AgeGroup = 'under15' | '15-17' | 'adult'
+export type AgeGroup = '10-14' | '15-17' | '18+'
 
 export function getAgeGroup(age: number | null): AgeGroup {
-  if (age === null || age >= 18) return 'adult'
-  if (age < 15) return 'under15'
+  if (age === null || age >= 18) return '18+'
+  if (age < 15) return '10-14'
   return '15-17'
 }
 
@@ -14,14 +14,14 @@ export function getAgeGroup(age: number | null): AgeGroup {
  *
  * @returns Object containing:
  *   - age: number | null - The calculated age, or null if birth date is not available
- *   - ageGroup: AgeGroup - 'under15', '15-17', or 'adult'
+ *   - ageGroup: AgeGroup - '10-14', '15-17', or '18+'
  */
 export function useUserAge() {
   const user = useAppSelector((state) => state.auth.user)
 
   const { age, ageGroup } = useMemo(() => {
     if (!user?.birth_year || !user?.birth_month) {
-      return { age: null, ageGroup: 'adult' as AgeGroup }
+      return { age: null, ageGroup: '18+' as AgeGroup }
     }
 
     const today = new Date()
