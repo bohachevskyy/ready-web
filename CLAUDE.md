@@ -33,7 +33,8 @@ Don't look at the node modules during the planning stage. Only rely on the code.
 
 ### Verification
 - After finishing a feature, test it in the browser to ensure correct operation
-- For sign in use the following credentials: `claude@gmail.com` and `Password1!`
+- For sign in as an adult user use the following credentials: `claude@gmail.com` and `Password1!`
+- For sign in as a kid user (10 years old) user use the following credentials: `claude+ten@gmail.com` and `Password1!`
 
 ## Testing
 
