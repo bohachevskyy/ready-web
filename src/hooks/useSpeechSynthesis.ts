@@ -84,8 +84,6 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Get all available voices (fresh fetch to handle async loading)
       const allVoices = window.speechSynthesis.getVoices()
-      console.log(allVoices);
-      console.log(allVoices.filter(v => v.lang.startsWith('en')));
       
       // Filter for English voices with priority: en-US > en-GB > any en-*
       const enUSVoices = allVoices.filter(v => v.lang.startsWith('en-US'))

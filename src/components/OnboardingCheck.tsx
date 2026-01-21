@@ -18,11 +18,9 @@ export function OnboardingCheck({ children }: OnboardingCheckProps) {
     !user.native_language || 
     !user.language_level
   )
-  console.log(user)
 
   // Debug logging
   if (user) {
-    console.log('[OnboardingCheck] User profile:', {
       birth_month: user.birth_month,
       birth_year: user.birth_year,
       native_language: user.native_language,
