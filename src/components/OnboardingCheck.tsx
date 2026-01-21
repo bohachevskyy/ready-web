@@ -19,16 +19,6 @@ export function OnboardingCheck({ children }: OnboardingCheckProps) {
     !user.language_level
   )
 
-  // Debug logging
-  if (user) {
-      birth_month: user.birth_month,
-      birth_year: user.birth_year,
-      native_language: user.native_language,
-      language_level: user.language_level,
-      needsOnboarding
-    })
-  }
-
   if (needsOnboarding) {
     return <Navigate to="/onboarding" replace />
   }
