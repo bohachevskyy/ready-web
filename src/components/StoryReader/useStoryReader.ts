@@ -49,7 +49,6 @@ export function useStoryReader() {
   const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
   const [isWordDrawerOpen, setIsWordDrawerOpen] = useState<boolean>(false)
   const [translationError, setTranslationError] = useState<string | null>(null)
-  const [questionError, setQuestionError] = useState<string | null>(null)
   const clickedWordRef = useRef<HTMLElement | null>(null)
 
   // Fetch story on component mount
@@ -131,9 +130,43 @@ export function useStoryReader() {
       setView('questions')
     } catch (err) {
       console.error('Failed to fetch questions:', err)
-      setQuestionError(t('storyReader.questionsError'))
+      // Automatically skip when questions fail - save words and submit feedback
+      try {
+        if (savedWords.length > 0) {
+          await dispatch(saveWords({
+            words: savedWords.map(word => ({
+              word: word.word,
+              translation: word.translation,
+              sentence_context: word.example_sentence,
+              sentence_example: word.example_sentence,
+              story_id: storyId
+            }))
+          })).unwrap()
+        }
+
+        await dispatch(submitFeedback({
+          storyId,
+          feedback: {
+            start_time: sessionStartTime.current
+              ? new Date(sessionStartTime.current).toISOString()
+              : new Date().toISOString(),
+            end_time: new Date().toISOString(),
+            is_skipped: true,
+            question_attempts: [],
+            is_liked: likeStatus === "like",
+            is_disliked: likeStatus === "dislike",
+            feedback_text: "Questions failed to load - skipped"
+          }
+        })).unwrap()
+
+        dispatch(clearAllWords())
+        navigate('/')
+      } catch (skipErr) {
+        console.error('Failed to submit feedback:', skipErr)
+        navigate('/')
+      }
     }
-  }, [dispatch, storyId, t])
+  }, [dispatch, storyId, savedWords, likeStatus, navigate])
 
   const handleComplete = useCallback(async () => {
     if (!storyId) return
@@ -232,51 +265,6 @@ export function useStoryReader() {
       navigate('/')
     }
   }, [dispatch, storyId, savedWords, questions, attemptCounts, likeStatus, navigate])
-
-  const handleSkipQuestions = useCallback(async () => {
-    if (!storyId) return
-
-    try {
-      // Save words to vocabulary if any were added
-      if (savedWords.length > 0) {
-        await dispatch(saveWords({
-          words: savedWords.map(word => ({
-            word: word.word,
-            translation: word.translation,
-            sentence_context: word.example_sentence,
-            sentence_example: word.example_sentence,
-            story_id: storyId
-          }))
-        })).unwrap()
-      }
-
-      // Submit feedback with empty question_attempts
-      await dispatch(submitFeedback({
-        storyId,
-        feedback: {
-          start_time: sessionStartTime.current
-            ? new Date(sessionStartTime.current).toISOString()
-            : new Date().toISOString(),
-          end_time: new Date().toISOString(),
-          is_skipped: true,
-          question_attempts: [],
-          is_liked: likeStatus === "like",
-          is_disliked: likeStatus === "dislike",
-          feedback_text: "Questions failed to load - skipped"
-        }
-      })).unwrap()
-
-      // Clear vocabulary list after successful submission
-      dispatch(clearAllWords())
-
-      // Redirect to main page
-      navigate('/')
-    } catch (err) {
-      console.error('Failed to submit feedback:', err)
-      // Still redirect even if feedback fails
-      navigate('/')
-    }
-  }, [dispatch, storyId, savedWords, likeStatus, navigate])
 
   const scrollWordIntoView = useCallback((wordElement: HTMLElement) => {
     // Wait for drawer animation to start
@@ -469,7 +457,6 @@ export function useStoryReader() {
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
-    questionError,
     popoverRef,
 
     // Handlers
@@ -477,7 +464,6 @@ export function useStoryReader() {
     handleFinish,
     handleComplete,
     handleSkip,
-    handleSkipQuestions,
     handleLikeFeedback,
     handleAttempt,
     handleRemoveWord,
