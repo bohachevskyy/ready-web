@@ -122,25 +122,34 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Store reference and speak
       utteranceRef.current = utterance
+      // Log speech settings to Sentry
+      const speechSettings = {
+        voice: utterance.voice?.name,
+        voiceURI: utterance.voice?.voiceURI,
+        lang: utterance.voice?.lang,
+        localService: utterance.voice?.localService,
+        rate: utterance.rate,
+        pitch: utterance.pitch,
+        volume: utterance.volume,
+        utteranceLang: utterance.lang,
+        text: text.substring(0, 50), // First 50 chars for context
+        requestedVoice: options?.voice,
+        requestedRate: options?.rate,
+        availableEnglishVoices: englishVoices.length,
+        totalAvailableVoices: allVoices.length,
+        wasPaused: window.speechSynthesis.paused,
+      }
+
       errorService.addBreadcrumb(
         'Speech synthesis settings',
         'speech',
-        {
-          voice: utterance.voice?.name,
-          voiceURI: utterance.voice?.voiceURI,
-          lang: utterance.voice?.lang,
-          localService: utterance.voice?.localService,
-          rate: utterance.rate,
-          pitch: utterance.pitch,
-          volume: utterance.volume,
-          utteranceLang: utterance.lang,
-          text: text.substring(0, 50), // First 50 chars for context
-          requestedVoice: options?.voice,
-          requestedRate: options?.rate,
-          availableEnglishVoices: englishVoices.length,
-          totalAvailableVoices: allVoices.length,
-          wasPaused: window.speechSynthesis.paused,
-        }
+        speechSettings
+      )
+
+      // Capture message to Sentry so settings are visible
+      errorService.captureMessage(
+        `Speech synthesis: ${utterance.voice?.name || 'default'} - ${text.substring(0, 30)}`,
+        'info'
       )
       
       // Chrome bug workaround: resume synthesis if it got paused
