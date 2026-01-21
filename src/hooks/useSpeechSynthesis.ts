@@ -131,13 +131,17 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
           voice: utterance.voice?.name,
           voiceURI: utterance.voice?.voiceURI,
           lang: utterance.voice?.lang,
+          localService: utterance.voice?.localService,
           rate: utterance.rate,
           pitch: utterance.pitch,
+          volume: utterance.volume,
           utteranceLang: utterance.lang,
           text: text.substring(0, 50), // First 50 chars for context
           requestedVoice: options?.voice,
           requestedRate: options?.rate,
           availableEnglishVoices: englishVoices.length,
+          totalAvailableVoices: allVoices.length,
+          wasPaused: window.speechSynthesis.paused,
         }
       )
       
