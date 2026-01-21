@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { errorService } from '../services/errorService'
 
 export interface SpeakOptions {
   rate?: number
@@ -75,6 +76,7 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Set speech rate
       utterance.rate = options?.rate ?? 1.0
+      utterance.pitch = 1.0;
       
       // IMPORTANT: Always set language to English to prevent using system locale
       // This ensures pronunciation is in English even if no English voice is found
@@ -82,46 +84,62 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Get all available voices (fresh fetch to handle async loading)
       const allVoices = window.speechSynthesis.getVoices()
+      console.log(allVoices);
+      console.log(allVoices.filter(v => v.lang.startsWith('en')));
       
       // Filter for English voices with priority: en-US > en-GB > any en-*
       const enUSVoices = allVoices.filter(v => v.lang.startsWith('en-US'))
-      const enGBVoices = allVoices.filter(v => v.lang.startsWith('en-GB'))
+      const enGBVoices =  allVoices.filter(v => v.lang.startsWith('en-GB'))
       const enOtherVoices = allVoices.filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
       const englishVoices = [...enUSVoices, ...enGBVoices, ...enOtherVoices]
       
-      // Priority 1: Use user-selected voice if it exists
-      if (options?.voice) {
+      
+      // Priority 1: If no voice set yet, use first available English voice
+      if (englishVoices.length > 0) {
+        utterance.voice = englishVoices[0]
+      } else if (options?.voice) {
+        // Priority 2: Use user-selected voice if it exists
         const selectedVoice = allVoices.find(v => v.voiceURI === options.voice)
         if (selectedVoice) {
           utterance.voice = selectedVoice
         }
-      }
-      
-      // Priority 2: If no voice set yet, use first available English voice
-      if (!utterance.voice && englishVoices.length > 0) {
-        utterance.voice = englishVoices[0]
-      }
-      
-      // Priority 3: If still no voice, let browser use default with lang=en-US hint
-
-      // Event handlers
-      utterance.onstart = () => {
-        setSpeaking(true)
-      }
-
-      utterance.onend = () => {
-        setSpeaking(false)
-        utteranceRef.current = null
-      }
-
-      utterance.onerror = (event) => {
-        console.error('Speech synthesis error:', event)
-        setSpeaking(false)
-        utteranceRef.current = null
+      } else {
+        // Priority 3: If still no voice, let browser use default with lang=en-US hint
+        // Event handlers
+        utterance.onstart = () => {
+          setSpeaking(true)
+        }
+        
+        utterance.onend = () => {
+          setSpeaking(false)
+          utteranceRef.current = null
+        }
+        
+        utterance.onerror = (event) => {
+          console.error('Speech synthesis error:', event)
+          setSpeaking(false)
+          utteranceRef.current = null
+        }
       }
 
       // Store reference and speak
       utteranceRef.current = utterance
+      errorService.addBreadcrumb(
+        'Speech synthesis settings',
+        'speech',
+        {
+          voice: utterance.voice?.name,
+          voiceURI: utterance.voice?.voiceURI,
+          lang: utterance.voice?.lang,
+          rate: utterance.rate,
+          pitch: utterance.pitch,
+          utteranceLang: utterance.lang,
+          text: text.substring(0, 50), // First 50 chars for context
+          requestedVoice: options?.voice,
+          requestedRate: options?.rate,
+          availableEnglishVoices: englishVoices.length,
+        }
+      )
       
       // Chrome bug workaround: resume synthesis if it got paused
       // This is a known Chrome issue where speechSynthesis gets stuck after ~15s or when tab is backgrounded
