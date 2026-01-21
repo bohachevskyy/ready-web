@@ -77,7 +77,7 @@ describe('useStoryReader - Question Error Handling', () => {
   })
 
   describe('handleFinish', () => {
-    it('should set questionError when getQuestions fails', async () => {
+    it('should automatically skip and navigate home when getQuestions fails', async () => {
       // First call is generateStory on mount (success)
       mockDispatch.mockReturnValueOnce({
         unwrap: () => Promise.resolve({
@@ -92,86 +92,7 @@ describe('useStoryReader - Question Error Handling', () => {
         unwrap: () => Promise.reject(new Error('Failed to fetch questions')),
       })
 
-      const { result } = renderHook(() => useStoryReader())
-
-      // Initially no error
-      expect(result.current.questionError).toBeNull()
-
-      // Call handleFinish
-      await act(async () => {
-        await result.current.handleFinish()
-      })
-
-      // Wait for error state to be set
-      await waitFor(() => {
-        expect(result.current.questionError).toBe('storyReader.questionsError')
-      })
-
-      // Verify translation key was requested
-      expect(mockT).toHaveBeenCalledWith('storyReader.questionsError')
-    })
-  })
-
-  describe('handleSkipQuestions', () => {
-    it('should navigate home even if feedback submission fails', async () => {
-      // First call is generateStory on mount
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.resolve({
-          id: 'story-123',
-          story: 'Test story',
-          translations: {},
-        }),
-      })
-
-      // Second call is submitFeedback (failure)
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.reject(new Error('Failed to submit feedback')),
-      })
-
-      mockVocabularyState = { savedWords: [] }
-
-      const { result } = renderHook(() => useStoryReader())
-
-      await act(async () => {
-        await result.current.handleSkipQuestions()
-      })
-
-      // Should still navigate home despite error
-      await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/')
-      })
-    })
-
-    it('should save words and navigate home when skipping with saved words', async () => {
-      const mockSavedWords = [
-        {
-          id: '1',
-          word: 'test',
-          translation: 'prueba',
-          timestamp: Date.now(),
-          example_sentence: 'This is a test',
-          grammatical_info: 'noun',
-          sentence_translation: 'Esta es una prueba',
-        },
-      ]
-
-      mockVocabularyState = { savedWords: mockSavedWords }
-
-      // First call is generateStory on mount
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.resolve({
-          id: 'story-123',
-          story: 'Test story',
-          translations: {},
-        }),
-      })
-
-      // Second call is saveWords
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.resolve({ success: true }),
-      })
-
-      // Third call is submitFeedback
+      // Third call is submitFeedback (auto-skip)
       mockDispatch.mockReturnValueOnce({
         unwrap: () => Promise.resolve({ success: true }),
       })
@@ -179,13 +100,16 @@ describe('useStoryReader - Question Error Handling', () => {
       // Fourth call is clearAllWords
       mockDispatch.mockReturnValueOnce({ type: 'vocabulary/clearAllWords' })
 
+      mockVocabularyState = { savedWords: [] }
+
       const { result } = renderHook(() => useStoryReader())
 
+      // Call handleFinish
       await act(async () => {
-        await result.current.handleSkipQuestions()
+        await result.current.handleFinish()
       })
 
-      // Verify navigation to home
+      // Should automatically navigate home
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith('/')
       })
