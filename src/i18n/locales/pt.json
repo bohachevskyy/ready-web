@@ -369,6 +369,9 @@
     "closeDrawer": "Fechar lista de vocabulário"
   },
   "storyReader": {
-    "translationError": "Falha ao carregar a tradução da palavra. Por favor, tente novamente."
+    "translationError": "Falha ao carregar a tradução da palavra. Por favor, tente novamente.",
+    "questionsError": "Não foi possível carregar as perguntas",
+    "questionsErrorDescription": "Não foi possível carregar as perguntas do questionário. Você pode pular o questionário e completar a história.",
+    "skipQuestions": "Pular perguntas"
   }
 }

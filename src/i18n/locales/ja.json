@@ -369,6 +369,9 @@
     "closeDrawer": "語彙リストを閉じる"
   },
   "storyReader": {
-    "translationError": "単語の翻訳を読み込めませんでした。もう一度お試しください。"
+    "translationError": "単語の翻訳を読み込めませんでした。もう一度お試しください。",
+    "questionsError": "質問を読み込めませんでした",
+    "questionsErrorDescription": "クイズの質問を読み込めませんでした。クイズをスキップしてストーリーを完了できます。",
+    "skipQuestions": "質問をスキップ"
   }
 }

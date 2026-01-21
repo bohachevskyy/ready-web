@@ -369,6 +369,9 @@
     "closeDrawer": "Vokabelliste schließen"
   },
   "storyReader": {
-    "translationError": "Wortübersetzung konnte nicht geladen werden. Bitte versuchen Sie es erneut."
+    "translationError": "Wortübersetzung konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "questionsError": "Fragen konnten nicht geladen werden",
+    "questionsErrorDescription": "Die Quizfragen konnten nicht geladen werden. Sie können das Quiz überspringen und die Geschichte beenden.",
+    "skipQuestions": "Fragen überspringen"
   }
 }

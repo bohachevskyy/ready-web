@@ -1,12 +1,13 @@
 import { useRef, useEffect } from "react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
-import { Loader2 } from "lucide-react"
+import { Loader2, AlertCircle } from "lucide-react"
 import { VocabularyList } from "../VocabularyList"
 import { QuizView } from "../QuizView"
 import { StoryLoading } from "../StoryLoading"
 import { Toast } from "../ui/toast"
 import { useStoryReader } from "./useStoryReader"
+import { useTranslation } from "../../i18n/useTranslation"
 import { StoryContent } from "./StoryContent"
 import { WordPopover } from "./WordPopover"
 import { WordDrawer } from "./WordDrawer"
@@ -14,6 +15,7 @@ import { VocabDrawer } from "./VocabDrawer"
 
 export function StoryReader() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
 
   const {
     // State
@@ -31,6 +33,7 @@ export function StoryReader() {
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
+    questionError,
     popoverRef,
 
     // Handlers
@@ -38,6 +41,7 @@ export function StoryReader() {
     handleFinish,
     handleComplete,
     handleSkip,
+    handleSkipQuestions,
     handleLikeFeedback,
     handleAttempt,
     handleRemoveWord,
@@ -93,7 +97,31 @@ export function StoryReader() {
             )}
           </Card>
 
-          {view === 'story' && !storyError && (
+          {view === 'story' && questionError && (
+            <Card className="mt-6 p-6 bg-destructive/10 border-destructive/50">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-destructive mt-0.5 flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="font-semibold text-destructive mb-1">
+                    {questionError}
+                  </h3>
+                  <p className="text-sm text-destructive/90 mb-4">
+                    {t('storyReader.questionsErrorDescription')}
+                  </p>
+                  <Button
+                    onClick={handleSkipQuestions}
+                    variant="outline"
+                    size="sm"
+                    className="border-destructive text-destructive hover:bg-destructive/10"
+                  >
+                    {t('storyReader.skipQuestions')}
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {view === 'story' && !storyError && !questionError && (
             <div className="flex justify-center mt-8">
               <Button
                 onClick={handleFinish}

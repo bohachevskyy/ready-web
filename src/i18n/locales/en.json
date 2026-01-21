@@ -346,6 +346,9 @@
     "closeDrawer": "Close vocabulary list"
   },
   "storyReader": {
-    "translationError": "Failed to load word translation. Please try again."
+    "translationError": "Failed to load word translation. Please try again.",
+    "questionsError": "Unable to load questions",
+    "questionsErrorDescription": "We couldn't load the quiz questions. You can skip the quiz and complete the story.",
+    "skipQuestions": "Skip Questions"
   }
 }
