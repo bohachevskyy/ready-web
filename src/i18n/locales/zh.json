@@ -377,6 +377,9 @@
     "closeDrawer": "关闭词汇表"
   },
   "storyReader": {
-    "translationError": "无法加载单词翻译。请重试。"
+    "translationError": "无法加载单词翻译。请重试。",
+    "questionsError": "无法加载问题",
+    "questionsErrorDescription": "我们无法加载测验问题。您可以跳过测验并完成故事。",
+    "skipQuestions": "跳过问题"
   }
 }
