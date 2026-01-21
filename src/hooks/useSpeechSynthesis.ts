@@ -91,7 +91,7 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
       const enOtherVoices = allVoices.filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
       const englishVoices = [...enUSVoices, ...enGBVoices, ...enOtherVoices]
       
-      
+
       // Priority 1: If no voice set yet, use first available English voice
       if (englishVoices.length > 0) {
         utterance.voice = englishVoices[0]
@@ -101,23 +101,23 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
         if (selectedVoice) {
           utterance.voice = selectedVoice
         }
-      } else {
-        // Priority 3: If still no voice, let browser use default with lang=en-US hint
-        // Event handlers
-        utterance.onstart = () => {
-          setSpeaking(true)
-        }
-        
-        utterance.onend = () => {
-          setSpeaking(false)
-          utteranceRef.current = null
-        }
-        
-        utterance.onerror = (event) => {
-          console.error('Speech synthesis error:', event)
-          setSpeaking(false)
-          utteranceRef.current = null
-        }
+      }
+      // Priority 3: If still no voice, let browser use default with lang=en-US hint
+
+      // Event handlers
+      utterance.onstart = () => {
+        setSpeaking(true)
+      }
+
+      utterance.onend = () => {
+        setSpeaking(false)
+        utteranceRef.current = null
+      }
+
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event)
+        setSpeaking(false)
+        utteranceRef.current = null
       }
 
       // Store reference and speak
