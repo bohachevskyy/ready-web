@@ -117,10 +117,8 @@ export function Onboarding() {
       // Update Redux with backend response
       dispatch(setUser(result.user))
 
-      // Navigate to home after state update propagates
-      setTimeout(() => {
-        navigate("/")
-      }, 0)
+      // Navigate to home
+      navigate("/")
     } catch (err) {
       console.error("Failed to save profile:", err)
       setError(t('onboarding.failedSaveProfile'))
