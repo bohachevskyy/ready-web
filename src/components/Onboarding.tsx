@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAppSelector, useAppDispatch } from "../store/store"
 import { setUser } from "../store/authSlice"
-import { updateUserProfile } from "../store/userSlice"
+import { updateUserProfile, getUserProfile } from "../store/userSlice"
 import { Card } from "./ui/card"
 import { EmailVerificationStep } from "./onboarding/EmailVerificationStep"
 import { NameStep } from "./onboarding/NameStep"
@@ -116,6 +116,10 @@ export function Onboarding() {
 
       // Update Redux with backend response
       dispatch(setUser(result.user))
+
+      // Fetch fresh user profile to ensure we have all data
+      const freshProfile = await dispatch(getUserProfile()).unwrap()
+      dispatch(setUser(freshProfile))
 
       // Navigate to home
       navigate("/")
