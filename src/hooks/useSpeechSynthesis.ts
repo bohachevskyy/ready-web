@@ -14,6 +14,29 @@ export interface UseSpeechSynthesisReturn {
   voices: SpeechSynthesisVoice[]
 }
 
+// High-quality voices whitelist (conservative approach)
+const ALLOWED_VOICES = [
+  'Samantha',
+  'Daniel',
+  'Microsoft David',
+  'Microsoft Zira',
+  'Google US English',
+  'Google UK English Female',
+  'Google UK English Male'
+]
+
+function isAllowedVoice(voice: SpeechSynthesisVoice): boolean {
+  // Allow explicitly whitelisted voices
+  if (ALLOWED_VOICES.some(allowed => voice.name.includes(allowed))) {
+    return true
+  }
+  // Allow all Google cloud voices
+  if (voice.name.startsWith('Google')) {
+    return true
+  }
+  return false
+}
+
 export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
   const [speaking, setSpeaking] = useState(false)
   const [supported, setSupported] = useState(false)
@@ -28,10 +51,18 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
       const loadVoices = () => {
         const availableVoices = window.speechSynthesis.getVoices()
         // Filter for English voices only - prioritize en-US, then en-GB, then other English
-        const enUSVoices = availableVoices.filter(v => v.lang.startsWith('en-US'))
-        const enGBVoices = availableVoices.filter(v => v.lang.startsWith('en-GB'))
-        const enOtherVoices = availableVoices.filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
+        // Only include whitelisted high-quality voices
+        const enUSVoices = availableVoices
+          .filter(v => v.lang.startsWith('en-US'))
+          .filter(v => isAllowedVoice(v))
+        const enGBVoices = availableVoices
+          .filter(v => v.lang.startsWith('en-GB'))
+          .filter(v => isAllowedVoice(v))
+        const enOtherVoices = availableVoices
+          .filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
+          .filter(v => isAllowedVoice(v))
         const englishVoices = [...enUSVoices, ...enGBVoices, ...enOtherVoices]
+
         // Only store English voices - speak() function handles fallback if empty
         setVoices(englishVoices)
       }
@@ -84,13 +115,19 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Get all available voices (fresh fetch to handle async loading)
       const allVoices = window.speechSynthesis.getVoices()
-      
+
       // Filter for English voices with priority: en-US > en-GB > any en-*
-      const enUSVoices = allVoices.filter(v => v.lang.startsWith('en-US'))
-      const enGBVoices =  allVoices.filter(v => v.lang.startsWith('en-GB'))
-      const enOtherVoices = allVoices.filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
+      // Only include whitelisted high-quality voices
+      const enUSVoices = allVoices
+        .filter(v => v.lang.startsWith('en-US'))
+        .filter(v => isAllowedVoice(v))
+      const enGBVoices = allVoices
+        .filter(v => v.lang.startsWith('en-GB'))
+        .filter(v => isAllowedVoice(v))
+      const enOtherVoices = allVoices
+        .filter(v => v.lang.startsWith('en') && !v.lang.startsWith('en-US') && !v.lang.startsWith('en-GB'))
+        .filter(v => isAllowedVoice(v))
       const englishVoices = [...enUSVoices, ...enGBVoices, ...enOtherVoices]
-      
 
       // Priority 1: If no voice set yet, use first available English voice
       if (englishVoices.length > 0) {
@@ -122,7 +159,7 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
 
       // Store reference and speak
       utteranceRef.current = utterance
-      // Log speech settings to Sentry
+      // Log speech settings to Sentry for debugging
       const speechSettings = {
         voice: utterance.voice?.name,
         voiceURI: utterance.voice?.voiceURI,
@@ -132,7 +169,7 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
         pitch: utterance.pitch,
         volume: utterance.volume,
         utteranceLang: utterance.lang,
-        text: text.substring(0, 50), // First 50 chars for context
+        text: text.substring(0, 50),
         requestedVoice: options?.voice,
         requestedRate: options?.rate,
         availableEnglishVoices: englishVoices.length,
@@ -146,12 +183,11 @@ export function useSpeechSynthesis(): UseSpeechSynthesisReturn {
         speechSettings
       )
 
-      // Capture message to Sentry so settings are visible
       errorService.captureMessage(
         `Speech synthesis: ${utterance.voice?.name || 'default'} - ${text.substring(0, 30)}`,
         'info'
       )
-      
+
       // Chrome bug workaround: resume synthesis if it got paused
       // This is a known Chrome issue where speechSynthesis gets stuck after ~15s or when tab is backgrounded
       if (window.speechSynthesis.paused) {
