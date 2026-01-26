@@ -60,7 +60,7 @@ export function useEmailVerification({ onVerified }: UseEmailVerificationProps):
     }
   }, [cleanup])
 
-  // Start polling when user clicks "I have verified email"
+  // Start polling when user clicks "I have verified email" or on mount
   const startPolling = useCallback(() => {
     if (isPolling) return
 
@@ -71,10 +71,10 @@ export function useEmailVerification({ onVerified }: UseEmailVerificationProps):
     // Start polling every 2 seconds
     pollingIntervalRef.current = setInterval(pollStatus, 2000)
 
-    // Show skip button after 5 seconds
+    // Show skip button after 15 seconds
     skipTimerRef.current = setTimeout(() => {
       setShowSkipButton(true)
-    }, 5000)
+    }, 15000)
   }, [isPolling, pollStatus])
 
   // Resend verification email
@@ -96,6 +96,12 @@ export function useEmailVerification({ onVerified }: UseEmailVerificationProps):
     cleanup()
     onVerified()
   }, [cleanup, onVerified])
+
+  // Auto-start polling on mount
+  useEffect(() => {
+    startPolling()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Auto-navigate after 2 seconds when verified
   useEffect(() => {

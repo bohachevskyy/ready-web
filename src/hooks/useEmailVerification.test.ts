@@ -22,6 +22,35 @@ describe('useEmailVerification', () => {
     jest.useRealTimers()
   })
 
+  describe('auto-start polling', () => {
+    it('should automatically start polling on mount', () => {
+      jest.spyOn(emailVerificationService, 'checkVerificationStatus')
+        .mockResolvedValue(false)
+
+      const { result } = renderHook(() => useEmailVerification({ onVerified }))
+
+      // Polling should start automatically
+      expect(result.current.isPolling).toBe(true)
+    })
+
+    it('should show skip button after 15 seconds from mount', async () => {
+      jest.spyOn(emailVerificationService, 'checkVerificationStatus')
+        .mockResolvedValue(false)
+
+      const { result } = renderHook(() => useEmailVerification({ onVerified }))
+
+      expect(result.current.showSkipButton).toBe(false)
+
+      // Wait 15 seconds
+      await act(async () => {
+        jest.advanceTimersByTime(15000)
+        await Promise.resolve()
+      })
+
+      expect(result.current.showSkipButton).toBe(true)
+    })
+  })
+
   describe('startPolling', () => {
     it('should start polling verification status', () => {
       jest.spyOn(emailVerificationService, 'checkVerificationStatus')
@@ -29,7 +58,7 @@ describe('useEmailVerification', () => {
 
       const { result } = renderHook(() => useEmailVerification({ onVerified }))
 
-      expect(result.current.isPolling).toBe(false)
+      expect(result.current.isPolling).toBe(true)
 
       act(() => {
         result.current.startPolling()
@@ -65,7 +94,7 @@ describe('useEmailVerification', () => {
       expect(mockCheckStatus).toHaveBeenCalledTimes(2)
     })
 
-    it('should show skip button after 5 seconds', async () => {
+    it('should show skip button after 15 seconds', async () => {
       jest.spyOn(emailVerificationService, 'checkVerificationStatus')
         .mockResolvedValue(false)
 
@@ -77,9 +106,9 @@ describe('useEmailVerification', () => {
 
       expect(result.current.showSkipButton).toBe(false)
 
-      // At 5 seconds
+      // At 15 seconds
       await act(async () => {
-        jest.advanceTimersByTime(5000)
+        jest.advanceTimersByTime(15000)
         await Promise.resolve()
       })
 
@@ -171,7 +200,7 @@ describe('useEmailVerification', () => {
       })
 
       await act(async () => {
-        jest.advanceTimersByTime(5000)
+        jest.advanceTimersByTime(15000)
         await Promise.resolve()
       })
 
@@ -196,7 +225,7 @@ describe('useEmailVerification', () => {
 
       // Wait for skip button to appear
       await act(async () => {
-        jest.advanceTimersByTime(5000)
+        jest.advanceTimersByTime(15000)
         await Promise.resolve()
       })
 
@@ -296,7 +325,7 @@ describe('useEmailVerification', () => {
       expect(mockCheckStatus).toHaveBeenCalledTimes(1)
     })
 
-    it('should clear error when starting new polling', async () => {
+    it('should not clear error if already polling', async () => {
       jest.spyOn(emailVerificationService, 'sendVerificationEmail')
         .mockRejectedValue(new Error('Network error'))
 
@@ -305,6 +334,9 @@ describe('useEmailVerification', () => {
 
       const { result } = renderHook(() => useEmailVerification({ onVerified }))
 
+      // Polling is already started on mount
+      expect(result.current.isPolling).toBe(true)
+
       // Set error via resendEmail
       await act(async () => {
         await result.current.resendEmail()
@@ -312,12 +344,13 @@ describe('useEmailVerification', () => {
 
       expect(result.current.error).toBe('Network error')
 
-      // Start polling should clear error
+      // Calling startPolling again won't clear error since already polling
       act(() => {
         result.current.startPolling()
       })
 
-      expect(result.current.error).toBe(null)
+      expect(result.current.error).toBe('Network error')
+      expect(result.current.isPolling).toBe(true)
     })
   })
 
