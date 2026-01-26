@@ -11,12 +11,10 @@ interface EmailVerificationStepProps {
 export function EmailVerificationStep({ email, onVerified }: EmailVerificationStepProps) {
   const { t } = useTranslation()
   const {
-    isPolling,
     isVerified,
     showSkipButton,
     isSending,
     error,
-    startPolling,
     resendEmail,
     skipVerification,
   } = useEmailVerification({ onVerified })
@@ -54,24 +52,10 @@ export function EmailVerificationStep({ email, onVerified }: EmailVerificationSt
             <div className="flex items-center justify-center gap-2 text-primary">
               <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
               <span className="text-sm font-medium">
-                {isPolling
-                  ? t('onboarding.emailVerification.checkingStatus')
-                  : t('onboarding.emailVerification.waitingForVerification')}
+                {t('onboarding.emailVerification.checkingStatus')}
               </span>
             </div>
           </div>
-
-          <Button
-            onClick={startPolling}
-            variant="outline"
-            className="w-full"
-            size="lg"
-            disabled={isPolling}
-          >
-            {isPolling
-              ? t('onboarding.emailVerification.checking')
-              : t('onboarding.emailVerification.verifiedButton')}
-          </Button>
 
           {showSkipButton && (
             <Button
