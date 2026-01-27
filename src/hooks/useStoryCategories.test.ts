@@ -29,10 +29,10 @@ describe('getVisibleCategories', () => {
   })
 
   describe('15-17 age group', () => {
-    it('should return teens, nonfiction, fiction, and professional categories', () => {
+    it('should return teens, nonfiction, professional, and fiction categories', () => {
       const result = getVisibleCategories('15-17')
 
-      expect(result).toEqual(['teens', 'nonfiction', 'fiction', 'professional'])
+      expect(result).toEqual(['teens', 'nonfiction', 'professional', 'fiction'])
     })
 
     it('should have teens as first category', () => {
@@ -55,10 +55,10 @@ describe('getVisibleCategories', () => {
   })
 
   describe('18+ age group', () => {
-    it('should return nonfiction, fiction, and professional categories (no teens)', () => {
+    it('should return nonfiction, professional, and fiction categories (no teens)', () => {
       const result = getVisibleCategories('18+')
 
-      expect(result).toEqual(['nonfiction', 'fiction', 'professional'])
+      expect(result).toEqual(['nonfiction', 'professional', 'fiction'])
     })
 
     it('should have nonfiction as first category', () => {
@@ -83,8 +83,8 @@ describe('getVisibleCategories', () => {
   describe('category ordering', () => {
     const testCases: Array<{ ageGroup: AgeGroup; expectedOrder: CategoryType[] }> = [
       { ageGroup: '10-14', expectedOrder: ['teens', 'nonfiction'] },
-      { ageGroup: '15-17', expectedOrder: ['teens', 'nonfiction', 'fiction', 'professional'] },
-      { ageGroup: '18+', expectedOrder: ['nonfiction', 'fiction', 'professional'] },
+      { ageGroup: '15-17', expectedOrder: ['teens', 'nonfiction', 'professional', 'fiction'] },
+      { ageGroup: '18+', expectedOrder: ['nonfiction', 'professional', 'fiction'] },
     ]
 
     testCases.forEach(({ ageGroup, expectedOrder }) => {
