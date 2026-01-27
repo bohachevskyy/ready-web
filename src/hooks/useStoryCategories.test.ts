@@ -20,13 +20,19 @@ describe('getVisibleCategories', () => {
 
       expect(result).not.toContain('fiction')
     })
+
+    it('should not include professional for 10-14', () => {
+      const result = getVisibleCategories('10-14')
+
+      expect(result).not.toContain('professional')
+    })
   })
 
   describe('15-17 age group', () => {
-    it('should return teens, nonfiction, and fiction categories', () => {
+    it('should return teens, nonfiction, fiction, and professional categories', () => {
       const result = getVisibleCategories('15-17')
 
-      expect(result).toEqual(['teens', 'nonfiction', 'fiction'])
+      expect(result).toEqual(['teens', 'nonfiction', 'fiction', 'professional'])
     })
 
     it('should have teens as first category', () => {
@@ -40,13 +46,19 @@ describe('getVisibleCategories', () => {
 
       expect(result).toContain('fiction')
     })
+
+    it('should include professional for 15-17', () => {
+      const result = getVisibleCategories('15-17')
+
+      expect(result).toContain('professional')
+    })
   })
 
   describe('18+ age group', () => {
-    it('should return nonfiction and fiction categories (no teens)', () => {
+    it('should return nonfiction, fiction, and professional categories (no teens)', () => {
       const result = getVisibleCategories('18+')
 
-      expect(result).toEqual(['nonfiction', 'fiction'])
+      expect(result).toEqual(['nonfiction', 'fiction', 'professional'])
     })
 
     it('should have nonfiction as first category', () => {
@@ -60,13 +72,19 @@ describe('getVisibleCategories', () => {
 
       expect(result).not.toContain('teens')
     })
+
+    it('should include professional for 18+', () => {
+      const result = getVisibleCategories('18+')
+
+      expect(result).toContain('professional')
+    })
   })
 
   describe('category ordering', () => {
     const testCases: Array<{ ageGroup: AgeGroup; expectedOrder: CategoryType[] }> = [
       { ageGroup: '10-14', expectedOrder: ['teens', 'nonfiction'] },
-      { ageGroup: '15-17', expectedOrder: ['teens', 'nonfiction', 'fiction'] },
-      { ageGroup: '18+', expectedOrder: ['nonfiction', 'fiction'] },
+      { ageGroup: '15-17', expectedOrder: ['teens', 'nonfiction', 'fiction', 'professional'] },
+      { ageGroup: '18+', expectedOrder: ['nonfiction', 'fiction', 'professional'] },
     ]
 
     testCases.forEach(({ ageGroup, expectedOrder }) => {

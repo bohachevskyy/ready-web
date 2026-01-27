@@ -157,7 +157,8 @@
       "nonfiction": "अशानकथा",
       "fiction": "कथा",
       "teens": "किशोरों की कहानियां",
-      "everydayLife": "रोजमर्रा की ज़िंदगी"
+      "everydayLife": "रोजमर्रा की ज़िंदगी",
+      "professional": "पेशेवर"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "भविष्य और सपने",
           "description": "करियर की आकांक्षाएं, जीवन लक्ष्य, आगे की योजना"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "व्यापार और उद्यमिता",
+          "description": "स्टार्टअप, व्यापार रणनीति, उद्यमशील मानसिकता"
+        },
+        "career_workplace": {
+          "name": "करियर और कार्यस्थल",
+          "description": "पेशेवर विकास, कार्यस्थल की गतिशीलता, करियर विकास"
+        },
+        "leadership_management": {
+          "name": "नेतृत्व और प्रबंधन",
+          "description": "टीम नेतृत्व, प्रबंधन कौशल, संगठनात्मक सफलता"
+        },
+        "finance_economics": {
+          "name": "वित्त और अर्थशास्त्र",
+          "description": "व्यक्तिगत वित्त, निवेश, आर्थिक सिद्धांत"
         }
       }
     },

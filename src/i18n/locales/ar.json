@@ -157,7 +157,8 @@
       "nonfiction": "أدب واقعي",
       "fiction": "أدب خيالي",
       "teens": "قصص المراهقين",
-      "everydayLife": "الحياة اليومية"
+      "everydayLife": "الحياة اليومية",
+      "professional": "المحترف"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "المستقبل والأحلام",
           "description": "الطموحات المهنية وأهداف الحياة والتخطيط للمستقبل"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "الأعمال وريادة الأعمال",
+          "description": "الشركات الناشئة واستراتيجية الأعمال وعقلية ريادة الأعمال"
+        },
+        "career_workplace": {
+          "name": "المهنة وبيئة العمل",
+          "description": "التطوير المهني وديناميكيات بيئة العمل والنمو الوظيفي"
+        },
+        "leadership_management": {
+          "name": "القيادة والإدارة",
+          "description": "قيادة الفريق ومهارات الإدارة والنجاح التنظيمي"
+        },
+        "finance_economics": {
+          "name": "المالية والاقتصاد",
+          "description": "التمويل الشخصي والاستثمار والمبادئ الاقتصادية"
         }
       }
     },

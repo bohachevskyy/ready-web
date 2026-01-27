@@ -157,7 +157,8 @@
       "nonfiction": "No ficción",
       "fiction": "Ficción",
       "teens": "Historias para adolescentes",
-      "everydayLife": "Vida cotidiana"
+      "everydayLife": "Vida cotidiana",
+      "professional": "Profesional"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "Futuro y sueños",
           "description": "Aspiraciones profesionales, metas de vida, planificación"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "Negocios y Emprendimiento",
+          "description": "Startups, estrategia empresarial, mentalidad emprendedora"
+        },
+        "career_workplace": {
+          "name": "Carrera y Trabajo",
+          "description": "Desarrollo profesional, dinámica laboral, crecimiento profesional"
+        },
+        "leadership_management": {
+          "name": "Liderazgo y Gestión",
+          "description": "Liderazgo de equipos, habilidades de gestión, éxito organizacional"
+        },
+        "finance_economics": {
+          "name": "Finanzas y Economía",
+          "description": "Finanzas personales, inversiones, principios económicos"
         }
       }
     },

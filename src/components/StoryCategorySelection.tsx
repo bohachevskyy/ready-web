@@ -25,6 +25,10 @@ import {
   Dog,
   Puzzle,
   Code,
+  Briefcase,
+  Building2,
+  Crown,
+  LineChart,
 } from "lucide-react"
 
 type StoryDomain = string
@@ -120,6 +124,21 @@ const TEEN_DOMAINS: Record<string, DomainConfig> = {
   },
 }
 
+const PROFESSIONAL_DOMAINS: Record<string, DomainConfig> = {
+  business_entrepreneurship: {
+    icon: Briefcase,
+  },
+  career_workplace: {
+    icon: Building2,
+  },
+  leadership_management: {
+    icon: Crown,
+  },
+  finance_economics: {
+    icon: LineChart,
+  },
+}
+
 const CATEGORY_CONFIGS: Record<CategoryType, {
   domains: Record<string, DomainConfig>
   icon: React.ComponentType<{ className?: string }>
@@ -127,6 +146,7 @@ const CATEGORY_CONFIGS: Record<CategoryType, {
   teens: { domains: TEEN_DOMAINS, icon: Users },
   nonfiction: { domains: NONFICTION_DOMAINS, icon: BookOpen },
   fiction: { domains: FICTION_DOMAINS, icon: Sparkles },
+  professional: { domains: PROFESSIONAL_DOMAINS, icon: Briefcase },
 }
 
 export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectionProps) {
