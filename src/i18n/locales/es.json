@@ -397,6 +397,7 @@
   },
   "storyReader": {
     "translationError": "Error al cargar la traducción de la palabra. Por favor, inténtalo de nuevo.",
+    "saveWordError": "Error al guardar la palabra en el vocabulario. Por favor, inténtalo de nuevo.",
     "questionsError": "No se pudieron cargar las preguntas",
     "questionsErrorDescription": "No se pudieron cargar las preguntas del cuestionario. Puedes saltar el cuestionario y completar la historia.",
     "skipQuestions": "Saltar preguntas"

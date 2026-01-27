@@ -397,6 +397,7 @@
   },
   "storyReader": {
     "translationError": "Wortübersetzung konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
+    "saveWordError": "Wort konnte nicht im Vokabular gespeichert werden. Bitte versuchen Sie es erneut.",
     "questionsError": "Fragen konnten nicht geladen werden",
     "questionsErrorDescription": "Die Quizfragen konnten nicht geladen werden. Sie können das Quiz überspringen und die Geschichte beenden.",
     "skipQuestions": "Fragen überspringen"

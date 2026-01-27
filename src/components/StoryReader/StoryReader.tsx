@@ -31,6 +31,7 @@ export function StoryReader() {
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
+    saveWordError,
     popoverRef,
 
     // Handlers
@@ -48,6 +49,7 @@ export function StoryReader() {
     openVocabDrawer,
     closeVocabDrawer,
     clearTranslationError,
+    clearSaveWordError,
   } = useStoryReader()
 
   // Scroll to top when transitioning to questions view
@@ -153,6 +155,14 @@ export function StoryReader() {
         <Toast
           message={translationError}
           onClose={clearTranslationError}
+        />
+      )}
+
+      {/* Save word error toast */}
+      {saveWordError && (
+        <Toast
+          message={saveWordError}
+          onClose={clearSaveWordError}
         />
       )}
     </div>

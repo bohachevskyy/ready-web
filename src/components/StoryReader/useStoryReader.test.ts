@@ -1,3 +1,4 @@
+import React from 'react'
 import { act, renderHook, waitFor } from '@testing-library/react'
 
 // Mock modules
@@ -41,6 +42,20 @@ jest.mock('../../hooks/useSpeechSynthesis', () => ({
   useSpeechSynthesis: () => ({ speak: jest.fn(), supported: true }),
 }))
 
+const mockSaveWords = jest.fn()
+jest.mock('../../store/storiesSlice', () => {
+  const actual = jest.requireActual('../../store/storiesSlice')
+  return {
+    ...actual,
+    saveWords: (req: unknown) => {
+      mockSaveWords(req)
+      const p = Promise.resolve() as Promise<void> & { unwrap: () => Promise<void> }
+      p.unwrap = () => p
+      return () => p
+    },
+  }
+})
+
 // Import modules after mocks
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStoryReader } from './useStoryReader'
@@ -48,9 +63,10 @@ import { useStoryReader } from './useStoryReader'
 const mockUseNavigate = useNavigate as jest.Mock
 const mockUseParams = useParams as jest.Mock
 
-describe('useStoryReader - Question Error Handling', () => {
+describe('useStoryReader', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockSaveWords.mockClear()
     mockUseNavigate.mockReturnValue(mockNavigate)
     mockUseParams.mockReturnValue({ domain: 'test-domain' })
     mockVocabularyState = { savedWords: [] }
@@ -77,42 +93,114 @@ describe('useStoryReader - Question Error Handling', () => {
   })
 
   describe('handleFinish', () => {
-    it('should automatically skip and navigate home when getQuestions fails', async () => {
-      // First call is generateStory on mount (success)
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.resolve({
-          id: 'story-123',
-          story: 'Test story',
-          translations: {},
-        }),
-      })
-
-      // Second call is getQuestions (failure)
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.reject(new Error('Failed to fetch questions')),
-      })
-
-      // Third call is submitFeedback (auto-skip)
-      mockDispatch.mockReturnValueOnce({
-        unwrap: () => Promise.resolve({ success: true }),
-      })
-
-      // Fourth call is clearAllWords
-      mockDispatch.mockReturnValueOnce({ type: 'vocabulary/clearAllWords' })
+    it('should automatically skip and navigate home when getQuestions fails (no saveWords)', async () => {
+      const defaultRet = { unwrap: () => Promise.resolve() }
+      mockDispatch
+        .mockReturnValue(defaultRet)
+        .mockReturnValueOnce({ unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) })
+        .mockReturnValueOnce(defaultRet)
+        .mockReturnValueOnce(defaultRet)
+        .mockReturnValueOnce(defaultRet)
+        .mockReturnValueOnce({ unwrap: () => Promise.reject(new Error('Failed to fetch questions')) })
+        .mockReturnValueOnce({ unwrap: () => Promise.resolve() })
+        .mockReturnValueOnce({ type: 'vocabulary/clearAllWords' })
 
       mockVocabularyState = { savedWords: [] }
 
       const { result } = renderHook(() => useStoryReader())
 
-      // Call handleFinish
       await act(async () => {
         await result.current.handleFinish()
       })
 
-      // Should automatically navigate home
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith('/')
       })
+      expect(mockSaveWords).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('save-on-add', () => {
+    it('addWordToList dispatches addWord and saveWords with story_id', async () => {
+      const word = {
+        expression: 'hello',
+        translation: 'hola',
+        grammatical_info: 'interj',
+        sentence_translation: 'Hi there.',
+        example_sentence: 'Hello, world!',
+      }
+      let thunkCount = 0
+      mockDispatch.mockImplementation((action: unknown) => {
+        if (typeof action === 'function') {
+          const ix = thunkCount++
+          const thunk = action as () => Promise<unknown>
+          if (ix === 0) return { unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) }
+          if (ix === 1) return { unwrap: () => Promise.resolve({ expression: word.expression, translation: word.translation, grammatical_info: word.grammatical_info, sentence_translation: word.sentence_translation, example_sentence: word.example_sentence }) }
+          return thunk()
+        }
+        if (typeof action === 'object' && action !== null && 'type' in action) {
+          const a = action as { type: string }
+          if (a.type === 'vocabulary/addWord') {
+            const payload = (action as unknown as { payload: unknown }).payload
+            mockVocabularyState.savedWords = [...mockVocabularyState.savedWords, payload as any]
+          }
+        }
+        return { unwrap: () => Promise.resolve() }
+      })
+
+      const { result } = renderHook(() => useStoryReader())
+
+      const el = document.createElement('span')
+      el.setAttribute('data-start', '0')
+      el.setAttribute('data-end', '5')
+      el.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 50, right: 100, width: 50, height: 20, x: 50, y: 100, toJSON: () => {} })
+
+      await act(async () => {
+        await result.current.handleWordClick({ target: el } as unknown as React.MouseEvent)
+      })
+
+      await act(() => {
+        result.current.addWordToList()
+      })
+
+      expect(mockSaveWords).toHaveBeenCalledWith({
+        words: [{
+          word: word.expression,
+          translation: word.translation,
+          sentence_context: word.example_sentence,
+          sentence_example: word.example_sentence,
+          story_id: 'story-123',
+        }],
+      })
+      const addWordCalls = mockDispatch.mock.calls.filter(
+        (c) => typeof c[0] === 'object' && c[0] !== null && 'type' in c[0] && (c[0] as { type: string }).type === 'vocabulary/addWord'
+      )
+      expect(addWordCalls.length).toBeGreaterThanOrEqual(1)
+      expect(addWordCalls[0][0]).toMatchObject({ type: 'vocabulary/addWord', payload: expect.objectContaining({ word: word.expression, translation: word.translation }) })
+    })
+
+    it('handleComplete does not call saveWords', async () => {
+      const defaultRet = { unwrap: () => Promise.resolve() }
+      mockDispatch
+        .mockReturnValue(defaultRet)
+        .mockReturnValueOnce({ unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) })
+        .mockReturnValueOnce(defaultRet)
+        .mockReturnValueOnce(defaultRet)
+        .mockReturnValueOnce(defaultRet)
+        .mockReturnValueOnce({ unwrap: () => Promise.resolve({ questions: [] }) })
+        .mockReturnValueOnce({ unwrap: () => Promise.resolve() })
+        .mockReturnValueOnce({ type: 'vocabulary/clearAllWords' })
+
+      const { result } = renderHook(() => useStoryReader())
+
+      await act(async () => {
+        await result.current.handleFinish()
+      })
+      await act(async () => {
+        await result.current.handleComplete()
+      })
+
+      expect(mockSaveWords).not.toHaveBeenCalled()
     })
   })
 })

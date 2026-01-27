@@ -397,6 +397,7 @@
   },
   "storyReader": {
     "translationError": "Impossibile caricare la traduzione della parola. Per favore riprova.",
+    "saveWordError": "Impossibile salvare la parola nel vocabolario. Per favore riprova.",
     "questionsError": "Impossibile caricare le domande",
     "questionsErrorDescription": "Non siamo riusciti a caricare le domande del quiz. Puoi saltare il quiz e completare la storia.",
     "skipQuestions": "Salta domande"

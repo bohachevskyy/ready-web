@@ -381,6 +381,7 @@
   },
   "storyReader": {
     "translationError": "Failed to load word translation. Please try again.",
+    "saveWordError": "Failed to save word to vocabulary. Please try again.",
     "questionsError": "Unable to load questions",
     "questionsErrorDescription": "We couldn't load the quiz questions. You can skip the quiz and complete the story.",
     "skipQuestions": "Skip Questions"
