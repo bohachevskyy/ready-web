@@ -157,7 +157,8 @@
       "nonfiction": "논픽션",
       "fiction": "소설",
       "teens": "청소년 스토리",
-      "everydayLife": "일상 생활"
+      "everydayLife": "일상 생활",
+      "professional": "프로페셔널"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "미래와 꿈",
           "description": "진로 포부, 인생 목표, 미래 계획"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "비즈니스와 창업",
+          "description": "스타트업, 비즈니스 전략, 기업가 정신"
+        },
+        "career_workplace": {
+          "name": "커리어와 직장",
+          "description": "전문성 개발, 직장 역학, 커리어 성장"
+        },
+        "leadership_management": {
+          "name": "리더십과 경영",
+          "description": "팀 리더십, 경영 기술, 조직적 성공"
+        },
+        "finance_economics": {
+          "name": "금융과 경제",
+          "description": "개인 금융, 투자, 경제 원칙"
         }
       }
     },

@@ -157,7 +157,8 @@
       "nonfiction": "非虚构类",
       "fiction": "虚构类",
       "teens": "青少年故事",
-      "everydayLife": "日常生活"
+      "everydayLife": "日常生活",
+      "professional": "专业类"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "未来与梦想",
           "description": "职业抱负、人生目标、未来规划"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "商业与创业",
+          "description": "创业公司、商业战略、创业思维"
+        },
+        "career_workplace": {
+          "name": "职业与职场",
+          "description": "职业发展、职场动态、职业成长"
+        },
+        "leadership_management": {
+          "name": "领导力与管理",
+          "description": "团队领导、管理技能、组织成功"
+        },
+        "finance_economics": {
+          "name": "金融与经济",
+          "description": "个人理财、投资、经济原理"
         }
       }
     },

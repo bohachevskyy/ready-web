@@ -157,7 +157,8 @@
       "nonfiction": "ノンフィクション",
       "fiction": "フィクション",
       "teens": "ティーンストーリー",
-      "everydayLife": "日常生活"
+      "everydayLife": "日常生活",
+      "professional": "プロフェッショナル"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "将来と夢",
           "description": "キャリア志望、人生の目標、未来計画"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "ビジネスと起業",
+          "description": "スタートアップ、ビジネス戦略、起業家精神"
+        },
+        "career_workplace": {
+          "name": "キャリアと職場",
+          "description": "プロフェッショナル開発、職場環境、キャリア成長"
+        },
+        "leadership_management": {
+          "name": "リーダーシップとマネジメント",
+          "description": "チームリーダーシップ、マネジメントスキル、組織的成功"
+        },
+        "finance_economics": {
+          "name": "金融と経済",
+          "description": "個人金融、投資、経済原則"
         }
       }
     },

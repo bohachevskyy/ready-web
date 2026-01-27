@@ -167,7 +167,8 @@
     "categories": {
       "nonfiction": "Nonfiction",
       "fiction": "Fiction",
-      "teens": "Teen Stories"
+      "teens": "Teen Stories",
+      "professional": "Professional"
     },
     "domains": {
       "nonfiction": {
@@ -274,6 +275,24 @@
         "teen_future_dreams": {
           "name": "Future & Dreams",
           "description": "Career aspirations, life goals, planning ahead"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "Business & Entrepreneurship",
+          "description": "Startups, business strategy, entrepreneurial mindset"
+        },
+        "career_workplace": {
+          "name": "Career & Workplace",
+          "description": "Professional development, workplace dynamics, career growth"
+        },
+        "leadership_management": {
+          "name": "Leadership & Management",
+          "description": "Team leadership, management skills, organizational success"
+        },
+        "finance_economics": {
+          "name": "Finance & Economics",
+          "description": "Personal finance, investing, economic principles"
         }
       }
     },

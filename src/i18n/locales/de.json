@@ -157,7 +157,8 @@
       "nonfiction": "Sachbuch",
       "fiction": "Belletristik",
       "teens": "Geschichten für Teens",
-      "everydayLife": "Alltag"
+      "everydayLife": "Alltag",
+      "professional": "Beruflich"
     },
     "domains": {
       "nonfiction": {
@@ -290,6 +291,24 @@
         "teen_future_dreams": {
           "name": "Zukunft & Träume",
           "description": "Karrierewünsche, Lebensziele, vorausplanen"
+        }
+      },
+      "professional": {
+        "business_entrepreneurship": {
+          "name": "Business & Unternehmertum",
+          "description": "Startups, Geschäftsstrategie, unternehmerisches Denken"
+        },
+        "career_workplace": {
+          "name": "Karriere & Arbeitsplatz",
+          "description": "Berufliche Entwicklung, Arbeitsplatzdynamik, Karrierewachstum"
+        },
+        "leadership_management": {
+          "name": "Führung & Management",
+          "description": "Teamführung, Managementfähigkeiten, organisatorischer Erfolg"
+        },
+        "finance_economics": {
+          "name": "Finanzen & Wirtschaft",
+          "description": "Persönliche Finanzen, Investitionen, wirtschaftliche Grundlagen"
         }
       }
     },
