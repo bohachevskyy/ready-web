@@ -49,6 +49,7 @@ export function useStoryReader() {
   const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
   const [isWordDrawerOpen, setIsWordDrawerOpen] = useState<boolean>(false)
   const [translationError, setTranslationError] = useState<string | null>(null)
+  const [saveWordError, setSaveWordError] = useState<string | null>(null)
   const clickedWordRef = useRef<HTMLElement | null>(null)
 
   // Fetch story on component mount
@@ -130,20 +131,8 @@ export function useStoryReader() {
       setView('questions')
     } catch (err) {
       console.error('Failed to fetch questions:', err)
-      // Automatically skip when questions fail - save words and submit feedback
+      // Automatically skip when questions fail - submit feedback and navigate
       try {
-        if (savedWords.length > 0) {
-          await dispatch(saveWords({
-            words: savedWords.map(word => ({
-              word: word.word,
-              translation: word.translation,
-              sentence_context: word.example_sentence,
-              sentence_example: word.example_sentence,
-              story_id: storyId
-            }))
-          })).unwrap()
-        }
-
         await dispatch(submitFeedback({
           storyId,
           feedback: {
@@ -166,25 +155,12 @@ export function useStoryReader() {
         navigate('/')
       }
     }
-  }, [dispatch, storyId, savedWords, likeStatus, navigate])
+  }, [dispatch, storyId, likeStatus, navigate])
 
   const handleComplete = useCallback(async () => {
     if (!storyId) return
 
     try {
-      // Save words to vocabulary if any were added
-      if (savedWords.length > 0) {
-        await dispatch(saveWords({
-          words: savedWords.map(word => ({
-            word: word.word,
-            translation: word.translation,
-            sentence_context: word.example_sentence,
-            sentence_example: word.example_sentence,
-            story_id: storyId
-          }))
-        })).unwrap()
-      }
-
       await dispatch(submitFeedback({
         storyId,
         feedback: {
@@ -210,7 +186,7 @@ export function useStoryReader() {
       // Still redirect even if feedback fails
       navigate('/')
     }
-  }, [dispatch, storyId, savedWords, questions, attemptCounts, likeStatus, navigate])
+  }, [dispatch, storyId, questions, attemptCounts, likeStatus, navigate])
 
   const handleLikeFeedback = useCallback((status: "like" | "dislike") => {
     // Toggle status
@@ -226,19 +202,6 @@ export function useStoryReader() {
     if (!storyId) return
 
     try {
-      // Save words to vocabulary if any were added
-      if (savedWords.length > 0) {
-        await dispatch(saveWords({
-          words: savedWords.map(word => ({
-            word: word.word,
-            translation: word.translation,
-            sentence_context: word.example_sentence,
-            sentence_example: word.example_sentence,
-            story_id: storyId
-          }))
-        })).unwrap()
-      }
-
       await dispatch(submitFeedback({
         storyId,
         feedback: {
@@ -264,7 +227,7 @@ export function useStoryReader() {
       // Still redirect even if feedback fails
       navigate('/')
     }
-  }, [dispatch, storyId, savedWords, questions, attemptCounts, likeStatus, navigate])
+  }, [dispatch, storyId, questions, attemptCounts, likeStatus, navigate])
 
   const scrollWordIntoView = useCallback((wordElement: HTMLElement) => {
     // Wait for drawer animation to start
@@ -379,7 +342,6 @@ export function useStoryReader() {
   const addWordToList = useCallback(() => {
     if (!selectedWord) return
 
-    // Add to Redux vocabulary store
     const newWord: SavedWord = {
       id: `${Date.now()}-${selectedWord.expression}`,
       word: selectedWord.expression,
@@ -391,10 +353,24 @@ export function useStoryReader() {
     }
     dispatch(addWord(newWord))
 
-    // Hide popover after adding word
+    if (storyId) {
+      dispatch(saveWords({
+        words: [{
+          word: selectedWord.expression,
+          translation: selectedWord.translation,
+          sentence_context: selectedWord.example_sentence,
+          sentence_example: selectedWord.example_sentence,
+          story_id: storyId,
+        }],
+      })).unwrap().catch(() => {
+        setSaveWordError(t('storyReader.saveWordError'))
+        dispatch(removeWord(newWord.id))
+      })
+    }
+
     setSelectedWord(null)
     setPopoverPosition(null)
-  }, [dispatch, selectedWord])
+  }, [dispatch, selectedWord, storyId, t])
 
   const addWordToListAndCloseDrawer = useCallback(() => {
     if (!selectedWord) return
@@ -409,10 +385,26 @@ export function useStoryReader() {
       example_sentence: selectedWord.example_sentence,
     }
     dispatch(addWord(newWord))
+
+    if (storyId) {
+      dispatch(saveWords({
+        words: [{
+          word: selectedWord.expression,
+          translation: selectedWord.translation,
+          sentence_context: selectedWord.example_sentence,
+          sentence_example: selectedWord.example_sentence,
+          story_id: storyId,
+        }],
+      })).unwrap().catch(() => {
+        setSaveWordError(t('storyReader.saveWordError'))
+        dispatch(removeWord(newWord.id))
+      })
+    }
+
     setIsWordDrawerOpen(false)
     setSelectedWord(null)
     clickedWordRef.current = null
-  }, [dispatch, selectedWord])
+  }, [dispatch, selectedWord, storyId, t])
 
   const handleRemoveWord = useCallback((id: string) => {
     dispatch(removeWord(id))
@@ -441,6 +433,10 @@ export function useStoryReader() {
     setTranslationError(null)
   }, [])
 
+  const clearSaveWordError = useCallback(() => {
+    setSaveWordError(null)
+  }, [])
+
   return {
     // State
     view,
@@ -457,6 +453,7 @@ export function useStoryReader() {
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
+    saveWordError,
     popoverRef,
 
     // Handlers
@@ -474,5 +471,6 @@ export function useStoryReader() {
     openVocabDrawer,
     closeVocabDrawer,
     clearTranslationError,
+    clearSaveWordError,
   }
 }

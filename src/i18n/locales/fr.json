@@ -378,6 +378,7 @@
   },
   "storyReader": {
     "translationError": "Échec du chargement de la traduction du mot. Veuillez réessayer.",
+    "saveWordError": "Échec de l'enregistrement du mot dans le vocabulaire. Veuillez réessayer.",
     "questionsError": "Impossible de charger les questions",
     "questionsErrorDescription": "Nous n'avons pas pu charger les questions du quiz. Vous pouvez sauter le quiz et terminer l'histoire.",
     "skipQuestions": "Passer les questions"

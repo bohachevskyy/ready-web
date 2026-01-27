@@ -378,6 +378,7 @@
   },
   "storyReader": {
     "translationError": "Nie udało się załadować tłumaczenia słowa. Spróbuj ponownie.",
+    "saveWordError": "Nie udało się zapisać słowa w słowniku. Spróbuj ponownie.",
     "questionsError": "Nie udało się załadować pytań",
     "questionsErrorDescription": "Nie udało się załadować pytań quizu. Możesz pominąć quiz i ukończyć historię.",
     "skipQuestions": "Pomiń pytania"
