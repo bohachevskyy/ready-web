@@ -1,4 +1,4 @@
-import { BookOpen, Brain } from "lucide-react"
+import { BookOpen, Brain, GraduationCap, Sparkles } from "lucide-react"
 import { Card } from "./ui/card"
 import { useWordCount } from "../hooks/useWordCount"
 import { useTranslation } from "../i18n/useTranslation"
@@ -9,14 +9,13 @@ interface ModeSelectionProps {
 
 export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
   const { wordsCount } = useWordCount()
-  const { t } = useTranslation()
+  const { t,  } = useTranslation()
 
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">{t('modeSelection.title')}</h1>
-          <p className="mt-2 text-muted-foreground">{t('modeSelection.description')}</p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -31,9 +30,6 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-foreground">{t('modeSelection.readStories')}</h2>
-                <p className="mt-2 text-muted-foreground">
-                  {t('modeSelection.readStoriesDescription')}
-                </p>
               </div>
             </div>
           </Card>
@@ -54,7 +50,6 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-foreground">{t('modeSelection.practiceWords')}</h2>
-                <p className="mt-2 text-muted-foreground">{t('modeSelection.practiceWordsDescription')}</p>
               </div>
             </div>
           </Card>

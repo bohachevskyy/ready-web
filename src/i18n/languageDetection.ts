@@ -4,7 +4,7 @@ import { SupportedLanguage } from './i18nContext';
  * List of all supported language codes in the application
  */
 const SUPPORTED_LANGUAGES: SupportedLanguage[] = [
-  'en', 'uk', 'es', 'fr', 'de', 'it', 'pt', 'pl', 'zh', 'ja', 'ko', 'ar', 'hi'
+  'en', 'uk', 'es', 'pt', 'pl'
 ];
 
 /**

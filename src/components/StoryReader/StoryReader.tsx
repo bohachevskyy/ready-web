@@ -68,10 +68,10 @@ export function StoryReader() {
     <div className="flex h-screen bg-background">
       {/* Main reading area */}
       <div ref={scrollContainerRef} className="flex-1 flex flex-col p-8 overflow-auto">
-        <h1 className="text-2xl font-semibold mb-8 text-foreground">
-          {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
-        </h1>
         <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl w-full mx-auto mb-12">
+          <h1 className="text-2xl font-semibold mb-8 text-foreground">
+            {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
+          </h1>
           <Card className="p-8 bg-card shadow-sm">
             {view === 'story' && (
               <StoryContent
