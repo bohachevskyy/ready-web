@@ -151,7 +151,7 @@
     }
   },
   "stories": {
-    "pageTitle": "Elige el tema de tu historia",
+    "pageTitle": "Elige la categoría de tu historia",
     "pageDescription": "Selecciona un tema para comenzar a leer",
     "categories": {
       "nonfiction": "No ficción",
@@ -320,12 +320,42 @@
     "logout": "Cerrar sesión"
   },
   "modeSelection": {
-    "title": "Elige tu modo de aprendizaje",
-    "description": "Selecciona cómo te gustaría practicar hoy",
-    "readStories": "Leer historias",
-    "readStoriesDescription": "Mejora tu comprensión de lectura con historias interactivas",
-    "practiceWords": "Practicar palabras",
-    "practiceWordsDescription": "Construye tu vocabulario con ejercicios de palabras dirigidos"
+    "title": "Learn by reading",
+    "readStories": "Read Stories",
+    "readStoriesDescription": "Improve your reading comprehension with interactive stories",
+    "practiceWords": "Practice Words",
+    "practiceWordsDescription": "Build your vocabulary with targeted word exercises",
+    "visualsTitle": "Turn reading into a living word list",
+    "visualsSubtitle": "Pick a story, collect words, and practice in short bursts that stick.",
+    "visualsAlt": "Cheerful reading scene",
+    "visualsTag": "Made for learners",
+    "steps": {
+      "readTitle": "Read in context",
+      "readDescription": "Meet words inside real sentences.",
+      "collectTitle": "Collect as you go",
+      "collectDescription": "Save words you want to remember.",
+      "practiceTitle": "Practice lightly",
+      "practiceDescription": "Quick sessions build recall."
+    },
+    "wordGardenTitle": "Word garden",
+    "wordGardenSubtitle": "A growing set of words from your reading.",
+    "wordGardenTag": "New this week",
+    "wordChips": [
+      "curious",
+      "essential",
+      "wander",
+      "glow",
+      "steady",
+      "bright",
+      "origin",
+      "craft",
+      "notice",
+      "rare"
+    ],
+    "momentumTitle": "Reading momentum",
+    "momentumSubtitle": "A calm pace beats cramming every time.",
+    "momentumTag": "On track",
+    "momentumBadge": "Week 1"
   },
   "account": {
     "settings": "Configuración de cuenta",

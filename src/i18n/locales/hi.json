@@ -320,12 +320,42 @@
     "logout": "लॉगआउट"
   },
   "modeSelection": {
-    "title": "अपना सीखने का तरीका चुनें",
-    "description": "चुनें कि आप आज कैसे अभ्यास करना चाहते हैं",
-    "readStories": "कहानियां पढ़ें",
-    "readStoriesDescription": "इंटरैक्टिव कहानियों के साथ अपनी पढ़ने की समझ में सुधार करें",
-    "practiceWords": "शब्दों का अभ्यास करें",
-    "practiceWordsDescription": "लक्षित शब्द अभ्यास के साथ अपनी शब्दावली बनाएं"
+    "title": "Learn by reading",
+    "readStories": "Read Stories",
+    "readStoriesDescription": "Improve your reading comprehension with interactive stories",
+    "practiceWords": "Practice Words",
+    "practiceWordsDescription": "Build your vocabulary with targeted word exercises",
+    "visualsTitle": "Turn reading into a living word list",
+    "visualsSubtitle": "Pick a story, collect words, and practice in short bursts that stick.",
+    "visualsAlt": "Cheerful reading scene",
+    "visualsTag": "Made for learners",
+    "steps": {
+      "readTitle": "Read in context",
+      "readDescription": "Meet words inside real sentences.",
+      "collectTitle": "Collect as you go",
+      "collectDescription": "Save words you want to remember.",
+      "practiceTitle": "Practice lightly",
+      "practiceDescription": "Quick sessions build recall."
+    },
+    "wordGardenTitle": "Word garden",
+    "wordGardenSubtitle": "A growing set of words from your reading.",
+    "wordGardenTag": "New this week",
+    "wordChips": [
+      "curious",
+      "essential",
+      "wander",
+      "glow",
+      "steady",
+      "bright",
+      "origin",
+      "craft",
+      "notice",
+      "rare"
+    ],
+    "momentumTitle": "Reading momentum",
+    "momentumSubtitle": "A calm pace beats cramming every time.",
+    "momentumTag": "On track",
+    "momentumBadge": "Week 1"
   },
   "account": {
     "settings": "खाता सेटिंग",

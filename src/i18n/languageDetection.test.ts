@@ -177,16 +177,8 @@ describe('languageDetection', () => {
         { input: 'en-US', expected: 'en' },
         { input: 'uk-UA', expected: 'uk' },
         { input: 'es-ES', expected: 'es' },
-        { input: 'fr-FR', expected: 'fr' },
-        { input: 'de-DE', expected: 'de' },
-        { input: 'it-IT', expected: 'it' },
         { input: 'pt-BR', expected: 'pt' },
         { input: 'pl-PL', expected: 'pl' },
-        { input: 'zh-CN', expected: 'zh' },
-        { input: 'ja-JP', expected: 'ja' },
-        { input: 'ko-KR', expected: 'ko' },
-        { input: 'ar-SA', expected: 'ar' },
-        { input: 'hi-IN', expected: 'hi' },
       ];
 
       testCases.forEach(({ input, expected }) => {

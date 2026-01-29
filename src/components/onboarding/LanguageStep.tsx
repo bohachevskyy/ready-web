@@ -9,18 +9,10 @@ interface LanguageStepProps {
 }
 
 const languageCodes = [
-  { code: "uk", flag: "🇺🇦" },
   { code: "es", flag: "🇪🇸" },
-  { code: "fr", flag: "🇫🇷" },
-  { code: "de", flag: "🇩🇪" },
-  { code: "it", flag: "🇮🇹" },
   { code: "pt", flag: "🇵🇹" },
   { code: "pl", flag: "🇵🇱" },
-  { code: "zh", flag: "🇨🇳" },
-  { code: "ja", flag: "🇯🇵" },
-  { code: "ko", flag: "🇰🇷" },
-  { code: "ar", flag: "🇸🇦" },
-  { code: "hi", flag: "🇮🇳" },
+  { code: "uk", flag: "🇺🇦" },
 ]
 
 export function LanguageStep({ selectedLanguage, onLanguageSelect, onBack }: LanguageStepProps) {
