@@ -61,7 +61,6 @@ export function useStoryReader() {
       try {
         const result = await dispatch(generateStory({
           level: 1,
-          age_bracket: '8-10',
           domain: domain
         })).unwrap()
 
