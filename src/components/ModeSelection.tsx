@@ -1,4 +1,4 @@
-import { BookOpen, Brain, GraduationCap, Sparkles } from "lucide-react"
+import { BookOpen, Brain  } from "lucide-react"
 import { Card } from "./ui/card"
 import { useWordCount } from "../hooks/useWordCount"
 import { useTranslation } from "../i18n/useTranslation"
