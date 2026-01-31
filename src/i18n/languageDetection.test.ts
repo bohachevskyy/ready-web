@@ -7,16 +7,8 @@ describe('languageDetection', () => {
       expect(mapBrowserLanguageToSupported('en')).toBe('en');
       expect(mapBrowserLanguageToSupported('uk')).toBe('uk');
       expect(mapBrowserLanguageToSupported('es')).toBe('es');
-      expect(mapBrowserLanguageToSupported('fr')).toBe('fr');
-      expect(mapBrowserLanguageToSupported('de')).toBe('de');
-      expect(mapBrowserLanguageToSupported('it')).toBe('it');
       expect(mapBrowserLanguageToSupported('pt')).toBe('pt');
       expect(mapBrowserLanguageToSupported('pl')).toBe('pl');
-      expect(mapBrowserLanguageToSupported('zh')).toBe('zh');
-      expect(mapBrowserLanguageToSupported('ja')).toBe('ja');
-      expect(mapBrowserLanguageToSupported('ko')).toBe('ko');
-      expect(mapBrowserLanguageToSupported('ar')).toBe('ar');
-      expect(mapBrowserLanguageToSupported('hi')).toBe('hi');
     });
 
     it('should map regional variants with hyphen to base language', () => {
@@ -25,25 +17,15 @@ describe('languageDetection', () => {
       expect(mapBrowserLanguageToSupported('uk-UA')).toBe('uk');
       expect(mapBrowserLanguageToSupported('es-ES')).toBe('es');
       expect(mapBrowserLanguageToSupported('es-MX')).toBe('es');
-      expect(mapBrowserLanguageToSupported('fr-FR')).toBe('fr');
-      expect(mapBrowserLanguageToSupported('fr-CA')).toBe('fr');
-      expect(mapBrowserLanguageToSupported('de-DE')).toBe('de');
-      expect(mapBrowserLanguageToSupported('it-IT')).toBe('it');
       expect(mapBrowserLanguageToSupported('pt-BR')).toBe('pt');
       expect(mapBrowserLanguageToSupported('pt-PT')).toBe('pt');
       expect(mapBrowserLanguageToSupported('pl-PL')).toBe('pl');
-      expect(mapBrowserLanguageToSupported('zh-CN')).toBe('zh');
-      expect(mapBrowserLanguageToSupported('zh-TW')).toBe('zh');
-      expect(mapBrowserLanguageToSupported('ja-JP')).toBe('ja');
-      expect(mapBrowserLanguageToSupported('ko-KR')).toBe('ko');
-      expect(mapBrowserLanguageToSupported('ar-SA')).toBe('ar');
-      expect(mapBrowserLanguageToSupported('hi-IN')).toBe('hi');
     });
 
     it('should map regional variants with underscore to base language', () => {
       expect(mapBrowserLanguageToSupported('en_US')).toBe('en');
       expect(mapBrowserLanguageToSupported('uk_UA')).toBe('uk');
-      expect(mapBrowserLanguageToSupported('zh_CN')).toBe('zh');
+      expect(mapBrowserLanguageToSupported('es_ES')).toBe('es');
     });
 
     it('should handle uppercase and mixed case language codes', () => {
@@ -60,6 +42,11 @@ describe('languageDetection', () => {
       expect(mapBrowserLanguageToSupported('no')).toBeNull(); // Norwegian
       expect(mapBrowserLanguageToSupported('da')).toBeNull(); // Danish
       expect(mapBrowserLanguageToSupported('fi')).toBeNull(); // Finnish
+      expect(mapBrowserLanguageToSupported('fr')).toBeNull(); // French
+      expect(mapBrowserLanguageToSupported('de')).toBeNull(); // German
+      expect(mapBrowserLanguageToSupported('it')).toBeNull(); // Italian
+      expect(mapBrowserLanguageToSupported('zh')).toBeNull(); // Chinese
+      expect(mapBrowserLanguageToSupported('ja')).toBeNull(); // Japanese
     });
 
     it('should return null for empty or invalid input', () => {
@@ -102,33 +89,33 @@ describe('languageDetection', () => {
 
     it('should use first supported language from navigator.languages', () => {
       Object.defineProperty(global, 'navigator', {
-        value: { language: 'en-US', languages: ['sv-SE', 'no-NO', 'fr-FR', 'de-DE'] },
+        value: { language: 'en-US', languages: ['sv-SE', 'no-NO', 'es-ES', 'pt-PT'] },
         writable: true,
         configurable: true,
       });
 
-      // Should skip Swedish and Norwegian (unsupported) and use French
-      expect(detectBrowserLanguage()).toBe('fr');
+      // Should skip Swedish and Norwegian (unsupported) and use Spanish
+      expect(detectBrowserLanguage()).toBe('es');
     });
 
     it('should fallback to navigator.language when languages array is empty', () => {
       Object.defineProperty(global, 'navigator', {
-        value: { language: 'de-DE', languages: [] },
+        value: { language: 'pl-PL', languages: [] },
         writable: true,
         configurable: true,
       });
 
-      expect(detectBrowserLanguage()).toBe('de');
+      expect(detectBrowserLanguage()).toBe('pl');
     });
 
     it('should fallback to navigator.language when all languages in array are unsupported', () => {
       Object.defineProperty(global, 'navigator', {
-        value: { language: 'it-IT', languages: ['sv-SE', 'no-NO'] },
+        value: { language: 'pt-PT', languages: ['sv-SE', 'no-NO'] },
         writable: true,
         configurable: true,
       });
 
-      expect(detectBrowserLanguage()).toBe('it');
+      expect(detectBrowserLanguage()).toBe('pt');
     });
 
     it('should fallback to English when browser language is unsupported', () => {
@@ -172,7 +159,7 @@ describe('languageDetection', () => {
       expect(detectBrowserLanguage()).toBe('en');
     });
 
-    it('should handle all 13 supported languages', () => {
+    it('should handle all 5 supported languages', () => {
       const testCases: Array<{ input: string; expected: SupportedLanguage }> = [
         { input: 'en-US', expected: 'en' },
         { input: 'uk-UA', expected: 'uk' },
