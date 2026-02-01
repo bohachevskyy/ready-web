@@ -9,15 +9,6 @@
   <!-- Clean rounded square background -->
   <rect x="16" y="16" width="480" height="480" rx="96" fill="url(#grad)"/>
   
-  <!-- Bold minimalist R -->
-  <text 
-    x="256" 
-    y="300" 
-    font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
-    font-size="340" 
-    font-weight="800" 
-    fill="white" 
-    text-anchor="middle" 
-    dominant-baseline="middle"
-    letter-spacing="-0.02em">R</text>
+  <!-- Bold R as path -->
+  <path fill="white" d="M168 96h140c66 0 108 42 108 100c0 48-28 82-72 94l80 126h-72l-74-118h-50v118h-60V96zm60 154h76c32 0 52-20 52-52c0-32-20-52-52-52h-76v104z"/>
 </svg>
