@@ -68,7 +68,7 @@ describe('useStoryReader', () => {
     jest.clearAllMocks()
     mockSaveWords.mockClear()
     mockUseNavigate.mockReturnValue(mockNavigate)
-    mockUseParams.mockReturnValue({ domain: 'test-domain' })
+    mockUseParams.mockReturnValue({ param: 'test-domain' })
     mockVocabularyState = { savedWords: [] }
     mockStoryState = { id: 'story-123', text: 'Test story' }
     mockStoriesState = {
