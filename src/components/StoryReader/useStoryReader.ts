@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { addWord, removeWord, clearAllWords } from "../../store/vocabularySlice"
 import { setStoryId, setStoryText, setTranslations } from "../../store/storySlice"
-import { generateStory, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../../store/storiesSlice"
+import { generateStory, fetchStoryById, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import type { SavedWord } from "../../types"
 import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis"
@@ -10,8 +10,14 @@ import { useTranslation } from "../../i18n/useTranslation"
 import type { PopoverPosition } from "./types"
 import { incrementAttempt, buildQuestionAttempts } from "../../utils/attemptTracking"
 
+// Helper function to check if a string is a UUID
+const isUUID = (str: string): boolean => {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  return uuidRegex.test(str)
+}
+
 export function useStoryReader() {
-  const { domain } = useParams<{ domain: string }>()
+  const { param } = useParams<{ param?: string }>()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { t } = useTranslation()
@@ -21,8 +27,10 @@ export function useStoryReader() {
 
   // Redux Thunk selectors
   const isGeneratingStory = useAppSelector((state) => state.stories.isGeneratingStory)
+  const isFetchingStory = useAppSelector((state) => state.stories.isFetchingStory)
   const isLoadingQuestions = useAppSelector((state) => state.stories.isLoadingQuestions)
   const storyError = useAppSelector((state) => state.stories.error)
+  const readerStatus = useAppSelector((state) => state.stories.readerStatus)
 
   // Speech synthesis for word pronunciation
   const { speak, supported: speechSupported } = useSpeechSynthesis()
@@ -52,31 +60,52 @@ export function useStoryReader() {
   const [saveWordError, setSaveWordError] = useState<string | null>(null)
   const clickedWordRef = useRef<HTMLElement | null>(null)
 
-  // Fetch story on component mount
+  // Determine route mode based on param type
+  const isViewMode = param ? isUUID(param) : false
+  const isGenerateMode = param ? !isUUID(param) : false
+
+  // Fetch or generate story on component mount
   useEffect(() => {
     if (hasFetchedStory.current) return
 
-    const fetchStory = async () => {
+    const loadStory = async () => {
       hasFetchedStory.current = true
-      try {
-        const result = await dispatch(generateStory({
-          level: 1,
-          domain: domain
-        })).unwrap()
+      sessionStartTime.current = Date.now()
 
-        dispatch(setStoryId(result.id))
-        dispatch(setStoryText(result.story))
-        dispatch(setTranslations(result.translations))
-        sessionStartTime.current = Date.now()
+      try {
+        if (isViewMode && param) {
+          // UUID Flow: Fetch existing story by ID
+          const result = await dispatch(fetchStoryById(param)).unwrap()
+          dispatch(setStoryId(result.id))
+          dispatch(setStoryText(result.story))
+          dispatch(setTranslations(result.translations))
+        } else if (isGenerateMode && param) {
+          // Domain Flow: Generate new story, then redirect
+          const result = await dispatch(generateStory({
+            level: 1,
+            domain: param
+          })).unwrap()
+
+          dispatch(setStoryId(result.id))
+          dispatch(setStoryText(result.story))
+          dispatch(setTranslations(result.translations))
+
+          // Redirect to UUID-based URL (without /view)
+          navigate(`/story/${result.id}`, { replace: true })
+        }
       } catch (err) {
-        console.error('Failed to fetch story:', err)
-        // Fallback to sample text if API fails
-        dispatch(setStoryText("Failed to load story. Please try again later."))
+        console.error('Failed to load story:', err)
+        // More specific error messages
+        if (err instanceof Error && err.message === 'Story not found') {
+          dispatch(setStoryText(t('storyReader.storyNotFound')))
+        } else {
+          dispatch(setStoryText("Failed to load story. Please try again later."))
+        }
       }
     }
 
-    fetchStory()
-  }, [dispatch, domain])
+    loadStory()
+  }, [dispatch, param, isViewMode, isGenerateMode, navigate, t])
 
   // Auto-play pronunciation when word popup is shown
   useEffect(() => {
@@ -448,12 +477,14 @@ export function useStoryReader() {
     likeStatus,
     feedbackSubmitted,
     isGeneratingStory,
+    isFetchingStory,
     isLoadingQuestions,
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
     saveWordError,
     popoverRef,
+    readerStatus,
 
     // Handlers
     handleWordClick,

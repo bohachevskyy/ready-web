@@ -74,11 +74,20 @@ export interface SaveWordsRequest {
   words: SaveWordRequest[]
 }
 
+// Reader status types
+export interface ReaderStatus {
+  status: 'not_started' | 'in_progress' | 'completed'
+  started_at: string | null
+  completed_at: string | null
+}
+
 interface StoriesState {
   currentStory: StoryResponse | null
+  readerStatus: ReaderStatus | null
   questions: Question[]
   wordDetails: WordDetailsResponse | null
   isGeneratingStory: boolean
+  isFetchingStory: boolean
   isLoadingQuestions: boolean
   isLoadingWordDetails: boolean
   isSavingWords: boolean
@@ -89,9 +98,11 @@ interface StoriesState {
 
 const initialState: StoriesState = {
   currentStory: null,
+  readerStatus: null,
   questions: [],
   wordDetails: null,
   isGeneratingStory: false,
+  isFetchingStory: false,
   isLoadingQuestions: false,
   isLoadingWordDetails: false,
   isSavingWords: false,
@@ -129,6 +140,41 @@ export const generateStory = createAsyncThunk<StoryResponse, StoryRequest, { rej
       }
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to generate story')
+    }
+  }
+)
+
+// Async thunk to fetch story by ID
+export const fetchStoryById = createAsyncThunk<
+  StoryResponse & { readerStatus?: ReaderStatus },
+  string,
+  { rejectValue: string }
+>(
+  'stories/fetchStoryById',
+  async (storyId, { rejectWithValue }) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/stories/${storyId}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Story not found')
+        }
+        throw new Error('Failed to fetch story')
+      }
+
+      const data = await response.json()
+
+      // Transform response
+      return {
+        id: data.id,
+        story: data.text,
+        translations: data.translation || {},
+        readerStatus: data.reader_status
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch story'
+      )
     }
   }
 )
@@ -255,6 +301,7 @@ export const storiesSlice = createSlice({
   reducers: {
     clearStory: (state) => {
       state.currentStory = null
+      state.readerStatus = null
       state.questions = []
       state.wordDetails = null
       state.error = null
@@ -281,6 +328,25 @@ export const storiesSlice = createSlice({
       .addCase(generateStory.rejected, (state, action) => {
         state.isGeneratingStory = false
         state.error = action.payload || 'Failed to generate story'
+      })
+
+      // Fetch story by ID
+      .addCase(fetchStoryById.pending, (state) => {
+        state.isFetchingStory = true
+        state.error = null
+      })
+      .addCase(fetchStoryById.fulfilled, (state, action) => {
+        state.isFetchingStory = false
+        state.currentStory = {
+          id: action.payload.id,
+          story: action.payload.story,
+          translations: action.payload.translations
+        }
+        state.readerStatus = action.payload.readerStatus || null
+      })
+      .addCase(fetchStoryById.rejected, (state, action) => {
+        state.isFetchingStory = false
+        state.error = action.payload || 'Failed to fetch story'
       })
 
       // Get questions
