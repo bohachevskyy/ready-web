@@ -20,7 +20,7 @@ function TestComponent({ id }: { id: string }) {
   const { wordsCount, isLoading } = useWordCount()
   return (
     <div data-testid={`component-${id}`}>
-      <span data-testid={`count-${id}`}>{wordsCount}</span>
+      <span data-testid={`count-${id}`}>{wordsCount !== undefined ? wordsCount : 'undefined'}</span>
       <span data-testid={`loading-${id}`}>{isLoading ? 'loading' : 'idle'}</span>
     </div>
   )
@@ -260,7 +260,7 @@ describe('useWordCount - Duplicate Request Prevention', () => {
     expect(screen.getByTestId('count-2')).toHaveTextContent('42')
   })
 
-  it('should return default value of 0 when wordsCount is undefined', () => {
+  it('should return undefined when wordsCount is not yet loaded', () => {
     store = createTestStore({
       words: {
         wordsCount: undefined,
@@ -274,7 +274,81 @@ describe('useWordCount - Duplicate Request Prevention', () => {
       </Provider>
     )
 
-    // Should show default value of 0
-    expect(screen.getByTestId('count-1')).toHaveTextContent('0')
+    // Should show undefined (raw value, not defaulted to 0)
+    expect(screen.getByTestId('count-1')).toHaveTextContent('undefined')
+  })
+
+  describe('bug fix: stale wordsCount after session complete', () => {
+    it('should trigger fresh fetch when wordsCount was 0 from previous session', async () => {
+      // Simulate state after a completed session where wordsCount became 0
+      // and then clearWords() was called (which now resets to undefined)
+      store = createTestStore({
+        words: {
+          wordsCount: undefined,  // After clearWords() resets stale 0
+          countLastFetched: null, // Cache also cleared
+          isCountLoading: false,
+        },
+      })
+
+      mockFetchWithAuth.mockImplementationOnce(async () => {
+        return {
+          ok: true,
+          status: 200,
+          statusText: 'OK',
+          json: async () => ({ count: 15 }),
+          text: async () => '{"count":15}',
+          headers: new Headers(),
+        } as Response
+      })
+
+      await act(async () => {
+        render(
+          <Provider store={store}>
+            <TestComponent id="1" />
+          </Provider>
+        )
+      })
+
+      // Should trigger a fetch since wordsCount is undefined
+      await waitFor(() => {
+        expect(mockFetchWithAuth).toHaveBeenCalledTimes(1)
+      }, { timeout: 5000 })
+
+      // Should show the fresh count from API
+      await waitFor(() => {
+        expect(screen.getByTestId('count-1')).toHaveTextContent('15')
+      }, { timeout: 5000 })
+    })
+
+    it('should NOT fetch when wordsCount is 0 but cache is still valid (actual 0 words due)', async () => {
+      // When wordsCount is genuinely 0 (no words due) and cache is valid
+      const recentTimestamp = Date.now() - 60 * 1000 // 1 minute ago, within cache
+      store = createTestStore({
+        words: {
+          wordsCount: 0,
+          countLastFetched: recentTimestamp,
+          isCountLoading: false,
+        },
+      })
+
+      await act(async () => {
+        render(
+          <Provider store={store}>
+            <TestComponent id="1" />
+          </Provider>
+        )
+      })
+
+      // Wait a bit
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 200))
+      })
+
+      // Should NOT fetch because wordsCount is defined (0) and cache is valid
+      expect(mockFetchWithAuth).not.toHaveBeenCalled()
+
+      // Should show 0
+      expect(screen.getByTestId('count-1')).toHaveTextContent('0')
+    })
   })
 })
