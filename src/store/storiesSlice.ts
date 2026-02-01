@@ -80,12 +80,15 @@ interface StoriesState {
   questions: Question[]
   wordDetails: WordDetailsResponse | null
   isGeneratingStory: boolean
+  isLoadingStory: boolean
   isLoadingQuestions: boolean
   isLoadingWordDetails: boolean
   isSavingWords: boolean
   isSubmittingFeedback: boolean
   error: string | null
   wordDetailsError: string | null
+  storyNotFound: boolean
+  storyAlreadyRead: boolean
 }
 
 const initialState: StoriesState = {
@@ -93,12 +96,15 @@ const initialState: StoriesState = {
   questions: [],
   wordDetails: null,
   isGeneratingStory: false,
+  isLoadingStory: false,
   isLoadingQuestions: false,
   isLoadingWordDetails: false,
   isSavingWords: false,
   isSubmittingFeedback: false,
   error: null,
   wordDetailsError: null,
+  storyNotFound: false,
+  storyAlreadyRead: false,
 }
 
 // Async thunk to generate a story
@@ -130,6 +136,43 @@ export const generateStory = createAsyncThunk<StoryResponse, StoryRequest, { rej
       }
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to generate story')
+    }
+  }
+)
+
+// Response type for get story by ID (includes feedback status)
+export interface GetStoryByIdResponse {
+  story: StoryResponse
+  hasBeenRead: boolean
+}
+
+// Async thunk to get story by ID
+export const getStoryById = createAsyncThunk<GetStoryByIdResponse, string, { rejectValue: { message: string; notFound?: boolean } }>(
+  'stories/getStoryById',
+  async (storyId, { rejectWithValue }) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/stories/${storyId}`)
+
+      if (response.status === 404) {
+        return rejectWithValue({ message: 'Story not found', notFound: true })
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch story')
+      }
+
+      const data: ApiStoryResponse & { has_been_read?: boolean } = await response.json()
+
+      return {
+        story: {
+          id: data.id,
+          story: data.text,
+          translations: data.translation,
+        },
+        hasBeenRead: data.has_been_read ?? false,
+      }
+    } catch (error) {
+      return rejectWithValue({ message: error instanceof Error ? error.message : 'Failed to fetch story' })
     }
   }
 )
@@ -260,6 +303,8 @@ export const storiesSlice = createSlice({
       state.wordDetails = null
       state.error = null
       state.wordDetailsError = null
+      state.storyNotFound = false
+      state.storyAlreadyRead = false
     },
     clearWordDetails: (state) => {
       state.wordDetails = null
@@ -282,6 +327,26 @@ export const storiesSlice = createSlice({
       .addCase(generateStory.rejected, (state, action) => {
         state.isGeneratingStory = false
         state.error = action.payload || 'Failed to generate story'
+      })
+
+      // Get story by ID
+      .addCase(getStoryById.pending, (state) => {
+        state.isLoadingStory = true
+        state.error = null
+        state.storyNotFound = false
+        state.storyAlreadyRead = false
+      })
+      .addCase(getStoryById.fulfilled, (state, action) => {
+        state.isLoadingStory = false
+        state.currentStory = action.payload.story
+        state.storyAlreadyRead = action.payload.hasBeenRead
+      })
+      .addCase(getStoryById.rejected, (state, action) => {
+        state.isLoadingStory = false
+        if (action.payload?.notFound) {
+          state.storyNotFound = true
+        }
+        state.error = action.payload?.message || 'Failed to fetch story'
       })
 
       // Get questions

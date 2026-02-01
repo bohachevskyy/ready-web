@@ -381,5 +381,20 @@
     "questionsError": "无法加载问题",
     "questionsErrorDescription": "我们无法加载测验问题。您可以跳过测验并完成故事。",
     "skipQuestions": "跳过问题"
+  },
+  "storyById": {
+    "readingPractice": "阅读练习",
+    "quizTime": "测验时间",
+    "finish": "完成",
+    "loadingQuestions": "正在加载问题...",
+    "notFound": {
+      "title": "故事未找到",
+      "description": "您要查找的故事不存在或已被删除。",
+      "goHome": "返回首页"
+    },
+    "alreadyRead": {
+      "title": "您已阅读过这个故事",
+      "description": "您可以查看内容并练习词汇，但无法再次完成它。"
+    }
   }
 }

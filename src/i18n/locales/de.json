@@ -381,5 +381,20 @@
     "questionsError": "Fragen konnten nicht geladen werden",
     "questionsErrorDescription": "Die Quizfragen konnten nicht geladen werden. Sie können das Quiz überspringen und die Geschichte beenden.",
     "skipQuestions": "Fragen überspringen"
+  },
+  "storyById": {
+    "readingPractice": "Leseübung",
+    "quizTime": "Quizzeit",
+    "finish": "Beenden",
+    "loadingQuestions": "Fragen werden geladen...",
+    "notFound": {
+      "title": "Geschichte nicht gefunden",
+      "description": "Die gesuchte Geschichte existiert nicht oder wurde entfernt.",
+      "goHome": "Zur Startseite"
+    },
+    "alreadyRead": {
+      "title": "Sie haben diese Geschichte bereits gelesen",
+      "description": "Sie können den Inhalt überprüfen und Vokabeln üben, aber Sie können sie nicht erneut abschließen."
+    }
   }
 }

@@ -365,5 +365,20 @@
     "questionsError": "Unable to load questions",
     "questionsErrorDescription": "We couldn't load the quiz questions. You can skip the quiz and complete the story.",
     "skipQuestions": "Skip Questions"
+  },
+  "storyById": {
+    "readingPractice": "Reading Practice",
+    "quizTime": "Quiz Time",
+    "finish": "Finish",
+    "loadingQuestions": "Loading questions...",
+    "notFound": {
+      "title": "Story Not Found",
+      "description": "The story you're looking for doesn't exist or may have been removed.",
+      "goHome": "Go Home"
+    },
+    "alreadyRead": {
+      "title": "You've already read this story",
+      "description": "You can still review the content and practice vocabulary, but you won't be able to complete it again."
+    }
   }
 }

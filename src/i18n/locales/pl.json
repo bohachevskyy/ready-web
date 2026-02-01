@@ -381,5 +381,20 @@
     "questionsError": "Nie udało się załadować pytań",
     "questionsErrorDescription": "Nie udało się załadować pytań quizu. Możesz pominąć quiz i ukończyć historię.",
     "skipQuestions": "Pomiń pytania"
+  },
+  "storyById": {
+    "readingPractice": "Ćwiczenie czytania",
+    "quizTime": "Czas na quiz",
+    "finish": "Zakończ",
+    "loadingQuestions": "Ładowanie pytań...",
+    "notFound": {
+      "title": "Historia nie znaleziona",
+      "description": "Historia, której szukasz, nie istnieje lub została usunięta.",
+      "goHome": "Wróć do strony głównej"
+    },
+    "alreadyRead": {
+      "title": "Już przeczytałeś tę historię",
+      "description": "Możesz przejrzeć treść i ćwiczyć słownictwo, ale nie będziesz mógł jej ponownie ukończyć."
+    }
   }
 }

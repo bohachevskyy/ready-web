@@ -13,6 +13,7 @@ interface QuizViewProps {
   onAttempt: (questionId: string) => void
   likeStatus: "like" | "dislike" | null
   feedbackSubmitted: boolean
+  disableComplete?: boolean
 }
 
 export function QuizView({
@@ -23,7 +24,8 @@ export function QuizView({
   onLikeFeedback,
   onAttempt,
   likeStatus,
-  feedbackSubmitted
+  feedbackSubmitted,
+  disableComplete = false
 }: QuizViewProps) {
   const {
     shuffledQuestions,
@@ -121,7 +123,7 @@ export function QuizView({
       <div className="flex flex-col items-center gap-3 pt-4">
         <Button
           onClick={onComplete}
-          disabled={!allQuestionsCorrect}
+          disabled={!allQuestionsCorrect || disableComplete}
           size="lg"
           className="px-12 bg-primary text-primary-foreground hover:bg-primary/90"
         >
@@ -131,6 +133,7 @@ export function QuizView({
           onClick={onSkip}
           variant="ghost"
           size="sm"
+          disabled={disableComplete}
           className="text-muted-foreground hover:text-foreground"
         >
           Skip

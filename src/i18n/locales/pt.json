@@ -381,5 +381,20 @@
     "questionsError": "Não foi possível carregar as perguntas",
     "questionsErrorDescription": "Não foi possível carregar as perguntas do questionário. Você pode pular o questionário e completar a história.",
     "skipQuestions": "Pular perguntas"
+  },
+  "storyById": {
+    "readingPractice": "Prática de leitura",
+    "quizTime": "Hora do questionário",
+    "finish": "Terminar",
+    "loadingQuestions": "Carregando perguntas...",
+    "notFound": {
+      "title": "História não encontrada",
+      "description": "A história que você está procurando não existe ou foi removida.",
+      "goHome": "Ir para o início"
+    },
+    "alreadyRead": {
+      "title": "Você já leu esta história",
+      "description": "Você pode revisar o conteúdo e praticar vocabulário, mas não poderá completá-la novamente."
+    }
   }
 }

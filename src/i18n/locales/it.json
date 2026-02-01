@@ -381,5 +381,20 @@
     "questionsError": "Impossibile caricare le domande",
     "questionsErrorDescription": "Non siamo riusciti a caricare le domande del quiz. Puoi saltare il quiz e completare la storia.",
     "skipQuestions": "Salta domande"
+  },
+  "storyById": {
+    "readingPractice": "Pratica di lettura",
+    "quizTime": "Quiz",
+    "finish": "Termina",
+    "loadingQuestions": "Caricamento domande...",
+    "notFound": {
+      "title": "Storia non trovata",
+      "description": "La storia che stai cercando non esiste o è stata rimossa.",
+      "goHome": "Vai alla home"
+    },
+    "alreadyRead": {
+      "title": "Hai già letto questa storia",
+      "description": "Puoi rivedere il contenuto e praticare il vocabolario, ma non potrai completarla di nuovo."
+    }
   }
 }

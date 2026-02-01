@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { StoryReader } from './components/StoryReader';
+import { StoryById } from './components/StoryById';
 import { ModeSelection } from './components/ModeSelection';
 import { StoryCategorySelection } from './components/StoryCategorySelection';
 import { Login } from './components/Login';
@@ -96,6 +97,18 @@ function App() {
                 <OnboardingCheck>
                   <Layout>
                     <StoryReader />
+                  </Layout>
+                </OnboardingCheck>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/stories/:id"
+            element={
+              <ProtectedRoute>
+                <OnboardingCheck>
+                  <Layout>
+                    <StoryById />
                   </Layout>
                 </OnboardingCheck>
               </ProtectedRoute>

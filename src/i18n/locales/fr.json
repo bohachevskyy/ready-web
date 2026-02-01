@@ -381,5 +381,20 @@
     "questionsError": "Impossible de charger les questions",
     "questionsErrorDescription": "Nous n'avons pas pu charger les questions du quiz. Vous pouvez sauter le quiz et terminer l'histoire.",
     "skipQuestions": "Passer les questions"
+  },
+  "storyById": {
+    "readingPractice": "Pratique de lecture",
+    "quizTime": "Quiz",
+    "finish": "Terminer",
+    "loadingQuestions": "Chargement des questions...",
+    "notFound": {
+      "title": "Histoire introuvable",
+      "description": "L'histoire que vous recherchez n'existe pas ou a été supprimée.",
+      "goHome": "Retour à l'accueil"
+    },
+    "alreadyRead": {
+      "title": "Vous avez déjà lu cette histoire",
+      "description": "Vous pouvez revoir le contenu et pratiquer le vocabulaire, mais vous ne pourrez pas la terminer à nouveau."
+    }
   }
 }
