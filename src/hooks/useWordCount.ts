@@ -16,7 +16,7 @@ export function resetPendingFetch() {
  * Automatically triggers API call when wordsCount is undefined.
  * This ensures the count is always fresh and accurate.
  *
- * @returns Object containing wordsCount (defaults to 0) and isLoading state
+ * @returns Object containing wordsCount (can be undefined if not yet loaded) and isLoading state
  */
 export function useWordCount() {
   const dispatch = useAppDispatch()
@@ -67,7 +67,7 @@ export function useWordCount() {
   }, [wordsCount, isCountLoading, dispatch])
 
   return {
-    wordsCount: wordsCount ?? 0,  // Default to 0 for safe display
+    wordsCount,  // Return raw value, can be undefined until loaded
     isLoading: isCountLoading
   }
 }

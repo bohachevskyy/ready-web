@@ -97,12 +97,13 @@ describe('wordsSlice - Synchronous Actions', () => {
   })
 
   describe('clearWords', () => {
-    it('should clear all word data while preserving count', () => {
+    it('should clear all word data and reset count for fresh fetch', () => {
       const mockWords = [createMockWord('word-1'), createMockWord('word-2')]
       store = createTestStore({
         words: {
           words: mockWords,
           wordsCount: 10,
+          countLastFetched: Date.now(),
           sessionTotal: 5,
           lastWordId: 'word-2',
           hasNextPage: false,
@@ -121,8 +122,9 @@ describe('wordsSlice - Synchronous Actions', () => {
       expect(state.currentIndex).toBe(0)
       expect(state.error).toBeNull()
 
-      // Should preserve count for future sessions
-      expect(state.wordsCount).toBe(10)
+      // Should reset count to trigger fresh fetch on next session
+      expect(state.wordsCount).toBeUndefined()
+      expect(state.countLastFetched).toBeNull()
     })
   })
 })

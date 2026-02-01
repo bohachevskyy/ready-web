@@ -153,8 +153,8 @@ export const wordsSlice = createSlice({
     // Synchronous action to clear words (e.g., on logout or session complete)
     clearWords: (state) => {
       state.words = []
-      // state.wordsCount = undefined
-      // state.countLastFetched = null
+      state.wordsCount = undefined
+      state.countLastFetched = null
       state.sessionTotal = undefined
       state.lastWordId = undefined
       state.hasNextPage = true
