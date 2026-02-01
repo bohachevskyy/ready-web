@@ -14,7 +14,8 @@
     "welcome": "Bienvenido",
     "home": "Inicio",
     "account": "Cuenta",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "goHome": "Ir al inicio"
   },
   "auth": {
     "welcome": "Bienvenido",
@@ -430,6 +431,14 @@
     "saveWordError": "Error al guardar la palabra en el vocabulario. Por favor, inténtalo de nuevo.",
     "questionsError": "No se pudieron cargar las preguntas",
     "questionsErrorDescription": "No se pudieron cargar las preguntas del cuestionario. Puedes saltar el cuestionario y completar la historia.",
-    "skipQuestions": "Saltar preguntas"
+    "skipQuestions": "Saltar preguntas",
+    "completionBanner": {
+      "title": "Ya has completado esta historia",
+      "completedOn": "Completado el",
+      "dismiss": "Cerrar"
+    },
+    "storyNotFound": "Historia no encontrada. Puede haber sido eliminada o no tienes acceso a ella.",
+    "loadingStory": "Cargando historia...",
+    "invalidStoryId": "ID de historia inválido"
   }
 }

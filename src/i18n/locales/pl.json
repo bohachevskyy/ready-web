@@ -14,7 +14,8 @@
     "welcome": "Witaj",
     "home": "Strona główna",
     "account": "Konto",
-    "logout": "Wyloguj się"
+    "logout": "Wyloguj się",
+    "goHome": "Powrót do strony głównej"
   },
   "auth": {
     "welcome": "Witaj",
@@ -430,6 +431,14 @@
     "saveWordError": "Nie udało się zapisać słowa w słowniku. Spróbuj ponownie.",
     "questionsError": "Nie udało się załadować pytań",
     "questionsErrorDescription": "Nie udało się załadować pytań quizu. Możesz pominąć quiz i ukończyć historię.",
-    "skipQuestions": "Pomiń pytania"
+    "skipQuestions": "Pomiń pytania",
+    "completionBanner": {
+      "title": "Ukończyłeś już tę historię",
+      "completedOn": "Ukończono",
+      "dismiss": "Zamknij"
+    },
+    "storyNotFound": "Historia nie została znaleziona. Mogła zostać usunięta lub nie masz do niej dostępu.",
+    "loadingStory": "Ładowanie historii...",
+    "invalidStoryId": "Nieprawidłowe ID historii"
   }
 }

@@ -90,7 +90,7 @@ function App() {
             }
           />
           <Route
-            path="/story/:domain"
+            path="/story/:param"
             element={
               <ProtectedRoute>
                 <OnboardingCheck>

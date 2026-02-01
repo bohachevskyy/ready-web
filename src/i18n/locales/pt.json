@@ -14,7 +14,8 @@
     "welcome": "Bem-vindo",
     "home": "Início",
     "account": "Conta",
-    "logout": "Sair"
+    "logout": "Sair",
+    "goHome": "Ir para Início"
   },
   "auth": {
     "welcome": "Bem-vindo",
@@ -430,6 +431,14 @@
     "saveWordError": "Falha ao salvar a palavra no vocabulário. Por favor, tente novamente.",
     "questionsError": "Não foi possível carregar as perguntas",
     "questionsErrorDescription": "Não foi possível carregar as perguntas do questionário. Você pode pular o questionário e completar a história.",
-    "skipQuestions": "Pular perguntas"
+    "skipQuestions": "Pular perguntas",
+    "completionBanner": {
+      "title": "Você já completou esta história",
+      "completedOn": "Completado em",
+      "dismiss": "Fechar"
+    },
+    "storyNotFound": "História não encontrada. Pode ter sido excluída ou você não tem acesso a ela.",
+    "loadingStory": "Carregando história...",
+    "invalidStoryId": "ID de história inválido"
   }
 }

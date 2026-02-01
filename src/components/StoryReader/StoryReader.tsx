@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
@@ -11,9 +11,11 @@ import { StoryContent } from "./StoryContent"
 import { WordPopover } from "./WordPopover"
 import { WordDrawer } from "./WordDrawer"
 import { VocabDrawer } from "./VocabDrawer"
+import { CompletionBanner } from "./CompletionBanner"
 
 export function StoryReader() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false)
 
   const {
     // State
@@ -27,12 +29,14 @@ export function StoryReader() {
     likeStatus,
     feedbackSubmitted,
     isGeneratingStory,
+    isFetchingStory,
     isLoadingQuestions,
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
     saveWordError,
     popoverRef,
+    readerStatus,
 
     // Handlers
     handleWordClick,
@@ -59,8 +63,12 @@ export function StoryReader() {
     }
   }, [view])
 
-  // Show full-screen loading animation while generating story
-  if (isGeneratingStory) {
+  // Determine if story is completed
+  const isCompleted = readerStatus?.status === 'completed' || !!readerStatus?.completed_at
+  const showCompletionBanner = isCompleted && !isBannerDismissed && view === 'story'
+
+  // Show full-screen loading animation while generating or fetching story
+  if (isGeneratingStory || isFetchingStory) {
     return <StoryLoading />
   }
 
@@ -72,6 +80,12 @@ export function StoryReader() {
           <h1 className="text-2xl font-semibold mb-8 text-foreground">
             {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
           </h1>
+          {showCompletionBanner && (
+            <CompletionBanner
+              completedAt={readerStatus?.completed_at || null}
+              onDismiss={() => setIsBannerDismissed(true)}
+            />
+          )}
           <Card className="p-8 bg-card shadow-sm">
             {view === 'story' && (
               <StoryContent
@@ -95,7 +109,7 @@ export function StoryReader() {
             )}
           </Card>
 
-          {view === 'story' && !storyError && (
+          {view === 'story' && !storyError && !isCompleted && (
             <div className="flex justify-center mt-8">
               <Button
                 onClick={handleFinish}
