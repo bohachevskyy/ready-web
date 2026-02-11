@@ -395,7 +395,15 @@
       "ja": "Japonês",
       "ko": "Coreano",
       "ar": "Árabe",
-      "hi": "Hindi"
+      "hi": "Hindi",
+      "bn": "Bengali",
+      "ru": "Russo",
+      "vi": "Vietnamita",
+      "tr": "Turco",
+      "nl": "Neerlandês",
+      "th": "Tailandês",
+      "id": "Indonésio",
+      "ms": "Malaio"
     },
     "levels": {
       "1": {

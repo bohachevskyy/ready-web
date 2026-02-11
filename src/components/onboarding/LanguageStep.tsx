@@ -9,10 +9,26 @@ interface LanguageStepProps {
 }
 
 const languageCodes = [
+  { code: "zh", flag: "🇨🇳" },
+  { code: "hi", flag: "🇮🇳" },
   { code: "es", flag: "🇪🇸" },
+  { code: "ar", flag: "🇸🇦" },
+  { code: "fr", flag: "🇫🇷" },
+  { code: "bn", flag: "🇧🇩" },
   { code: "pt", flag: "🇵🇹" },
+  { code: "ru", flag: "🇷🇺" },
+  { code: "ja", flag: "🇯🇵" },
+  { code: "de", flag: "🇩🇪" },
+  { code: "ko", flag: "🇰🇷" },
+  { code: "vi", flag: "🇻🇳" },
+  { code: "tr", flag: "🇹🇷" },
+  { code: "it", flag: "🇮🇹" },
   { code: "pl", flag: "🇵🇱" },
   { code: "uk", flag: "🇺🇦" },
+  { code: "nl", flag: "🇳🇱" },
+  { code: "th", flag: "🇹🇭" },
+  { code: "id", flag: "🇮🇩" },
+  { code: "ms", flag: "🇲🇾" },
 ]
 
 export function LanguageStep({ selectedLanguage, onLanguageSelect, onBack }: LanguageStepProps) {
@@ -35,9 +51,9 @@ export function LanguageStep({ selectedLanguage, onLanguageSelect, onBack }: Lan
           <button
             key={lang.code}
             type="button"
-            onClick={() => onLanguageSelect(lang.name)}
+            onClick={() => onLanguageSelect(lang.code)}
             className={`flex items-center gap-3 rounded-xl border-2 px-4 py-4 text-left transition-all hover:border-primary/50 hover:bg-muted ${
-              selectedLanguage === lang.name ? "border-primary bg-primary/10" : "border-border bg-card"
+              selectedLanguage === lang.code ? "border-primary bg-primary/10" : "border-border bg-card"
             }`}
           >
             <span className="text-2xl">{lang.flag}</span>
