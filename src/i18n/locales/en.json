@@ -367,10 +367,26 @@
       "December"
     ],
     "languages": {
+      "zh": "Chinese",
+      "hi": "Hindi",
       "es": "Spanish",
+      "ar": "Arabic",
+      "fr": "French",
+      "bn": "Bengali",
       "pt": "Portuguese",
+      "ru": "Russian",
+      "ja": "Japanese",
+      "de": "German",
+      "ko": "Korean",
+      "vi": "Vietnamese",
+      "tr": "Turkish",
+      "it": "Italian",
       "pl": "Polish",
-      "uk": "Ukrainian"
+      "uk": "Ukrainian",
+      "nl": "Dutch",
+      "th": "Thai",
+      "id": "Indonesian",
+      "ms": "Malay"
     },
     "levels": {
       "1": {
