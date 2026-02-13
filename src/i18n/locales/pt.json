@@ -429,10 +429,19 @@
     }
   },
   "vocabulary": {
-    "title": "Lista de vocabulário",
-    "emptyState": "Ainda não há palavras salvas",
+    "title": "Vocabulário",
+    "hint": "Toque em qualquer palavra na história para pesquisá-la",
+    "emptyState": "As palavras que você salvar aparecerão aqui enquanto lê",
     "emptyStateHelp": "Clique nas palavras do texto para adicioná-las aqui",
     "closeDrawer": "Fechar lista de vocabulário"
+  },
+  "wordPopover": {
+    "translation": "Tradução",
+    "sentenceTranslation": "Tradução da frase",
+    "example": "Exemplo",
+    "alreadyInList": "Já na lista",
+    "addToVocabulary": "Adicionar ao vocabulário",
+    "loading": "Carregando..."
   },
   "storyReader": {
     "translationError": "Falha ao carregar a tradução da palavra. Por favor, tente novamente.",
@@ -440,6 +449,9 @@
     "questionsError": "Não foi possível carregar as perguntas",
     "questionsErrorDescription": "Não foi possível carregar as perguntas do questionário. Você pode pular o questionário e completar a história.",
     "skipQuestions": "Pular perguntas",
+    "quizTime": "Tempo do quiz",
+    "finish": "Terminar leitura",
+    "loadingQuestions": "Carregando perguntas...",
     "completionBanner": {
       "title": "Você já completou esta história",
       "completedOn": "Completado em",

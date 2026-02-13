@@ -412,10 +412,19 @@
     }
   },
   "vocabulary": {
-    "title": "Vocabulary List",
-    "emptyState": "No words saved yet",
+    "title": "Vocabulary",
+    "hint": "Tap any word in the story to look it up",
+    "emptyState": "Words you save will appear here as you read",
     "emptyStateHelp": "Click on words in the text to add them here",
     "closeDrawer": "Close vocabulary list"
+  },
+  "wordPopover": {
+    "translation": "Translation",
+    "sentenceTranslation": "Sentence translation",
+    "example": "Example",
+    "alreadyInList": "Already in list",
+    "addToVocabulary": "Add to vocabulary",
+    "loading": "Loading..."
   },
   "storyReader": {
     "translationError": "Failed to load word translation. Please try again.",
@@ -423,6 +432,9 @@
     "questionsError": "Unable to load questions",
     "questionsErrorDescription": "We couldn't load the quiz questions. You can skip the quiz and complete the story.",
     "skipQuestions": "Skip Questions",
+    "quizTime": "Quiz Time",
+    "finish": "Finish Reading",
+    "loadingQuestions": "Loading questions...",
     "completionBanner": {
       "title": "You've already completed this story",
       "completedOn": "Completed on",

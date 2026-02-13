@@ -1,6 +1,6 @@
-import { Card } from "./ui/card"
 import { Button } from "./ui/button"
-import { X } from "lucide-react"
+import { X, BookOpen } from "lucide-react"
+import { useTranslation } from "../i18n/useTranslation"
 
 interface SavedWord {
   id: string
@@ -15,36 +15,59 @@ interface VocabularyListProps {
 }
 
 export function VocabularyList({ savedWords, onRemoveWord }: VocabularyListProps) {
-  return (
-    <div className="bg-sidebar overflow-auto">
-      <div className="p-6">
-        <h2 className="text-xl font-semibold mb-4 text-sidebar-foreground">Vocabulary List</h2>
-        <p className="text-sm text-muted-foreground mb-6">Click on words in the text to add them here</p>
+  const { t } = useTranslation()
 
-        <div className="space-y-3">
-          {savedWords.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">No words saved yet</p>
-          ) : (
-            savedWords.map((item) => (
-              <Card key={item.id} className="p-3 bg-sidebar-accent shadow-sm">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm text-sidebar-accent-foreground">{item.word}</p>
-                    <p className="text-sm text-muted-foreground mt-0.5">{item.translation}</p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 flex-shrink-0"
-                    onClick={() => onRemoveWord(item.id)}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </Card>
-            ))
+  return (
+    <div className="flex flex-col h-full overflow-auto">
+      <div className="p-5 pb-3">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-base font-semibold text-foreground">
+            {t('vocabulary.title')}
+          </h2>
+          {savedWords.length > 0 && (
+            <span className="inline-flex items-center justify-center h-5 min-w-[20px] px-1.5 rounded-full bg-primary/15 text-primary text-xs font-semibold">
+              {savedWords.length}
+            </span>
           )}
         </div>
+        <p className="text-xs text-muted-foreground">
+          {t('vocabulary.hint')}
+        </p>
+      </div>
+
+      <div className="flex-1 px-5 pb-5">
+        {savedWords.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-12 h-12 rounded-full bg-muted/60 flex items-center justify-center mb-4">
+              <BookOpen className="h-5 w-5 text-muted-foreground/60" />
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-[200px]">
+              {t('vocabulary.emptyState')}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {savedWords.map((item) => (
+              <div
+                key={item.id}
+                className="group flex items-center justify-between gap-3 p-3 rounded-lg bg-card hover:bg-muted/40 transition-colors duration-150 animate-in fade-in slide-in-from-right-2 duration-200"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm text-foreground leading-snug">{item.word}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{item.translation}</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 text-muted-foreground hover:text-destructive"
+                  onClick={() => onRemoveWord(item.id)}
+                >
+                  <X className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
