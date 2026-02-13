@@ -428,16 +428,28 @@
     }
   },
   "vocabulary": {
-    "title": "語彙リスト",
-    "emptyState": "保存された単語はまだありません",
+    "title": "語彙",
+    "hint": "ストーリー内の任意の単語をタップして調べることができます",
+    "emptyState": "読んでいる間に保存した単語がここに表示されます",
     "emptyStateHelp": "テキスト内の単語をクリックしてここに追加してください",
     "closeDrawer": "語彙リストを閉じる"
+  },
+  "wordPopover": {
+    "translation": "翻訳",
+    "sentenceTranslation": "文の翻訳",
+    "example": "例",
+    "alreadyInList": "既にリストにあります",
+    "addToVocabulary": "語彙に追加",
+    "loading": "読み込み中..."
   },
   "storyReader": {
     "translationError": "単語の翻訳を読み込めませんでした。もう一度お試しください。",
     "saveWordError": "単語を語彙リストに保存できませんでした。もう一度お試しください。",
     "questionsError": "質問を読み込めませんでした",
     "questionsErrorDescription": "クイズの質問を読み込めませんでした。クイズをスキップしてストーリーを完了できます。",
-    "skipQuestions": "質問をスキップ"
+    "skipQuestions": "質問をスキップ",
+    "quizTime": "クイズの時間",
+    "finish": "読み終わる",
+    "loadingQuestions": "質問を読み込み中..."
   }
 }

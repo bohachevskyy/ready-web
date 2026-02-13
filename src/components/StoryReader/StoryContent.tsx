@@ -20,13 +20,24 @@ export function StoryContent({ storyText, storyError, onWordClick }: StoryConten
   const lines = storyText.split('\n')
   let currentPosition = 0
 
+  // Filter out empty lines for rendering but keep position tracking
+  const nonEmptyLines: { line: string; originalIndex: number }[] = []
+  lines.forEach((line, idx) => {
+    if (line.trim()) {
+      nonEmptyLines.push({ line, originalIndex: idx })
+    }
+  })
+
   return (
-    <div className="text-lg leading-relaxed text-card-foreground">
+    <div className="font-serif text-xl leading-[1.85] text-foreground/90 space-y-6">
       {lines.map((line, lineIndex) => {
         const tokens = line.split(/(\s+|[.,!?;:"""''()[\]{}]+)/)
 
+        // Determine if this is the first non-empty paragraph for drop cap
+        const isFirstParagraph = line.trim() && nonEmptyLines.length > 0 && nonEmptyLines[0].originalIndex === lineIndex
+
         const lineContent = (
-          <p key={lineIndex}>
+          <p key={lineIndex} className={line.trim() ? '' : 'hidden'}>
             {tokens.map((token, tokenIndex) => {
               // Skip empty tokens
               if (!token) return null
@@ -45,6 +56,26 @@ export function StoryContent({ storyText, storyError, onWordClick }: StoryConten
                 return <span key={tokenIndex}>{token}</span>
               }
 
+              // Drop cap for the very first word of the first paragraph
+              if (isFirstParagraph && tokenIndex === 0) {
+                const firstChar = token.charAt(0)
+                const rest = token.slice(1)
+                return (
+                  <span
+                    key={tokenIndex}
+                    onClick={onWordClick}
+                    data-start={startPos}
+                    data-end={endPos}
+                    className="cursor-pointer hover:bg-primary/10 hover:text-primary rounded-sm px-0.5 transition-colors duration-150"
+                  >
+                    <span className="float-left text-5xl font-semibold leading-[0.85] mr-2 mt-1.5 text-foreground">
+                      {firstChar}
+                    </span>
+                    {rest}
+                  </span>
+                )
+              }
+
               // All words are clickable - translations fetched on demand
               return (
                 <span
@@ -52,7 +83,7 @@ export function StoryContent({ storyText, storyError, onWordClick }: StoryConten
                   onClick={onWordClick}
                   data-start={startPos}
                   data-end={endPos}
-                  className="cursor-pointer hover:bg-primary/15 hover:text-primary rounded px-0.5 transition-colors"
+                  className="cursor-pointer hover:bg-primary/10 hover:text-primary rounded-sm px-0.5 transition-colors duration-150"
                 >
                   {token}
                 </span>

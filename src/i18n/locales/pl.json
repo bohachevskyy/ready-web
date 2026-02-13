@@ -429,10 +429,19 @@
     }
   },
   "vocabulary": {
-    "title": "Lista słówek",
-    "emptyState": "Nie zapisano jeszcze żadnych słów",
+    "title": "Słownictwo",
+    "hint": "Dotknij dowolnego słowa w historii, aby je sprawdzić",
+    "emptyState": "Słowa, które zapiszesz, pojawią się tutaj podczas czytania",
     "emptyStateHelp": "Kliknij słowa w tekście, aby dodać je tutaj",
     "closeDrawer": "Zamknij listę słówek"
+  },
+  "wordPopover": {
+    "translation": "Tłumaczenie",
+    "sentenceTranslation": "Tłumaczenie zdania",
+    "example": "Przykład",
+    "alreadyInList": "Już na liście",
+    "addToVocabulary": "Dodaj do słownictwa",
+    "loading": "Ładowanie..."
   },
   "storyReader": {
     "translationError": "Nie udało się załadować tłumaczenia słowa. Spróbuj ponownie.",
@@ -440,6 +449,9 @@
     "questionsError": "Nie udało się załadować pytań",
     "questionsErrorDescription": "Nie udało się załadować pytań quizu. Możesz pominąć quiz i ukończyć historię.",
     "skipQuestions": "Pomiń pytania",
+    "quizTime": "Czas na quiz",
+    "finish": "Zakończ czytanie",
+    "loadingQuestions": "Ładowanie pytań...",
     "completionBanner": {
       "title": "Ukończyłeś już tę historię",
       "completedOn": "Ukończono",

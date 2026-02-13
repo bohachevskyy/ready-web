@@ -1,10 +1,10 @@
 import type React from "react"
-import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { X, Plus } from "lucide-react"
 import { SpeakerButton } from "../ui/speaker-button"
 import type { WordDetailsResponse } from "../../store/storiesSlice"
 import type { PopoverPosition } from "./types"
+import { useTranslation } from "../../i18n/useTranslation"
 
 interface WordPopoverProps {
   popoverRef: React.RefObject<HTMLDivElement | null>
@@ -23,6 +23,8 @@ export function WordPopover({
   onClose,
   onAddWord,
 }: WordPopoverProps) {
+  const { t } = useTranslation()
+
   if (!popoverPosition) return null
 
   const isWordInList = selectedWord
@@ -37,63 +39,71 @@ export function WordPopover({
         left: `${popoverPosition.x}px`,
         top: `${popoverPosition.y}px`,
         transform: popoverPosition.showBelow
-          ? "translate(-50%, 0)"
-          : "translate(-50%, -100%)",
+          ? "translate(-50%, 8px)"
+          : "translate(-50%, calc(-100% - 8px))",
       }}
     >
-      <Card className="bg-popover text-popover-foreground shadow-lg border-border w-[400px]">
+      <div className="bg-popover text-popover-foreground shadow-xl border border-border/50 rounded-xl w-[360px] overflow-hidden">
         {!selectedWord ? (
           // Loading state
-          <div className="p-4 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="p-6 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent"></div>
           </div>
         ) : (
           // Loaded content
-          <div className="p-4 space-y-4">
+          <div className="p-5 space-y-4">
             {/* Header with word and close button */}
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2">
                 <div>
-                  <h3 className="font-semibold text-lg">{selectedWord.expression}</h3>
-                  <p className="text-muted-foreground text-sm italic">{selectedWord.grammatical_info}</p>
+                  <h3 className="font-semibold text-xl text-foreground">{selectedWord.expression}</h3>
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-muted text-muted-foreground text-xs font-medium">
+                    {selectedWord.grammatical_info}
+                  </span>
                 </div>
                 <SpeakerButton text={selectedWord.expression} size="sm" variant="ghost" />
               </div>
-              <Button variant="ghost" size="icon" className="h-7 w-7 -mt-1 -mr-1" onClick={onClose}>
+              <Button variant="ghost" size="icon" className="h-7 w-7 -mt-1 -mr-1 text-muted-foreground hover:text-foreground" onClick={onClose}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
             {/* Translation */}
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">Translation</p>
-              <p className="text-base">{selectedWord.translation}</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                {t('wordPopover.translation')}
+              </p>
+              <p className="text-base text-foreground">{selectedWord.translation}</p>
             </div>
 
             {/* Sentence translation */}
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">Sentence translation</p>
-              <p className="text-sm text-card-foreground">{selectedWord.sentence_translation}</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                {t('wordPopover.sentenceTranslation')}
+              </p>
+              <p className="text-sm text-foreground/80 leading-relaxed">{selectedWord.sentence_translation}</p>
             </div>
 
             {/* Example sentence */}
             <div>
-              <p className="text-sm font-medium text-muted-foreground mb-1">Example</p>
-              <p className="text-sm italic text-card-foreground">{selectedWord.example_sentence}</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                {t('wordPopover.example')}
+              </p>
+              <p className="text-sm italic text-foreground/80 leading-relaxed">{selectedWord.example_sentence}</p>
             </div>
 
             {/* Add to list button */}
             <Button
-              className="w-full gap-2"
+              className="w-full gap-2 rounded-lg"
               onClick={onAddWord}
               disabled={isWordInList}
             >
               <Plus className="h-4 w-4" />
-              {isWordInList ? "Already in list" : "Add to vocabulary list"}
+              {isWordInList ? t('wordPopover.alreadyInList') : t('wordPopover.addToVocabulary')}
             </Button>
           </div>
         )}
-      </Card>
+      </div>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { Button } from "../ui/button"
 import { X, BookOpen } from "lucide-react"
 import { VocabularyList } from "../VocabularyList"
 import type { SavedWord } from "../../types"
+import { useTranslation } from "../../i18n/useTranslation"
 
 interface VocabDrawerProps {
   isOpen: boolean
@@ -18,13 +19,15 @@ export function VocabDrawer({
   onClose,
   onRemoveWord,
 }: VocabDrawerProps) {
+  const { t } = useTranslation()
+
   return (
     <>
       {/* Mobile Floating Action Button */}
       <button
         onClick={onOpen}
-        className="lg:hidden fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg z-40 flex items-center gap-2"
-        aria-label="Open vocabulary list"
+        className="lg:hidden fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg z-40 flex items-center gap-2 transition-transform active:scale-95"
+        aria-label={t('vocabulary.title')}
       >
         <BookOpen className="h-5 w-5" />
         {savedWords.length > 0 && (
@@ -37,7 +40,7 @@ export function VocabDrawer({
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-black/40 z-40 animate-in fade-in duration-200"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -45,14 +48,19 @@ export function VocabDrawer({
 
       {/* Mobile Bottom Drawer */}
       {isOpen && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300">
-          <div className="sticky top-0 bg-card p-4 border-b border-border flex items-center justify-between">
-            <h2 className="font-semibold">Vocabulary List</h2>
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-card rounded-t-2xl z-50 max-h-[70vh] overflow-auto animate-in slide-in-from-bottom duration-300 shadow-2xl">
+          {/* Drag handle */}
+          <div className="flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 rounded-full bg-border" />
+          </div>
+          <div className="sticky top-0 bg-card px-5 py-3 flex items-center justify-between">
+            <h2 className="font-semibold text-foreground">{t('vocabulary.title')}</h2>
             <Button
               variant="ghost"
               size="icon"
               onClick={onClose}
-              aria-label="Close vocabulary list"
+              aria-label={t('vocabulary.closeDrawer')}
+              className="text-muted-foreground hover:text-foreground"
             >
               <X className="h-5 w-5" />
             </Button>

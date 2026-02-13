@@ -428,16 +428,28 @@
     }
   },
   "vocabulary": {
-    "title": "어휘 목록",
-    "emptyState": "저장된 단어가 아직 없습니다",
+    "title": "어휘",
+    "hint": "이야기에서 단어를 탭하면 찾아볼 수 있습니다",
+    "emptyState": "읽는 동안 저장한 단어가 여기에 표시됩니다",
     "emptyStateHelp": "텍스트의 단어를 클릭하여 여기에 추가하세요",
     "closeDrawer": "어휘 목록 닫기"
+  },
+  "wordPopover": {
+    "translation": "번역",
+    "sentenceTranslation": "문장 번역",
+    "example": "예문",
+    "alreadyInList": "이미 목록에 있음",
+    "addToVocabulary": "어휘에 추가",
+    "loading": "로딩 중..."
   },
   "storyReader": {
     "translationError": "단어 번역을 불러오지 못했습니다. 다시 시도해 주세요.",
     "saveWordError": "단어를 어휘 목록에 저장하지 못했습니다. 다시 시도해 주세요.",
     "questionsError": "질문을 불러올 수 없습니다",
     "questionsErrorDescription": "퀴즈 질문을 불러올 수 없습니다. 퀴즈를 건너뛰고 스토리를 완료할 수 있습니다.",
-    "skipQuestions": "질문 건너뛰기"
+    "skipQuestions": "질문 건너뛰기",
+    "quizTime": "퀴즈 시간",
+    "finish": "읽기 완료",
+    "loadingQuestions": "질문 로딩 중..."
   }
 }

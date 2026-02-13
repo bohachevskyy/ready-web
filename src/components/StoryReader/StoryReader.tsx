@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react"
+import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
@@ -12,10 +12,35 @@ import { WordPopover } from "./WordPopover"
 import { WordDrawer } from "./WordDrawer"
 import { VocabDrawer } from "./VocabDrawer"
 import { CompletionBanner } from "./CompletionBanner"
+import { ReadingProgress } from "../ReadingProgress"
+import { useTranslation } from "../../i18n/useTranslation"
+
+/** Extract a readable title from the story text as a placeholder */
+function extractTitle(text: string): string {
+  if (!text) return ''
+  // Try first sentence (up to 160 chars is fine for a title)
+  const match = text.match(/^(.+?[.!?])\s/)
+  if (match && match[1].length <= 160) {
+    return match[1]
+  }
+  // If the first sentence is too long, find a natural break (comma, semicolon, dash)
+  const firstLine = text.split('\n')[0] || ''
+  const breakMatch = firstLine.slice(0, 100).match(/^(.{30,}?)[,;—–]\s/)
+  if (breakMatch) {
+    return breakMatch[1] + '...'
+  }
+  // Last resort: truncate at word boundary
+  if (firstLine.length <= 100) return firstLine
+  const truncated = firstLine.slice(0, 90)
+  const lastSpace = truncated.lastIndexOf(' ')
+  return (lastSpace > 30 ? truncated.slice(0, lastSpace) : truncated) + '...'
+}
 
 export function StoryReader() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const { t } = useTranslation()
 
   const {
     // State
@@ -56,6 +81,26 @@ export function StoryReader() {
     clearSaveWordError,
   } = useStoryReader()
 
+  // Track scroll progress
+  const handleScroll = useCallback(() => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    const { scrollTop, scrollHeight, clientHeight } = el
+    const maxScroll = scrollHeight - clientHeight
+    if (maxScroll <= 0) {
+      setScrollProgress(100)
+      return
+    }
+    setScrollProgress(Math.round((scrollTop / maxScroll) * 100))
+  }, [])
+
+  useEffect(() => {
+    const el = scrollContainerRef.current
+    if (!el) return
+    el.addEventListener('scroll', handleScroll, { passive: true })
+    return () => el.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
+
   // Scroll to top when transitioning to questions view
   useEffect(() => {
     if (view === 'questions' && scrollContainerRef.current) {
@@ -67,6 +112,9 @@ export function StoryReader() {
   const isCompleted = readerStatus?.status === 'completed' || !!readerStatus?.completed_at
   const showCompletionBanner = isCompleted && !isBannerDismissed && view === 'story'
 
+  // Extract title from story text
+  const storyTitle = useMemo(() => extractTitle(storyText), [storyText])
+
   // Show full-screen loading animation while generating or fetching story
   if (isGeneratingStory || isFetchingStory) {
     return <StoryLoading />
@@ -75,27 +123,45 @@ export function StoryReader() {
   return (
     <div className="flex h-screen bg-background">
       {/* Main reading area */}
-      <div ref={scrollContainerRef} className="flex-1 flex flex-col p-8 overflow-auto">
-        <div className="max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl 2xl:max-w-5xl w-full mx-auto mb-12">
-          <h1 className="text-2xl font-semibold mb-8 text-foreground">
-            {view === 'story' ? 'Reading Practice' : 'Quiz Time'}
-          </h1>
+      <div ref={scrollContainerRef} className="flex-1 flex flex-col overflow-auto relative">
+        {/* Reading progress bar */}
+        {view === 'story' && <ReadingProgress progress={scrollProgress} />}
+
+        <div className="max-w-prose w-full mx-auto px-6 sm:px-8 pt-10 pb-16">
+          {view === 'story' && storyTitle && (
+            <header className="mb-10">
+              <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground tracking-tight">
+                {storyTitle}
+              </h1>
+              <div className="mt-4 h-px bg-border/60 w-16" />
+            </header>
+          )}
+
+          {view === 'questions' && (
+            <header className="mb-10">
+              <h1 className="text-2xl font-semibold text-foreground">
+                {t('storyReader.quizTime')}
+              </h1>
+            </header>
+          )}
+
           {showCompletionBanner && (
             <CompletionBanner
               completedAt={readerStatus?.completed_at || null}
               onDismiss={() => setIsBannerDismissed(true)}
             />
           )}
-          <Card className="p-8 bg-card shadow-sm">
-            {view === 'story' && (
-              <StoryContent
-                storyText={storyText}
-                storyError={storyError}
-                onWordClick={handleWordClick}
-              />
-            )}
 
-            {view === 'questions' && (
+          {view === 'story' && (
+            <StoryContent
+              storyText={storyText}
+              storyError={storyError}
+              onWordClick={handleWordClick}
+            />
+          )}
+
+          {view === 'questions' && (
+            <Card className="p-8 bg-card shadow-sm">
               <QuizView
                 questions={questions}
                 isLoading={isLoadingQuestions}
@@ -106,24 +172,24 @@ export function StoryReader() {
                 likeStatus={likeStatus}
                 feedbackSubmitted={feedbackSubmitted}
               />
-            )}
-          </Card>
+            </Card>
+          )}
 
           {view === 'story' && !storyError && !isCompleted && (
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-12 mb-8">
               <Button
                 onClick={handleFinish}
                 size="lg"
-                className="px-8 bg-primary text-primary-foreground hover:bg-primary/90"
+                className="px-10 py-3 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-base font-medium shadow-sm transition-all hover:shadow-md"
                 disabled={isLoadingQuestions}
               >
                 {isLoadingQuestions ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading questions...
+                    {t('storyReader.loadingQuestions')}
                   </>
                 ) : (
-                  'Finish'
+                  t('storyReader.finish')
                 )}
               </Button>
             </div>
@@ -142,7 +208,7 @@ export function StoryReader() {
       />
 
       {/* Desktop Vocabulary Sidebar */}
-      <div className="hidden lg:block w-80 border-l border-border">
+      <div className="hidden lg:flex lg:flex-col w-80 bg-sidebar/50 border-l border-border/40">
         <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} />
       </div>
 
