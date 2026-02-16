@@ -464,5 +464,11 @@
     "loadingStory": "Завантаження історії...",
     "invalidStoryId": "Недійсний ID історії",
     "translationHint": "Натисніть на будь-яке слово, щоб побачити переклад і додати його до словника!"
+  },
+  "publicStory": {
+    "clickWordToSignup": "Натисніть на будь-яке слово, щоб зареєструватися та почати вчитися",
+    "signupRequired": "Sign up to read this story",
+    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
+    "signupToRead": "Sign up to read"
   }
 }

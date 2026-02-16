@@ -455,5 +455,11 @@
     "finish": "पढ़ना समाप्त करें",
     "loadingQuestions": "प्रश्न लोड हो रहे हैं...",
     "translationHint": "किसी भी शब्द पर टैप करें अनुवाद देखने और शब्दावली में जोड़ने के लिए!"
+  },
+  "publicStory": {
+    "clickWordToSignup": "साइन अप करने और सीखना शुरू करने के लिए किसी भी शब्द पर टैप करें",
+    "signupRequired": "Sign up to read this story",
+    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
+    "signupToRead": "Sign up to read"
   }
 }

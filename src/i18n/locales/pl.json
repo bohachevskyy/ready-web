@@ -464,5 +464,11 @@
     "loadingStory": "Ładowanie historii...",
     "invalidStoryId": "Nieprawidłowe ID historii",
     "translationHint": "Dotknij dowolne słowo, aby zobaczyć tłumaczenie i dodać je do słownika!"
+  },
+  "publicStory": {
+    "clickWordToSignup": "Dotknij dowolnego słowa, aby się zarejestrować i zacząć się uczyć",
+    "signupRequired": "Sign up to read this story",
+    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
+    "signupToRead": "Sign up to read"
   }
 }
