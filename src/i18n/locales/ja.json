@@ -455,5 +455,11 @@
     "finish": "読み終わる",
     "loadingQuestions": "質問を読み込み中...",
     "translationHint": "単語をタップすると翻訳が表示され、単語帳に追加できます！"
+  },
+  "publicStory": {
+    "clickWordToSignup": "任意の単語をタップして登録し、学習を始めましょう",
+    "signupRequired": "Sign up to read this story",
+    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
+    "signupToRead": "Sign up to read"
   }
 }

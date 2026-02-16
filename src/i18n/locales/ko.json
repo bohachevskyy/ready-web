@@ -455,5 +455,11 @@
     "finish": "읽기 완료",
     "loadingQuestions": "질문 로딩 중...",
     "translationHint": "단어를 탭하면 번역을 보고 단어장에 추가할 수 있어요!"
+  },
+  "publicStory": {
+    "clickWordToSignup": "아무 단어를 탭하여 가입하고 학습을 시작하세요",
+    "signupRequired": "Sign up to read this story",
+    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
+    "signupToRead": "Sign up to read"
   }
 }

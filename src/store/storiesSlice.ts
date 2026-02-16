@@ -183,6 +183,39 @@ export const fetchStoryById = createAsyncThunk<
   }
 )
 
+// Async thunk to fetch a public story by ID (no auth required)
+export const fetchPublicStoryById = createAsyncThunk<
+  StoryResponse,
+  string,
+  { rejectValue: string }
+>(
+  'stories/fetchPublicStoryById',
+  async (storyId, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/stories/${storyId}`)
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('Story not found')
+        }
+        throw new Error('Failed to fetch story')
+      }
+
+      const data = await response.json()
+
+      return {
+        id: data.id,
+        story: data.text,
+        translations: data.translation || {},
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error instanceof Error ? error.message : 'Failed to fetch story'
+      )
+    }
+  }
+)
+
 // Async thunk to get questions
 export const getQuestions = createAsyncThunk<QuestionsResponse, string, { rejectValue: string }>(
   'stories/getQuestions',
@@ -350,6 +383,24 @@ export const storiesSlice = createSlice({
         state.readerStatus = action.payload.readerStatus || null
       })
       .addCase(fetchStoryById.rejected, (state, action) => {
+        state.isFetchingStory = false
+        state.error = action.payload || 'Failed to fetch story'
+      })
+
+      // Fetch public story by ID
+      .addCase(fetchPublicStoryById.pending, (state) => {
+        state.isFetchingStory = true
+        state.error = null
+      })
+      .addCase(fetchPublicStoryById.fulfilled, (state, action) => {
+        state.isFetchingStory = false
+        state.currentStory = {
+          id: action.payload.id,
+          story: action.payload.story,
+          translations: action.payload.translations
+        }
+      })
+      .addCase(fetchPublicStoryById.rejected, (state, action) => {
         state.isFetchingStory = false
         state.error = action.payload || 'Failed to fetch story'
       })
