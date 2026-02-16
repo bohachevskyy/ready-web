@@ -467,8 +467,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "Toca cualquier palabra para registrarte y empezar a aprender",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "Regístrate para leer esta historia",
+    "signupRequiredDescription": "Esta historia solo está disponible para usuarios registrados. Crea una cuenta gratuita para comenzar a aprender.",
+    "signupToRead": "Regístrate para leer",
+    "signupToSeeTranslation": "Regístrate para ver la traducción y agregar esta palabra a tu vocabulario",
+    "signUpNow": "Registrarse Ahora"
   }
 }

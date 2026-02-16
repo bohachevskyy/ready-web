@@ -458,8 +458,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "任意の単語をタップして登録し、学習を始めましょう",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "このストーリーを読むには登録してください",
+    "signupRequiredDescription": "このストーリーは登録ユーザーのみが利用できます。無料アカウントを作成して学習を始めましょう。",
+    "signupToRead": "読むために登録する",
+    "signupToSeeTranslation": "翻訳を見て、この単語を語彙に追加するには登録してください",
+    "signUpNow": "今すぐ登録"
   }
 }

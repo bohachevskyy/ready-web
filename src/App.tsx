@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import { StoryReader } from './components/StoryReader';
 import { EmailRedirect } from './components/EmailRedirect';
 import { StoryRoute } from './components/StoryRoute';
 import { ModeSelection } from './components/ModeSelection';
