@@ -458,8 +458,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "아무 단어를 탭하여 가입하고 학습을 시작하세요",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "이 스토리를 읽으려면 가입하세요",
+    "signupRequiredDescription": "이 스토리는 등록된 사용자만 이용할 수 있습니다. 무료 계정을 만들어 학습을 시작하세요.",
+    "signupToRead": "읽으려면 가입하세요",
+    "signupToSeeTranslation": "번역을 보고 이 단어를 어휘에 추가하려면 가입하세요",
+    "signUpNow": "지금 가입하기"
   }
 }

@@ -59,6 +59,8 @@ describe('usePublicStoryReader', () => {
     const { result } = renderHook(() => usePublicStoryReader())
 
     expect(result.current.isSignupModalOpen).toBe(false)
+    expect(result.current.isWordDrawerOpen).toBe(false)
+    expect(result.current.selectedWord).toBeNull()
     expect(result.current.storyText).toBe('')
   })
 
@@ -68,14 +70,22 @@ describe('usePublicStoryReader', () => {
     expect(mockDispatch).toHaveBeenCalled()
   })
 
-  it('should open signup modal on word click', () => {
+  it('should open word drawer and set selected word on word click', () => {
     const { result } = renderHook(() => usePublicStoryReader())
 
+    const mockEvent = {
+      currentTarget: {
+        textContent: 'hello',
+      },
+    } as React.MouseEvent
+
     act(() => {
-      result.current.handleWordClick({} as React.MouseEvent)
+      result.current.handleWordClick(mockEvent)
     })
 
-    expect(result.current.isSignupModalOpen).toBe(true)
+    expect(result.current.isWordDrawerOpen).toBe(true)
+    expect(result.current.selectedWord).toBe('hello')
+    expect(result.current.isSignupModalOpen).toBe(false)
   })
 
   it('should close signup modal', () => {
@@ -114,5 +124,49 @@ describe('usePublicStoryReader', () => {
     const { result } = renderHook(() => usePublicStoryReader())
 
     expect(result.current.storyError).toBe('Failed to fetch')
+  })
+
+  it('should close word drawer and clear selected word', () => {
+    const { result } = renderHook(() => usePublicStoryReader())
+
+    const mockEvent = {
+      currentTarget: {
+        textContent: 'world',
+      },
+    } as React.MouseEvent
+
+    act(() => {
+      result.current.handleWordClick(mockEvent)
+    })
+    expect(result.current.isWordDrawerOpen).toBe(true)
+    expect(result.current.selectedWord).toBe('world')
+
+    act(() => {
+      result.current.closeWordDrawer()
+    })
+    expect(result.current.isWordDrawerOpen).toBe(false)
+    expect(result.current.selectedWord).toBeNull()
+  })
+
+  it('should open signup modal from drawer', () => {
+    const { result } = renderHook(() => usePublicStoryReader())
+
+    const mockEvent = {
+      currentTarget: {
+        textContent: 'test',
+      },
+    } as React.MouseEvent
+
+    act(() => {
+      result.current.handleWordClick(mockEvent)
+    })
+    expect(result.current.isWordDrawerOpen).toBe(true)
+    expect(result.current.isSignupModalOpen).toBe(false)
+
+    act(() => {
+      result.current.handleSignupFromDrawer()
+    })
+    expect(result.current.isWordDrawerOpen).toBe(false)
+    expect(result.current.isSignupModalOpen).toBe(true)
   })
 })

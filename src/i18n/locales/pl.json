@@ -467,8 +467,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "Dotknij dowolnego słowa, aby się zarejestrować i zacząć się uczyć",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "Zarejestruj się, aby przeczytać tę historię",
+    "signupRequiredDescription": "Ta historia jest dostępna tylko dla zarejestrowanych użytkowników. Utwórz bezpłatne konto, aby rozpocząć naukę.",
+    "signupToRead": "Zarejestruj się, aby czytać",
+    "signupToSeeTranslation": "Zarejestruj się, aby zobaczyć tłumaczenie i dodać to słowo do swojego słownika",
+    "signUpNow": "Zarejestruj Się Teraz"
   }
 }

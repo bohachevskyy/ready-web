@@ -467,8 +467,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "Натисніть на будь-яке слово, щоб зареєструватися та почати вчитися",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "Зареєструйтесь, щоб прочитати цю історію",
+    "signupRequiredDescription": "Ця історія доступна лише зареєстрованим користувачам. Створіть безкоштовний обліковий запис, щоб почати навчання.",
+    "signupToRead": "Зареєструватися, щоб читати",
+    "signupToSeeTranslation": "Зареєструйтесь, щоб побачити переклад і додати це слово до свого словника",
+    "signUpNow": "Зареєструватися Зараз"
   }
 }

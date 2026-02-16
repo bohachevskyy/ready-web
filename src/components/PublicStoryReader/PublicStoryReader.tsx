@@ -2,6 +2,7 @@ import { useRef, useEffect, useState, useCallback, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import { StoryLoading } from "../StoryLoading"
 import { SignupModal } from "../SignupModal"
+import { PublicWordDrawer } from "./PublicWordDrawer"
 import { StoryContent } from "../StoryReader/StoryContent"
 import { ReadingProgress } from "../ReadingProgress"
 import { Button } from "../ui/button"
@@ -36,8 +37,12 @@ export function PublicStoryReader() {
     storyError,
     isFetchingStory,
     isSignupModalOpen,
+    isWordDrawerOpen,
+    selectedWord,
     handleWordClick,
     closeSignupModal,
+    closeWordDrawer,
+    handleSignupFromDrawer,
   } = usePublicStoryReader()
 
   const handleScroll = useCallback(() => {
@@ -120,6 +125,13 @@ export function PublicStoryReader() {
           )}
         </div>
       </div>
+
+      <PublicWordDrawer
+        isOpen={isWordDrawerOpen}
+        selectedWord={selectedWord}
+        onClose={closeWordDrawer}
+        onSignup={handleSignupFromDrawer}
+      />
 
       <SignupModal
         open={isSignupModalOpen}

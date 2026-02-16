@@ -452,6 +452,8 @@
     "clickWordToSignup": "Tap any word to sign up and start learning",
     "signupRequired": "Sign up to read this story",
     "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupToRead": "Sign up to read",
+    "signupToSeeTranslation": "Sign up to see the translation and add this word to your vocabulary",
+    "signUpNow": "Sign Up Now"
   }
 }

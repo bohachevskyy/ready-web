@@ -14,6 +14,8 @@ export function usePublicStoryReader() {
   const storyError = useAppSelector((state) => state.stories.error)
 
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false)
+  const [isWordDrawerOpen, setIsWordDrawerOpen] = useState(false)
+  const [selectedWord, setSelectedWord] = useState<string | null>(null)
   const hasFetchedStory = useRef(false)
 
   // Fetch story on mount (no auth)
@@ -41,8 +43,13 @@ export function usePublicStoryReader() {
     loadStory()
   }, [dispatch, param, t])
 
-  const handleWordClick = useCallback((_event: React.MouseEvent) => {
-    setIsSignupModalOpen(true)
+  const handleWordClick = useCallback((event: React.MouseEvent) => {
+    const target = event.currentTarget as HTMLElement
+    const word = target.textContent?.trim() || null
+    if (word) {
+      setSelectedWord(word)
+      setIsWordDrawerOpen(true)
+    }
   }, [])
 
   const openSignupModal = useCallback(() => {
@@ -53,13 +60,27 @@ export function usePublicStoryReader() {
     setIsSignupModalOpen(false)
   }, [])
 
+  const closeWordDrawer = useCallback(() => {
+    setIsWordDrawerOpen(false)
+    setSelectedWord(null)
+  }, [])
+
+  const handleSignupFromDrawer = useCallback(() => {
+    setIsWordDrawerOpen(false)
+    setIsSignupModalOpen(true)
+  }, [])
+
   return {
     storyText,
     storyError,
     isFetchingStory,
     isSignupModalOpen,
+    isWordDrawerOpen,
+    selectedWord,
     handleWordClick,
     openSignupModal,
     closeSignupModal,
+    closeWordDrawer,
+    handleSignupFromDrawer,
   }
 }

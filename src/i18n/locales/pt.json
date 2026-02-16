@@ -467,8 +467,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "Toque em qualquer palavra para se cadastrar e começar a aprender",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "Cadastre-se para ler esta história",
+    "signupRequiredDescription": "Esta história está disponível apenas para usuários registrados. Crie uma conta gratuita para começar a aprender.",
+    "signupToRead": "Cadastre-se para ler",
+    "signupToSeeTranslation": "Cadastre-se para ver a tradução e adicionar esta palavra ao seu vocabulário",
+    "signUpNow": "Cadastre-se Agora"
   }
 }

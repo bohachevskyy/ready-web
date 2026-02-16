@@ -458,8 +458,10 @@
   },
   "publicStory": {
     "clickWordToSignup": "साइन अप करने और सीखना शुरू करने के लिए किसी भी शब्द पर टैप करें",
-    "signupRequired": "Sign up to read this story",
-    "signupRequiredDescription": "This story is only available to registered users. Create a free account to start learning.",
-    "signupToRead": "Sign up to read"
+    "signupRequired": "यह कहानी पढ़ने के लिए साइन अप करें",
+    "signupRequiredDescription": "यह कहानी केवल पंजीकृत उपयोगकर्ताओं के लिए उपलब्ध है। सीखना शुरू करने के लिए एक मुफ्त खाता बनाएं।",
+    "signupToRead": "पढ़ने के लिए साइन अप करें",
+    "signupToSeeTranslation": "अनुवाद देखने और इस शब्द को अपनी शब्दावली में जोड़ने के लिए साइन अप करें",
+    "signUpNow": "अभी साइन अप करें"
   }
 }
