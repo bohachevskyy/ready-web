@@ -3,17 +3,16 @@ import { useUserAge, AgeGroup } from './useUserAge'
 import { useAppDispatch, useAppSelector } from '../store/store'
 import { fetchCategories, Category, Domain } from '../store/categoriesSlice'
 
-export type CategoryType = 'teen' | 'nonfiction' | 'fiction' | 'professional'
 export type { Category, Domain }
 
-export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
+export function getHiddenCategories(ageGroup: AgeGroup): string[] {
   switch (ageGroup) {
     case '10-14':
-      return ['teen', 'nonfiction']
+      return []
     case '15-17':
-      return ['teen', 'nonfiction', 'professional', 'fiction']
+      return []
     case '18+':
-      return ['nonfiction', 'professional', 'fiction']
+      return ['teen']
   }
 }
 
@@ -28,9 +27,12 @@ export function useStoryCategories() {
     }
   }, [categories.length, dispatch, isLoading, error])
 
-  const visibleCategories = useMemo(() => {
-    return getVisibleCategories(ageGroup)
-  }, [ageGroup])
+  const filteredCategories = useMemo(() => {
+    const hidden = getHiddenCategories(ageGroup)
+    return categories
+      .filter((category) => !hidden.includes(category.name))
+      .sort((a, b) => a.order - b.order)
+  }, [categories, ageGroup])
 
-  return { visibleCategories, categories, isLoading, error }
+  return { filteredCategories, categories, isLoading, error }
 }

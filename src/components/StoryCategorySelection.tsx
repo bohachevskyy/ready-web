@@ -1,7 +1,6 @@
 import { Card } from "./ui/card"
 import { useTranslation } from "../i18n/useTranslation"
-import { useMemo } from "react"
-import { useStoryCategories, Category } from "../hooks/useStoryCategories"
+import { useStoryCategories } from "../hooks/useStoryCategories"
 import { Loader2, icons } from "lucide-react"
 
 type StoryDomain = string
@@ -22,13 +21,7 @@ function DynamicIcon({ name, className }: { name: string; className?: string }) 
 
 export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectionProps) {
   const { t } = useTranslation()
-  const { visibleCategories, categories, isLoading } = useStoryCategories()
-  const visibleCategoryData = useMemo(() => {
-    return visibleCategories
-      .map((categoryKey) => categories.find((category) => category.name === categoryKey))
-      .filter((category): category is Category => Boolean(category))
-      .sort((a, b) => a.order - b.order)
-  }, [categories, visibleCategories])
+  const { filteredCategories, isLoading } = useStoryCategories()
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -44,7 +37,7 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
           </div>
         ) : (
           <div className="space-y-12">
-            {visibleCategoryData.map((category) => {
+            {filteredCategories.map((category) => {
               const sortedDomains = [...category.domains].sort((a, b) => a.order - b.order)
 
               return (
