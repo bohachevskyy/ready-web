@@ -20,17 +20,17 @@ export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
 export function useStoryCategories() {
   const dispatch = useAppDispatch()
   const { ageGroup } = useUserAge()
-  const { categories, isLoading } = useAppSelector((state) => state.categories)
+  const { categories, isLoading, error } = useAppSelector((state) => state.categories)
 
   useEffect(() => {
-    if (categories.length === 0 && !isLoading) {
+    if (categories.length === 0 && !isLoading && !error) {
       dispatch(fetchCategories())
     }
-  }, [categories.length, dispatch, isLoading])
+  }, [categories.length, dispatch, isLoading, error])
 
   const visibleCategories = useMemo(() => {
     return getVisibleCategories(ageGroup)
   }, [ageGroup])
 
-  return { visibleCategories, categories, isLoading }
+  return { visibleCategories, categories, isLoading, error }
 }
