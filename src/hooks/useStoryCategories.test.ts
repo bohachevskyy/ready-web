@@ -11,13 +11,13 @@ describe('getVisibleCategories', () => {
     it('should return teens and nonfiction categories (no fiction)', () => {
       const result = getVisibleCategories('10-14')
 
-      expect(result).toEqual(['teens', 'nonfiction'])
+      expect(result).toEqual(['teen', 'nonfiction'])
     })
 
     it('should have teens as first category', () => {
       const result = getVisibleCategories('10-14')
 
-      expect(result[0]).toBe('teens')
+      expect(result[0]).toBe('teen')
     })
 
     it('should not include fiction for 10-14', () => {
@@ -37,13 +37,13 @@ describe('getVisibleCategories', () => {
     it('should return teens, nonfiction, professional, and fiction categories', () => {
       const result = getVisibleCategories('15-17')
 
-      expect(result).toEqual(['teens', 'nonfiction', 'professional', 'fiction'])
+      expect(result).toEqual(['teen', 'nonfiction', 'professional', 'fiction'])
     })
 
     it('should have teens as first category', () => {
       const result = getVisibleCategories('15-17')
 
-      expect(result[0]).toBe('teens')
+      expect(result[0]).toBe('teen')
     })
 
     it('should include fiction for 15-17', () => {
@@ -75,7 +75,7 @@ describe('getVisibleCategories', () => {
     it('should not include teens for 18+', () => {
       const result = getVisibleCategories('18+')
 
-      expect(result).not.toContain('teens')
+      expect(result).not.toContain('teen')
     })
 
     it('should include professional for 18+', () => {
@@ -87,8 +87,8 @@ describe('getVisibleCategories', () => {
 
   describe('category ordering', () => {
     const testCases: Array<{ ageGroup: AgeGroup; expectedOrder: CategoryType[] }> = [
-      { ageGroup: '10-14', expectedOrder: ['teens', 'nonfiction'] },
-      { ageGroup: '15-17', expectedOrder: ['teens', 'nonfiction', 'professional', 'fiction'] },
+      { ageGroup: '10-14', expectedOrder: ['teen', 'nonfiction'] },
+      { ageGroup: '15-17', expectedOrder: ['teen', 'nonfiction', 'professional', 'fiction'] },
       { ageGroup: '18+', expectedOrder: ['nonfiction', 'professional', 'fiction'] },
     ]
 
