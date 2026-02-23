@@ -10,6 +10,7 @@ import wordsReducer from './wordsSlice'
 import speechSettingsReducer from './speechSettingsSlice'
 import userReducer from './userSlice'
 import storiesReducer from './storiesSlice'
+import categoriesReducer from './categoriesSlice'
 import { authMiddleware } from './authMiddleware'
 import { sentryMiddleware } from './sentryMiddleware'
 
@@ -41,6 +42,7 @@ export const store = configureStore({
     speechSettings: persistedSpeechSettingsReducer,
     user: userReducer,
     stories: storiesReducer,
+    categories: categoriesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
