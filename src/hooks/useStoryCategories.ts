@@ -1,7 +1,10 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useUserAge, AgeGroup } from './useUserAge'
+import { useAppDispatch, useAppSelector } from '../store/store'
+import { fetchCategories, Category, Domain } from '../store/categoriesSlice'
 
 export type CategoryType = 'teens' | 'nonfiction' | 'fiction' | 'professional'
+export type { Category, Domain }
 
 export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
   switch (ageGroup) {
@@ -15,11 +18,19 @@ export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
 }
 
 export function useStoryCategories() {
+  const dispatch = useAppDispatch()
   const { ageGroup } = useUserAge()
+  const { categories, isLoading } = useAppSelector((state) => state.categories)
+
+  useEffect(() => {
+    if (categories.length === 0 && !isLoading) {
+      dispatch(fetchCategories())
+    }
+  }, [categories.length, dispatch, isLoading])
 
   const visibleCategories = useMemo(() => {
     return getVisibleCategories(ageGroup)
   }, [ageGroup])
 
-  return { visibleCategories }
+  return { visibleCategories, categories, isLoading }
 }
