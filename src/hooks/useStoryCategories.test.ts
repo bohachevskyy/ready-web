@@ -1,5 +1,10 @@
+import { renderHook, act } from '@testing-library/react'
 import { getVisibleCategories, CategoryType } from './useStoryCategories'
 import { AgeGroup } from './useUserAge'
+import { configureStore } from '@reduxjs/toolkit'
+import categoriesReducer, { fetchCategories } from '../store/categoriesSlice'
+import React from 'react'
+import { Provider } from 'react-redux'
 
 describe('getVisibleCategories', () => {
   describe('10-14 age group', () => {
@@ -92,5 +97,59 @@ describe('getVisibleCategories', () => {
         expect(getVisibleCategories(ageGroup)).toEqual(expectedOrder)
       })
     })
+  })
+})
+
+describe('useStoryCategories hook', () => {
+  it('should not re-dispatch fetchCategories after a fetch error (no infinite loop)', async () => {
+    // Create a store where categories has an error state
+    const store = configureStore({
+      reducer: {
+        categories: categoriesReducer,
+        auth: (state = { user: null }) => state,
+      },
+    })
+
+    // Simulate a failed fetch by dispatching directly
+    const dispatchSpy = jest.spyOn(store, 'dispatch')
+
+    // Set up the error state: categories empty, not loading, has error
+    // We do this by importing and using the actual hook with a wrapper
+    const { useStoryCategories } = require('./useStoryCategories')
+
+    const wrapper = ({ children }: { children: React.ReactNode }) =>
+      React.createElement(Provider, { store, children } as any)
+
+    // Mock fetchWithAuth to fail
+    jest.spyOn(global, 'fetch').mockRejectedValue(new Error('Network error'))
+
+    const { result, rerender } = renderHook(() => useStoryCategories(), { wrapper })
+
+    // Wait for the initial dispatch
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50))
+    })
+
+    // Count how many times fetchCategories was dispatched
+    const fetchDispatches = dispatchSpy.mock.calls.filter(
+      (call) => typeof call[0] === 'function' || (call[0] && (call[0] as any).type?.includes?.('fetchCategories'))
+    )
+
+    // Clear and re-render to see if it dispatches again
+    dispatchSpy.mockClear()
+
+    rerender()
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 50))
+    })
+
+    const secondFetchDispatches = dispatchSpy.mock.calls.filter(
+      (call) => typeof call[0] === 'function'
+    )
+
+    // After error, it should NOT dispatch again (the bug was infinite re-dispatching)
+    expect(secondFetchDispatches.length).toBe(0)
+
+    jest.restoreAllMocks()
   })
 })
