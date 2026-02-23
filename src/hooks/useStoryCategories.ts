@@ -3,15 +3,15 @@ import { useUserAge, AgeGroup } from './useUserAge'
 import { useAppDispatch, useAppSelector } from '../store/store'
 import { fetchCategories, Category, Domain } from '../store/categoriesSlice'
 
-export type CategoryType = 'teens' | 'nonfiction' | 'fiction' | 'professional'
+export type CategoryType = 'teen' | 'nonfiction' | 'fiction' | 'professional'
 export type { Category, Domain }
 
 export function getVisibleCategories(ageGroup: AgeGroup): CategoryType[] {
   switch (ageGroup) {
     case '10-14':
-      return ['teens', 'nonfiction']
+      return ['teen', 'nonfiction']
     case '15-17':
-      return ['teens', 'nonfiction', 'professional', 'fiction']
+      return ['teen', 'nonfiction', 'professional', 'fiction']
     case '18+':
       return ['nonfiction', 'professional', 'fiction']
   }
