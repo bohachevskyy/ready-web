@@ -45,6 +45,7 @@ interface ApiDomain {
   slug: string
   name: string
   description?: string
+  icon?: string
   category_id: string
   sort_order: number
 }
@@ -72,7 +73,7 @@ export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue:
           name: apiDomain.slug,
           title: apiDomain.name,
           description: apiDomain.description || '',
-          icon: '',
+          icon: apiDomain.icon || '',
           order: apiDomain.sort_order,
         }
         const existing = domainsByCategory.get(apiDomain.category_id) || []
