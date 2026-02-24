@@ -153,6 +153,7 @@
   },
   "stories": {
     "pageTitle": "Wybierz kategorię swojej historii",
+    "communityFavorites": "Ulubione społeczności",
     "pageDescription": "Wybierz temat, aby zacząć czytać",
     "categories": {
       "nonfiction": "Fakty",
