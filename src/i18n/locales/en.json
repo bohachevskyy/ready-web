@@ -442,6 +442,7 @@
     },
     "storyNotFound": "Story not found. It may have been deleted or you don't have access to it.",
     "loadingStory": "Loading story...",
-    "invalidStoryId": "Invalid story ID"
+    "invalidStoryId": "Invalid story ID",
+    "translationHint": "Tap any word to see its translation and add it to your vocabulary!"
   }
 }

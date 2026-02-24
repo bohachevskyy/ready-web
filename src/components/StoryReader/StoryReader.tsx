@@ -14,6 +14,8 @@ import { VocabDrawer } from "./VocabDrawer"
 import { CompletionBanner } from "./CompletionBanner"
 import { ReadingProgress } from "../ReadingProgress"
 import { useTranslation } from "../../i18n/useTranslation"
+import { useTranslationHint } from "./useTranslationHint"
+import { TranslationHintTip } from "./TranslationHintTip"
 
 /** Extract a readable title from the story text as a placeholder */
 function extractTitle(text: string): string {
@@ -80,6 +82,8 @@ export function StoryReader() {
     clearTranslationError,
     clearSaveWordError,
   } = useStoryReader()
+
+  const { hintWordIndex, showHintTip, dismissHint } = useTranslationHint(storyText)
 
   // Track scroll progress
   const handleScroll = useCallback(() => {
@@ -157,6 +161,7 @@ export function StoryReader() {
               storyText={storyText}
               storyError={storyError}
               onWordClick={handleWordClick}
+              highlightedWord={hintWordIndex}
             />
           )}
 
@@ -245,6 +250,9 @@ export function StoryReader() {
           onClose={clearSaveWordError}
         />
       )}
+
+      {/* Translation hint tip for first-time users */}
+      <TranslationHintTip visible={showHintTip} onDismiss={dismissHint} />
     </div>
   )
 }
