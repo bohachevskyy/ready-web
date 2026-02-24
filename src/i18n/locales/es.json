@@ -459,6 +459,7 @@
     },
     "storyNotFound": "Historia no encontrada. Puede haber sido eliminada o no tienes acceso a ella.",
     "loadingStory": "Cargando historia...",
-    "invalidStoryId": "ID de historia inválido"
+    "invalidStoryId": "ID de historia inválido",
+    "translationHint": "¡Toca cualquier palabra para ver su traducción y añadirla a tu vocabulario!"
   }
 }

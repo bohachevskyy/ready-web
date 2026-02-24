@@ -450,6 +450,7 @@
     "skipQuestions": "질문 건너뛰기",
     "quizTime": "퀴즈 시간",
     "finish": "읽기 완료",
-    "loadingQuestions": "질문 로딩 중..."
+    "loadingQuestions": "질문 로딩 중...",
+    "translationHint": "단어를 탭하면 번역을 보고 단어장에 추가할 수 있어요!"
   }
 }
