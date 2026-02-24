@@ -19,7 +19,7 @@ export function getHiddenCategories(ageGroup: AgeGroup): string[] {
 export function useStoryCategories() {
   const dispatch = useAppDispatch()
   const { ageGroup } = useUserAge()
-  const { categories, isLoading, error } = useAppSelector((state) => state.categories)
+  const { categories, favoriteDomains, isLoading, error } = useAppSelector((state) => state.categories)
 
   useEffect(() => {
     if (categories.length === 0 && !isLoading && !error) {
@@ -34,5 +34,5 @@ export function useStoryCategories() {
       .sort((a, b) => a.order - b.order)
   }, [categories, ageGroup])
 
-  return { filteredCategories, categories, isLoading, error }
+  return { filteredCategories, categories, favoriteDomains, isLoading, error }
 }

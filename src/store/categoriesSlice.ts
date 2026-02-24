@@ -23,12 +23,14 @@ export interface Category {
 
 interface CategoriesState {
   categories: Category[]
+  favoriteDomains: Domain[]
   isLoading: boolean
   error: string | null
 }
 
 const initialState: CategoriesState = {
   categories: [],
+  favoriteDomains: [],
   isLoading: false,
   error: null,
 }
@@ -50,7 +52,12 @@ interface ApiDomain {
   sort_order: number
 }
 
-export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue: string }>(
+interface FetchCategoriesResult {
+  categories: Category[]
+  favoriteDomains: Domain[]
+}
+
+export const fetchCategories = createAsyncThunk<FetchCategoriesResult, void, { rejectValue: string }>(
   'categories/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
@@ -64,7 +71,7 @@ export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue:
       }
 
       const categoriesData: { categories: ApiCategory[] } = await categoriesResponse.json()
-      const domainsData: { domains: ApiDomain[] } = await domainsResponse.json()
+      const domainsData: { domains: ApiDomain[]; favorite?: ApiDomain[] } = await domainsResponse.json()
 
       const domainsByCategory = new Map<string, Domain[]>()
       for (const apiDomain of domainsData.domains) {
@@ -81,7 +88,16 @@ export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue:
         domainsByCategory.set(apiDomain.category_id, existing)
       }
 
-      return categoriesData.categories.map((apiCategory): Category => ({
+      const favoriteDomains: Domain[] = (domainsData.favorite || []).map((apiDomain) => ({
+        id: apiDomain.id,
+        name: apiDomain.slug,
+        title: apiDomain.name,
+        description: apiDomain.description || '',
+        icon: apiDomain.icon || '',
+        order: apiDomain.sort_order,
+      }))
+
+      const categories = categoriesData.categories.map((apiCategory): Category => ({
         id: apiCategory.id,
         name: apiCategory.name.toLowerCase(),
         title: apiCategory.name,
@@ -90,6 +106,8 @@ export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue:
         order: apiCategory.sort_order,
         domains: domainsByCategory.get(apiCategory.id) || [],
       }))
+
+      return { categories, favoriteDomains }
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch categories')
     }
@@ -108,7 +126,8 @@ const categoriesSlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action) => {
         state.isLoading = false
-        state.categories = action.payload
+        state.categories = action.payload.categories
+        state.favoriteDomains = action.payload.favoriteDomains
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.isLoading = false
