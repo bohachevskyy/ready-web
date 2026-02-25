@@ -83,7 +83,7 @@ export function StoryReader() {
     clearSaveWordError,
   } = useStoryReader()
 
-  const { hintWordIndex, showHintTip, dismissHint } = useTranslationHint(storyText)
+  const { showHintTip, dismissHint } = useTranslationHint()
 
   // Track scroll progress
   const handleScroll = useCallback(() => {
@@ -161,7 +161,6 @@ export function StoryReader() {
               storyText={storyText}
               storyError={storyError}
               onWordClick={handleWordClick}
-              highlightedWord={hintWordIndex}
             />
           )}
 

@@ -5,10 +5,9 @@ interface StoryContentProps {
   storyText: string
   storyError: string | null
   onWordClick: (event: React.MouseEvent) => void
-  highlightedWord?: { start: number; end: number } | null
 }
 
-export function StoryContent({ storyText, storyError, onWordClick, highlightedWord }: StoryContentProps) {
+export function StoryContent({ storyText, storyError, onWordClick }: StoryContentProps) {
   if (storyError) {
     return (
       <div className="flex flex-col items-center justify-center py-12">
@@ -78,14 +77,13 @@ export function StoryContent({ storyText, storyError, onWordClick, highlightedWo
               }
 
               // All words are clickable - translations fetched on demand
-              const isHighlighted = highlightedWord && startPos === highlightedWord.start && endPos === highlightedWord.end
               return (
                 <span
                   key={tokenIndex}
                   onClick={onWordClick}
                   data-start={startPos}
                   data-end={endPos}
-                  className={`cursor-pointer hover:bg-primary/10 hover:text-primary rounded-sm px-0.5 transition-colors duration-150${isHighlighted ? ' bg-primary/15 text-primary ring-2 ring-primary/30 ring-offset-1 rounded-md animate-pulse' : ''}`}
+                  className="cursor-pointer hover:bg-primary/10 hover:text-primary rounded-sm px-0.5 transition-colors duration-150"
                 >
                   {token}
                 </span>
