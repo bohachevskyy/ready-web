@@ -17,7 +17,7 @@ describe("useTranslationHint", () => {
     localStorage.setItem(STORAGE_KEY, "true")
     const { result } = renderHook(() => useTranslationHint("Hello wonderful world"))
 
-    act(() => { jest.advanceTimersByTime(3000) })
+    act(() => { jest.advanceTimersByTime(1000) })
 
     expect(result.current.showHintTip).toBe(false)
     expect(result.current.hintWordIndex).toBeNull()
@@ -26,28 +26,35 @@ describe("useTranslationHint", () => {
   it("should not show hint if story text is empty", () => {
     const { result } = renderHook(() => useTranslationHint(""))
 
-    act(() => { jest.advanceTimersByTime(3000) })
+    act(() => { jest.advanceTimersByTime(1000) })
 
     expect(result.current.showHintTip).toBe(false)
     expect(result.current.hintWordIndex).toBeNull()
   })
 
-  it("should select a word with >5 characters", () => {
-    const storyText = "The beautiful garden was incredible today"
+  it("should select a word with >5 characters from first two sentences", () => {
+    const storyText = "The beautiful garden was incredible. The flowers bloomed wonderfully. Deep in the forest everything was mysterious."
     const { result } = renderHook(() => useTranslationHint(storyText))
 
-    act(() => { jest.advanceTimersByTime(2000) })
+    // Hint shows immediately (no timer needed for highlight/tip)
+    expect(result.current.showHintTip).toBe(true)
+    expect(result.current.hintWordIndex).not.toBeNull()
 
     if (result.current.hintWordIndex) {
       const word = storyText.slice(result.current.hintWordIndex.start, result.current.hintWordIndex.end)
       expect(word.length).toBeGreaterThan(5)
+
+      // Word should be from first two sentences (before position of second '.')
+      const secondSentenceEnd = storyText.indexOf('.', storyText.indexOf('.') + 1) + 1
+      expect(result.current.hintWordIndex.end).toBeLessThanOrEqual(secondSentenceEnd)
     }
   })
 
   it("should dismiss hint and set localStorage", () => {
-    const { result } = renderHook(() => useTranslationHint("The beautiful garden was incredible"))
+    const { result } = renderHook(() => useTranslationHint("The beautiful garden was incredible."))
 
-    act(() => { jest.advanceTimersByTime(2000) })
+    expect(result.current.showHintTip).toBe(true)
+
     act(() => { result.current.dismissHint() })
 
     expect(result.current.showHintTip).toBe(false)

@@ -9,16 +9,10 @@ interface TranslationHintTipProps {
 
 export function TranslationHintTip({ visible, onDismiss }: TranslationHintTipProps) {
   const { t } = useTranslation()
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(visible)
 
   useEffect(() => {
-    if (visible) {
-      // Delay appearance slightly so user notices the word highlight first
-      const timer = setTimeout(() => setShow(true), 800)
-      return () => clearTimeout(timer)
-    } else {
-      setShow(false)
-    }
+    setShow(visible)
   }, [visible])
 
   // Auto-dismiss after 10 seconds
