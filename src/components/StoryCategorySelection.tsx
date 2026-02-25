@@ -1,8 +1,10 @@
 import { Card } from "./ui/card"
+import { Input } from "./ui/input"
 import { useTranslation } from "../i18n/useTranslation"
 import { useStoryCategories } from "../hooks/useStoryCategories"
 import { useFavoriteDomains } from "../hooks/useFavoriteDomains"
-import { Heart, Loader2, icons } from "lucide-react"
+import { useDomainSearch } from "../hooks/useDomainSearch"
+import { Heart, Loader2, Search, icons } from "lucide-react"
 
 type StoryDomain = string
 
@@ -22,8 +24,9 @@ function DynamicIcon({ name, className }: { name: string; className?: string }) 
 
 export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectionProps) {
   const { t } = useTranslation()
-  const { filteredCategories, favoriteDomains, userFavoriteDomains, isLoading } = useStoryCategories()
+  const { filteredCategories: allCategories, favoriteDomains: allFavorites, userFavoriteDomains: allUserFavorites, isLoading } = useStoryCategories()
   const { toggleFavoriteDomain, isFavorite } = useFavoriteDomains()
+  const { searchQuery, setSearchQuery, filteredCategories, filteredFavoriteDomains: favoriteDomains, filteredUserFavoriteDomains: userFavoriteDomains } = useDomainSearch(allCategories, allFavorites, allUserFavorites)
 
   const renderDomainCard = (domain: { id: string; name: string; title: string; description: string; icon: string }, forceFilledHeart = false) => {
     const favorite = forceFilledHeart || isFavorite(domain.id)
@@ -64,6 +67,17 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">{t('stories.pageTitle')}</h1>
           <p className="text-muted-foreground">{t('stories.pageDescription')}</p>
+        </div>
+
+        <div className="relative mb-8">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder={t('stories.searchPlaceholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10 max-w-md"
+          />
         </div>
 
         {isLoading ? (
