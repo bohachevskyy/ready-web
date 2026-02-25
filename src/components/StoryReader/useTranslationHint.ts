@@ -64,22 +64,49 @@ export function useTranslationHint(storyText: string) {
 
     if (candidates.length === 0) return
 
-    // Pick a random word from the first ~30% of the story (so it's visible)
-    const upperBound = Math.max(1, Math.floor(candidates.length * 0.3))
-    const idx = Math.floor(Math.random() * upperBound)
-    const chosen = candidates[idx]
+    // Pick a word from the first two sentences only (visible at top of story)
+    const sentenceBreaks = storyText.match(/[.!?]/g)
+    let twoSentenceEnd = storyText.length
+    if (sentenceBreaks && sentenceBreaks.length >= 1) {
+      // Find the position after the second sentence-ending punctuation
+      let count = 0
+      for (let i = 0; i < storyText.length; i++) {
+        if (storyText[i] === '.' || storyText[i] === '!' || storyText[i] === '?') {
+          count++
+          if (count >= 2) {
+            twoSentenceEnd = i + 1
+            break
+          }
+        }
+      }
+      // If only one sentence, use its end
+      if (count === 1) {
+        for (let i = 0; i < storyText.length; i++) {
+          if (storyText[i] === '.' || storyText[i] === '!' || storyText[i] === '?') {
+            twoSentenceEnd = i + 1
+            break
+          }
+        }
+      }
+    }
 
-    // Small delay to let the DOM render
+    // Filter candidates to only those within the first two sentences
+    const earlyCandidates = candidates.filter(c => c.end <= twoSentenceEnd)
+    const pool = earlyCandidates.length > 0 ? earlyCandidates : candidates.slice(0, Math.max(1, 3))
+    const idx = Math.floor(Math.random() * pool.length)
+    const chosen = pool[idx]
+
+    // Show highlight and tip immediately — don't wait for DOM or API
+    setHintWordIndex({ start: chosen.start, end: chosen.end })
+    setShowHintTip(true)
+
+    // Auto-click the word after a brief delay to let the DOM render
     setTimeout(() => {
-      setHintWordIndex({ start: chosen.start, end: chosen.end })
-      setShowHintTip(true)
-
-      // Auto-click the word element
       const wordEl = document.querySelector(`[data-start="${chosen.start}"][data-end="${chosen.end}"]`) as HTMLElement
       if (wordEl) {
         wordEl.click()
       }
-    }, 1500)
+    }, 500)
   }, [storyText, wasShown])
 
   const dismissHint = useCallback(() => {
