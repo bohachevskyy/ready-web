@@ -8,13 +8,10 @@ import './styles/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { initializeSentry } from './config/sentry';
-import { initializeHotjar } from './config/hotjar';
 
 // Initialize Sentry BEFORE React root creation
 initializeSentry();
 
-// Initialize Hotjar
-initializeHotjar();
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 root.render(
