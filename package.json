@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@posthog/react": "^1.8.0",
+    "@hotjar/browser": "^1.0.9",
     "@radix-ui/react-slot": "^1.2.3",
     "@reduxjs/toolkit": "^2.9.0",
     "@sentry/react": "^10.34.0",
@@ -17,7 +17,6 @@
     "firebase": "^12.5.0",
     "libphonenumber-js": "^1.12.26",
     "lucide-react": "^0.544.0",
-    "posthog-js": "^1.352.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-redux": "^9.2.0",

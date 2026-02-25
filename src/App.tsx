@@ -13,6 +13,7 @@ import { OnboardingCheck } from './components/OnboardingCheck';
 import { useAuthMonitor } from './hooks/useAuthMonitor';
 import { useSentryUser } from './hooks/useSentryUser';
 import { useAnalyticsUser } from './hooks/useAnalyticsUser';
+import { useHotjarUser } from './hooks/useHotjarUser';
 import { I18nProvider } from './i18n/i18nContext';
 import { ErrorFallback } from './components/ErrorFallback';
 import './styles/App.css';
@@ -48,6 +49,7 @@ function AuthMonitor() {
   useAuthMonitor();
   useSentryUser();
   useAnalyticsUser();
+  useHotjarUser();
   return null;
 }
 
