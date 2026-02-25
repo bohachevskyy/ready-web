@@ -315,7 +315,8 @@
         }
       }
     },
-    "failedLoad": "Falha ao carregar história. Tente novamente mais tarde."
+    "failedLoad": "Falha ao carregar história. Tente novamente mais tarde.",
+    "searchPlaceholder": "Pesquisar domínios..."
   },
   "navigation": {
     "home": "Início",

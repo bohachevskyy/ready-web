@@ -315,7 +315,8 @@
         }
       }
     },
-    "failedLoad": "Nie udało się załadować historii. Spróbuj ponownie później."
+    "failedLoad": "Nie udało się załadować historii. Spróbuj ponownie później.",
+    "searchPlaceholder": "Szukaj domen..."
   },
   "navigation": {
     "home": "Strona główna",

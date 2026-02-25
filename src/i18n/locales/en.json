@@ -299,7 +299,8 @@
         }
       }
     },
-    "failedLoad": "Failed to load story. Please try again later."
+    "failedLoad": "Failed to load story. Please try again later.",
+    "searchPlaceholder": "Search domains..."
   },
   "navigation": {
     "home": "Home",
