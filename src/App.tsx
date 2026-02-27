@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/react';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { StoryReader } from './components/StoryReader';
+import { EmailRedirect } from './components/EmailRedirect';
 import { ModeSelection } from './components/ModeSelection';
 import { StoryCategorySelection } from './components/StoryCategorySelection';
 import { Login } from './components/Login';
@@ -59,6 +60,7 @@ function App() {
           <AuthMonitor />
           <SentryRoutes>
           <Route path="/login" element={<Login />} />
+          <Route path="/email/:id" element={<EmailRedirect />} />
           <Route
             path="/onboarding"
             element={
