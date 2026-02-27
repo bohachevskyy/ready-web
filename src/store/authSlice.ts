@@ -92,7 +92,8 @@ export const loginWithFirebase = createAsyncThunk<FirebaseAuthResponse, Firebase
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        id_token: request.firebase_token
+        id_token: request.firebase_token,
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       }),
     })
 
@@ -116,7 +117,8 @@ export const refreshAccessToken = createAsyncThunk<FirebaseAuthResponse, string>
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          refresh_token: refreshToken
+          refresh_token: refreshToken,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       })
 
