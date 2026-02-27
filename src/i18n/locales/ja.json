@@ -153,6 +153,7 @@
   "stories": {
     "pageTitle": "ストーリーのテーマを選択",
     "communityFavorites": "コミュニティのお気に入り",
+    "myFavorites": "マイお気に入り",
     "pageDescription": "トピックを選択して読み始めてください",
     "categories": {
       "nonfiction": "ノンフィクション",

@@ -154,6 +154,7 @@
   "stories": {
     "pageTitle": "Оберіть категорію історії",
     "communityFavorites": "Улюблені спільноти",
+    "myFavorites": "Мої Улюблені",
     "pageDescription": "Виберіть тему, щоб почати читати",
     "categories": {
       "nonfiction": "Науково-популярне",

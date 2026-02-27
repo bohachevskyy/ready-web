@@ -24,6 +24,8 @@ export interface Category {
 interface CategoriesState {
   categories: Category[]
   favoriteDomains: Domain[]
+  userFavoriteDomainIds: string[]
+  hasLoadedUserFavorites: boolean
   isLoading: boolean
   error: string | null
 }
@@ -31,6 +33,8 @@ interface CategoriesState {
 const initialState: CategoriesState = {
   categories: [],
   favoriteDomains: [],
+  userFavoriteDomainIds: [],
+  hasLoadedUserFavorites: false,
   isLoading: false,
   error: null,
 }
@@ -55,6 +59,11 @@ interface ApiDomain {
 interface FetchCategoriesResult {
   categories: Category[]
   favoriteDomains: Domain[]
+}
+
+interface FetchUserFavoritesResponse {
+  domains: ApiDomain[]
+  count: number
 }
 
 export const fetchCategories = createAsyncThunk<FetchCategoriesResult, void, { rejectValue: string }>(
@@ -114,6 +123,66 @@ export const fetchCategories = createAsyncThunk<FetchCategoriesResult, void, { r
   }
 )
 
+export const fetchUserFavorites = createAsyncThunk<string[], void, { rejectValue: string }>(
+  'categories/fetchUserFavorites',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/categories/domains/favorites`)
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user favorites')
+      }
+
+      const data: FetchUserFavoritesResponse = await response.json()
+      return data.domains.map((domain) => domain.id)
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : 'Failed to fetch user favorites')
+    }
+  }
+)
+
+export const addFavoriteDomain = createAsyncThunk<string, string, { rejectValue: string }>(
+  'categories/addFavoriteDomain',
+  async (domainId, { rejectWithValue }) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/categories/domains/favorites`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ domain_id: domainId }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add favorite domain')
+      }
+
+      return domainId
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : 'Failed to add favorite domain')
+    }
+  }
+)
+
+export const removeFavoriteDomain = createAsyncThunk<string, string, { rejectValue: string }>(
+  'categories/removeFavoriteDomain',
+  async (domainId, { rejectWithValue }) => {
+    try {
+      const response = await fetchWithAuth(`${API_BASE_URL}/categories/domains/favorites/${domainId}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to remove favorite domain')
+      }
+
+      return domainId
+    } catch (error) {
+      return rejectWithValue(error instanceof Error ? error.message : 'Failed to remove favorite domain')
+    }
+  }
+)
+
 const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
@@ -132,6 +201,46 @@ const categoriesSlice = createSlice({
       .addCase(fetchCategories.rejected, (state, action) => {
         state.isLoading = false
         state.error = action.payload || 'Failed to fetch categories'
+      })
+      .addCase(fetchUserFavorites.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(fetchUserFavorites.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.hasLoadedUserFavorites = true
+        state.userFavoriteDomainIds = action.payload
+      })
+      .addCase(fetchUserFavorites.rejected, (state, action) => {
+        state.isLoading = false
+        state.hasLoadedUserFavorites = true
+        state.error = action.payload || 'Failed to fetch user favorites'
+      })
+      .addCase(addFavoriteDomain.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(addFavoriteDomain.fulfilled, (state, action) => {
+        state.isLoading = false
+        if (!state.userFavoriteDomainIds.includes(action.payload)) {
+          state.userFavoriteDomainIds.push(action.payload)
+        }
+      })
+      .addCase(addFavoriteDomain.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload || 'Failed to add favorite domain'
+      })
+      .addCase(removeFavoriteDomain.pending, (state) => {
+        state.isLoading = true
+        state.error = null
+      })
+      .addCase(removeFavoriteDomain.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.userFavoriteDomainIds = state.userFavoriteDomainIds.filter((id) => id !== action.payload)
+      })
+      .addCase(removeFavoriteDomain.rejected, (state, action) => {
+        state.isLoading = false
+        state.error = action.payload || 'Failed to remove favorite domain'
       })
   },
 })

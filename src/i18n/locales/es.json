@@ -154,6 +154,7 @@
   "stories": {
     "pageTitle": "Elige la categoría de tu historia",
     "communityFavorites": "Favoritos de la Comunidad",
+    "myFavorites": "Mis Favoritos",
     "pageDescription": "Selecciona un tema para comenzar a leer",
     "categories": {
       "nonfiction": "No ficción",
