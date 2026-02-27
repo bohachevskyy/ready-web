@@ -165,6 +165,7 @@
   "stories": {
     "pageTitle": "Choose Your Story Category",
     "communityFavorites": "Community Favorites",
+    "myFavorites": "My Favorites",
     "pageDescription": "Select a topic to start reading",
     "categories": {
       "nonfiction": "Nonfiction",
