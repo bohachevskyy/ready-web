@@ -32,18 +32,18 @@ describe('filterBySearch', () => {
   const favorites: Domain[] = [biology]
 
   it('returns all when query is empty', () => {
-    const result = filterBySearch(categories, favorites, '')
+    const result = filterBySearch(categories, favorites, [], '')
     expect(result.filteredCategories).toEqual(categories)
     expect(result.filteredFavoriteDomains).toEqual(favorites)
   })
 
   it('returns all when query is whitespace', () => {
-    const result = filterBySearch(categories, favorites, '   ')
+    const result = filterBySearch(categories, favorites, [], '   ')
     expect(result.filteredCategories).toEqual(categories)
   })
 
   it('filters domains by title match', () => {
-    const result = filterBySearch(categories, favorites, 'biology')
+    const result = filterBySearch(categories, favorites, [], 'biology')
     const allDomains = result.filteredCategories.flatMap((c) => c.domains)
     expect(allDomains.some((d) => d.id === 'bio')).toBe(true)
     // adventure should not match
@@ -51,23 +51,23 @@ describe('filterBySearch', () => {
   })
 
   it('filters favorite domains too', () => {
-    const result = filterBySearch(categories, favorites, 'adventure')
+    const result = filterBySearch(categories, favorites, [], 'adventure')
     expect(result.filteredFavoriteDomains).toHaveLength(0)
   })
 
   it('matches on description', () => {
-    const result = filterBySearch(categories, favorites, 'ancient')
+    const result = filterBySearch(categories, favorites, [], 'ancient')
     expect(result.filteredCategories).toHaveLength(1)
     expect(result.filteredCategories[0].domains[0].id).toBe('hist')
   })
 
   it('performs fuzzy matching', () => {
-    const result = filterBySearch(categories, favorites, 'biolgy')
+    const result = filterBySearch(categories, favorites, [], 'biolgy')
     expect(result.filteredCategories.flatMap((c) => c.domains).some((d) => d.id === 'bio')).toBe(true)
   })
 
   it('removes categories with no matching domains', () => {
-    const result = filterBySearch(categories, favorites, 'adventure')
+    const result = filterBySearch(categories, favorites, [], 'adventure')
     expect(result.filteredCategories.every((c) => c.id !== 'nonfiction')).toBe(true)
   })
 })

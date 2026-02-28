@@ -76,7 +76,7 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
             placeholder={t('stories.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 max-w-md"
+            className="pl-10 max-w-md bg-white border-gray-300"
           />
         </div>
 
