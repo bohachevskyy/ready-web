@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail } from '../services/firebaseAuth';
 import { Button } from './ui/button';
@@ -12,8 +12,10 @@ import { useTranslation } from '../i18n/useTranslation';
 export function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const { error } = useAppSelector((state) => state.auth);
+  const returnTo = (location.state as { from?: string })?.from || '/';
 
   const [authError, setAuthError] = useState<string | null>(null);
   const [method, setMethod] = useState<'choice' | 'email'>('choice');
@@ -33,7 +35,7 @@ export function Login() {
       } else {
         await signInWithApple(dispatch);
       }
-      navigate('/');
+      navigate(returnTo);
     } catch (err) {
       setAuthError(t('auth.errors.socialLoginFailed', { provider }));
       console.error(err);
@@ -72,7 +74,7 @@ export function Login() {
       } else {
         await signInWithEmail(email, password, dispatch);
       }
-      navigate('/');
+      navigate(returnTo);
     } catch (err: any) {
       console.error(`Error ${emailMode === 'signup' ? 'signing up' : 'signing in'} with email:`, err);
       if (emailMode === 'signin') {

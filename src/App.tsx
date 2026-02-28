@@ -60,7 +60,7 @@ function App() {
           <AuthMonitor />
           <SentryRoutes>
           <Route path="/login" element={<Login />} />
-          <Route path="/email/:id" element={<EmailRedirect />} />
+          <Route path="/email/:id" element={<ProtectedRoute><EmailRedirect /></ProtectedRoute>} />
           <Route
             path="/onboarding"
             element={
