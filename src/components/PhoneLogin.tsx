@@ -134,7 +134,7 @@ export function PhoneLogin({ onBack }: PhoneLoginProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Phone Sign In</h1>

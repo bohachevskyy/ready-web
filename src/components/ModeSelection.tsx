@@ -12,7 +12,7 @@ export function ModeSelection({ onSelectMode }: ModeSelectionProps) {
   const { t,  } = useTranslation()
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-[#0a0a0f] p-6">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground">{t('modeSelection.title')}</h1>

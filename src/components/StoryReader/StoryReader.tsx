@@ -125,7 +125,7 @@ export function StoryReader() {
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-[#0a0a0f]">
       {/* Main reading area */}
       <div ref={scrollContainerRef} className="flex-1 flex flex-col overflow-auto relative">
         {/* Reading progress bar */}

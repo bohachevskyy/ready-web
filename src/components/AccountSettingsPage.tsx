@@ -51,7 +51,7 @@ export function AccountSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#0a0a0f]">
         <NavigationBar
           onHomeClick={handleHomeClick}
           onLogout={handleLogout}
@@ -66,7 +66,7 @@ export function AccountSettingsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#0a0a0f]">
         <NavigationBar
           onHomeClick={handleHomeClick}
           onLogout={handleLogout}
@@ -80,7 +80,7 @@ export function AccountSettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0a0a0f]">
       <NavigationBar
         onHomeClick={handleHomeClick}
         onLogout={handleLogout}

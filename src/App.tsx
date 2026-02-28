@@ -14,6 +14,7 @@ import { OnboardingCheck } from './components/OnboardingCheck';
 import { useAuthMonitor } from './hooks/useAuthMonitor';
 import { useSentryUser } from './hooks/useSentryUser';
 import { useAnalyticsUser } from './hooks/useAnalyticsUser';
+import { LandingPage } from './components/LandingPage';
 import { I18nProvider } from './i18n/i18nContext';
 import { ErrorFallback } from './components/ErrorFallback';
 import './styles/App.css';
@@ -59,6 +60,7 @@ function App() {
         <BrowserRouter>
           <AuthMonitor />
           <SentryRoutes>
+          <Route path="/welcome" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/email/:id" element={<ProtectedRoute><EmailRedirect /></ProtectedRoute>} />
           <Route

@@ -39,7 +39,7 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
       >
         <button
           type="button"
-          className="absolute right-3 top-3 z-10 rounded-full bg-background/90 p-1.5 text-muted-foreground transition-colors hover:text-red-500"
+          className="absolute right-3 top-3 z-10 rounded-full bg-[#0a0a0f]/90 p-1.5 text-muted-foreground transition-colors hover:text-red-500"
           onClick={(e) => {
             e.stopPropagation()
             toggleFavoriteDomain(domain.id)
@@ -62,7 +62,7 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-[#0a0a0f] p-6">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">{t('stories.pageTitle')}</h1>

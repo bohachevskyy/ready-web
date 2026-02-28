@@ -40,7 +40,7 @@ export function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
       <NetworkErrorBanner />
       <NavigationBar
         onHomeClick={handleHomeClick}
