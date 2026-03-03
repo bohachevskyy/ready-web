@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState, useCallback, useMemo } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { Loader2 } from "lucide-react"
@@ -16,29 +16,8 @@ import { ReadingProgress } from "../ReadingProgress"
 import { useTranslation } from "../../i18n/useTranslation"
 import { useTranslationHint } from "./useTranslationHint"
 import { TranslationHintTip } from "./TranslationHintTip"
-
-/** Extract a readable title from the story text as a placeholder */
-function extractTitle(text: string): string {
-  if (!text) return ''
-  // Try first sentence (up to 160 chars is fine for a title)
-  const match = text.match(/^(.+?[.!?])\s/)
-  if (match && match[1].length <= 160) {
-    return match[1]
-  }
-  // If the first sentence is too long, find a natural break (comma, semicolon, dash)
-  const firstLine = text.split('\n')[0] || ''
-  const breakMatch = firstLine.slice(0, 100).match(/^(.{30,}?)[,;—–]\s/)
-  if (breakMatch) {
-    return breakMatch[1] + '...'
-  }
-  // Last resort: truncate at word boundary
-  if (firstLine.length <= 100) return firstLine
-  const truncated = firstLine.slice(0, 90)
-  const lastSpace = truncated.lastIndexOf(' ')
-  return (lastSpace > 30 ? truncated.slice(0, lastSpace) : truncated) + '...'
-}
-
-export function StoryReader() {
+import { usePageTitle } from "../../contexts/PageTitleContext"
+  export function StoryReader() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -48,6 +27,7 @@ export function StoryReader() {
     // State
     view,
     storyText,
+    storyTitle,
     storyError,
     savedWords,
     selectedWord,
@@ -84,6 +64,15 @@ export function StoryReader() {
   } = useStoryReader()
 
   const { showHintTip, dismissHint } = useTranslationHint()
+  const { setPageTitle } = usePageTitle()
+
+  // Set page/document title to story title
+  useEffect(() => {
+    if (storyTitle) {
+      setPageTitle(storyTitle)
+    }
+    return () => setPageTitle('')
+  }, [storyTitle, setPageTitle])
 
   // Track scroll progress
   const handleScroll = useCallback(() => {
@@ -115,9 +104,6 @@ export function StoryReader() {
   // Determine if story is completed
   const isCompleted = readerStatus?.status === 'completed' || !!readerStatus?.completed_at
   const showCompletionBanner = isCompleted && !isBannerDismissed && view === 'story'
-
-  // Extract title from story text
-  const storyTitle = useMemo(() => extractTitle(storyText), [storyText])
 
   // Show full-screen loading animation while generating or fetching story
   if (isGeneratingStory || isFetchingStory) {
