@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import categoriesReducer, { fetchCategories } from './categoriesSlice'
+import categoriesReducer, { fetchCategories, addFavoriteDomain, removeFavoriteDomain } from './categoriesSlice'
 
 // Mock fetchWithAuth
 jest.mock('../utils/fetchWithAuth', () => ({
@@ -166,5 +166,91 @@ describe('fetchCategories thunk', () => {
 
     const { error } = store.getState().categories
     expect(error).toBe('Failed to fetch categories')
+  })
+})
+
+describe('addFavoriteDomain thunk', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should optimistically add domain id on pending without setting isLoading', async () => {
+    mockFetchWithAuth.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) } as Response)
+    const store = createTestStore()
+
+    const promise = store.dispatch(addFavoriteDomain('dom-1'))
+
+    // Check state immediately after dispatch (pending)
+    const pendingState = store.getState().categories
+    expect(pendingState.userFavoriteDomainIds).toContain('dom-1')
+    expect(pendingState.isLoading).toBe(false)
+
+    await promise
+  })
+
+  it('should revert optimistic add on rejection', async () => {
+    mockFetchWithAuth.mockResolvedValueOnce({ ok: false } as Response)
+    const store = createTestStore()
+
+    await store.dispatch(addFavoriteDomain('dom-1'))
+
+    const state = store.getState().categories
+    expect(state.userFavoriteDomainIds).not.toContain('dom-1')
+    expect(state.error).toBe('Failed to add favorite domain')
+  })
+})
+
+describe('removeFavoriteDomain thunk', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('should optimistically remove domain id on pending without setting isLoading', async () => {
+    mockFetchWithAuth.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) } as Response)
+    const store = configureStore({
+      reducer: { categories: categoriesReducer },
+      preloadedState: {
+        categories: {
+          categories: [],
+          favoriteDomains: [],
+          userFavoriteDomainIds: ['dom-1', 'dom-2'],
+          hasLoadedUserFavorites: true,
+          isLoading: false,
+          error: null,
+        },
+      },
+    })
+
+    const promise = store.dispatch(removeFavoriteDomain('dom-1'))
+
+    const pendingState = store.getState().categories
+    expect(pendingState.userFavoriteDomainIds).not.toContain('dom-1')
+    expect(pendingState.userFavoriteDomainIds).toContain('dom-2')
+    expect(pendingState.isLoading).toBe(false)
+
+    await promise
+  })
+
+  it('should revert optimistic remove on rejection', async () => {
+    mockFetchWithAuth.mockResolvedValueOnce({ ok: false } as Response)
+    const store = configureStore({
+      reducer: { categories: categoriesReducer },
+      preloadedState: {
+        categories: {
+          categories: [],
+          favoriteDomains: [],
+          userFavoriteDomainIds: ['dom-1', 'dom-2'],
+          hasLoadedUserFavorites: true,
+          isLoading: false,
+          error: null,
+        },
+      },
+    })
+
+    await store.dispatch(removeFavoriteDomain('dom-1'))
+
+    const state = store.getState().categories
+    expect(state.userFavoriteDomainIds).toContain('dom-1')
+    expect(state.error).toBe('Failed to remove favorite domain')
   })
 })

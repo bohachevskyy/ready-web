@@ -216,30 +216,28 @@ const categoriesSlice = createSlice({
         state.hasLoadedUserFavorites = true
         state.error = action.payload || 'Failed to fetch user favorites'
       })
-      .addCase(addFavoriteDomain.pending, (state) => {
-        state.isLoading = true
+      .addCase(addFavoriteDomain.pending, (state, action) => {
         state.error = null
-      })
-      .addCase(addFavoriteDomain.fulfilled, (state, action) => {
-        state.isLoading = false
-        if (!state.userFavoriteDomainIds.includes(action.payload)) {
-          state.userFavoriteDomainIds.push(action.payload)
+        if (!state.userFavoriteDomainIds.includes(action.meta.arg)) {
+          state.userFavoriteDomainIds.push(action.meta.arg)
         }
       })
+      .addCase(addFavoriteDomain.fulfilled, () => {
+        // State already updated optimistically in pending
+      })
       .addCase(addFavoriteDomain.rejected, (state, action) => {
-        state.isLoading = false
+        state.userFavoriteDomainIds = state.userFavoriteDomainIds.filter((id) => id !== action.meta.arg)
         state.error = action.payload || 'Failed to add favorite domain'
       })
-      .addCase(removeFavoriteDomain.pending, (state) => {
-        state.isLoading = true
+      .addCase(removeFavoriteDomain.pending, (state, action) => {
         state.error = null
+        state.userFavoriteDomainIds = state.userFavoriteDomainIds.filter((id) => id !== action.meta.arg)
       })
-      .addCase(removeFavoriteDomain.fulfilled, (state, action) => {
-        state.isLoading = false
-        state.userFavoriteDomainIds = state.userFavoriteDomainIds.filter((id) => id !== action.payload)
+      .addCase(removeFavoriteDomain.fulfilled, () => {
+        // State already updated optimistically in pending
       })
       .addCase(removeFavoriteDomain.rejected, (state, action) => {
-        state.isLoading = false
+        state.userFavoriteDomainIds.push(action.meta.arg)
         state.error = action.payload || 'Failed to remove favorite domain'
       })
   },
