@@ -14,6 +14,7 @@ interface ApiStoryResponse {
   id: string
   user_id: string
   text: string
+  title: string
   translation: Record<string, string>
   difficulty_level: number
   age_bracket: string
@@ -26,6 +27,7 @@ interface ApiStoryResponse {
 export interface StoryResponse {
   id: string
   story: string
+  title: string
   translations: Record<string, string>
 }
 
@@ -136,6 +138,7 @@ export const generateStory = createAsyncThunk<StoryResponse, StoryRequest, { rej
       return {
         id: data.id,
         story: data.text,
+        title: data.title || '',
         translations: data.translation,
       }
     } catch (error) {
@@ -168,6 +171,7 @@ export const fetchStoryById = createAsyncThunk<
       return {
         id: data.id,
         story: data.text,
+        title: data.title || '',
         translations: data.translation || {},
         readerStatus: data.reader_status
       }
@@ -340,6 +344,7 @@ export const storiesSlice = createSlice({
         state.currentStory = {
           id: action.payload.id,
           story: action.payload.story,
+          title: action.payload.title,
           translations: action.payload.translations
         }
         state.readerStatus = action.payload.readerStatus || null

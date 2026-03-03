@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { addWord, removeWord, clearAllWords } from "../../store/vocabularySlice"
-import { setStoryId, setStoryText, setTranslations } from "../../store/storySlice"
+import { setStoryId, setStoryText, setStoryTitle, setTranslations } from "../../store/storySlice"
 import { generateStory, fetchStoryById, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import type { SavedWord } from "../../types"
@@ -24,6 +24,7 @@ export function useStoryReader() {
   const savedWords = useAppSelector((state) => state.vocabulary.savedWords)
   const storyId = useAppSelector((state) => state.story.id)
   const storyText = useAppSelector((state) => state.story.text)
+  const storyTitle = useAppSelector((state) => state.story.title)
 
   // Redux Thunk selectors
   const isGeneratingStory = useAppSelector((state) => state.stories.isGeneratingStory)
@@ -78,6 +79,7 @@ export function useStoryReader() {
           const result = await dispatch(fetchStoryById(param)).unwrap()
           dispatch(setStoryId(result.id))
           dispatch(setStoryText(result.story))
+          dispatch(setStoryTitle(result.title))
           dispatch(setTranslations(result.translations))
         } else if (isGenerateMode && param) {
           // Domain Flow: Generate new story, then redirect
@@ -88,6 +90,7 @@ export function useStoryReader() {
 
           dispatch(setStoryId(result.id))
           dispatch(setStoryText(result.story))
+          dispatch(setStoryTitle(result.title))
           dispatch(setTranslations(result.translations))
 
           // Redirect to UUID-based URL (without /view)
@@ -469,6 +472,7 @@ export function useStoryReader() {
     // State
     view,
     storyText,
+    storyTitle,
     storyError,
     savedWords,
     selectedWord,

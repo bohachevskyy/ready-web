@@ -15,6 +15,7 @@ import { useAuthMonitor } from './hooks/useAuthMonitor';
 import { useSentryUser } from './hooks/useSentryUser';
 import { useAnalyticsUser } from './hooks/useAnalyticsUser';
 import { I18nProvider } from './i18n/i18nContext';
+import { PageTitleProvider } from './contexts/PageTitleContext';
 import { ErrorFallback } from './components/ErrorFallback';
 import './styles/App.css';
 
@@ -56,6 +57,7 @@ function App() {
   return (
     <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
       <I18nProvider>
+        <PageTitleProvider>
         <BrowserRouter>
           <AuthMonitor />
           <SentryRoutes>
@@ -127,6 +129,7 @@ function App() {
           />
         </SentryRoutes>
       </BrowserRouter>
+        </PageTitleProvider>
     </I18nProvider>
     </Sentry.ErrorBoundary>
   );

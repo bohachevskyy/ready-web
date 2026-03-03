@@ -2,6 +2,7 @@ import { Home, LogOut, UserRoundCog } from 'lucide-react';
 import { Button } from './ui/button';
 import { useTranslation } from '../i18n/useTranslation';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { usePageTitle } from '../contexts/PageTitleContext';
 
 interface NavigationBarProps {
   onHomeClick: () => void;
@@ -11,6 +12,7 @@ interface NavigationBarProps {
 
 export function NavigationBar({ onHomeClick, onLogout, onAccountClick }: NavigationBarProps) {
   const { t } = useTranslation();
+  const { pageTitle } = usePageTitle();
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
@@ -19,6 +21,12 @@ export function NavigationBar({ onHomeClick, onLogout, onAccountClick }: Navigat
           <Home className="h-5 w-5" />
           <span className="font-medium">{t('navigation.home')}</span>
         </Button>
+
+        {pageTitle && (
+          <span className="hidden sm:block text-sm font-medium text-muted-foreground truncate max-w-xs lg:max-w-md">
+            {pageTitle}
+          </span>
+        )}
 
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
