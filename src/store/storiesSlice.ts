@@ -206,6 +206,7 @@ export const fetchPublicStoryById = createAsyncThunk<
       return {
         id: data.id,
         story: data.text,
+        title: data.title || '',
         translations: data.translation || {},
       }
     } catch (error) {
@@ -397,12 +398,13 @@ export const storiesSlice = createSlice({
         state.currentStory = {
           id: action.payload.id,
           story: action.payload.story,
+          title: action.payload.title,
           translations: action.payload.translations
         }
       })
       .addCase(fetchPublicStoryById.rejected, (state, action) => {
         state.isFetchingStory = false
-        state.error = action.payload || 'Failed to fetch story'
+        state.error = action.payload ?? 'Failed to fetch story'
       })
 
       // Get questions
