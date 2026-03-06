@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom"
+import { Navigate, useLocation } from "react-router-dom"
 import { useAppSelector } from "../store/store"
 
 interface OnboardingCheckProps {
@@ -7,6 +7,7 @@ interface OnboardingCheckProps {
 
 export function OnboardingCheck({ children }: OnboardingCheckProps) {
   const user = useAppSelector((state) => state.auth.user)
+  const location = useLocation()
 
   // New user detection: missing profile fields
   // Check if user exists and is missing ANY of the required profile fields
@@ -20,7 +21,7 @@ export function OnboardingCheck({ children }: OnboardingCheckProps) {
   )
 
   if (needsOnboarding) {
-    return <Navigate to="/onboarding" replace />
+    return <Navigate to="/onboarding" replace state={{ from: location.pathname + location.search }} />
   }
 
   return <>{children}</>

@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState, useCallback, useMemo } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { StoryLoading } from "../StoryLoading"
 import { SignupModal } from "../SignupModal"
 import { PublicWordDrawer } from "./PublicWordDrawer"
@@ -28,6 +28,7 @@ function extractTitle(text: string): string {
 
 export function PublicStoryReader() {
   const navigate = useNavigate()
+  const location = useLocation()
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const { t } = useTranslation()
@@ -84,7 +85,7 @@ export function PublicStoryReader() {
             </p>
           </div>
           <Button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/login', { state: { from: location.pathname + location.search } })}
             size="lg"
             className="w-full"
           >
