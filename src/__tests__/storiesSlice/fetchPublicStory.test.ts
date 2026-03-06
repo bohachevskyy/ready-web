@@ -86,6 +86,7 @@ describe('storiesSlice - fetchPublicStoryById', () => {
     expect(state.currentStory).toEqual({
       id: 'story-id',
       story: 'Once upon a time...',
+      title: '',
       translations: { hello: 'hola' },
     })
   })
