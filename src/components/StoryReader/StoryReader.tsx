@@ -112,7 +112,7 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
   const isClickWordStep = onboarding.isStepActive(OnboardingStep.CLICK_WORD)
 
   // Onboarding step 5: After vocabulary viewed, guide user to finish story
-  const isAfterVocabularyStep = onboarding.currentStep === OnboardingStep.PRACTICE_WORDS && view === 'story'
+  const isAfterVocabularyStep = onboarding.isActive && onboarding.currentStep === OnboardingStep.PRACTICE_WORDS && view === 'story'
 
   // Advance from step 2 (CLICK_WORD) to step 3 (ADD_WORD) when word details appear
   useEffect(() => {
