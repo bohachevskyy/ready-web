@@ -291,6 +291,12 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
                 >
                   {t('onboarding.skip')}
                 </button>
+                <button
+                  onClick={onboarding.completeCurrentStep}
+                  className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-primary-foreground/90 text-primary hover:bg-primary-foreground transition-colors shadow-sm"
+                >
+                  {t('onboarding.gotIt')}
+                </button>
               </div>
             </div>
           </div>
