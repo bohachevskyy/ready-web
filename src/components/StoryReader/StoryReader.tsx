@@ -14,8 +14,6 @@ import { VocabDrawer } from "./VocabDrawer"
 import { CompletionBanner } from "./CompletionBanner"
 import { ReadingProgress } from "../ReadingProgress"
 import { useTranslation } from "../../i18n/useTranslation"
-import { useTranslationHint } from "./useTranslationHint"
-import { TranslationHintTip } from "./TranslationHintTip"
 import { usePageTitle } from "../../contexts/PageTitleContext"
 import { useOnboarding, OnboardingStep } from "../../hooks/useOnboarding"
 import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
@@ -66,7 +64,6 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
     clearSaveWordError,
   } = useStoryReader()
 
-  const { showHintTip, dismissHint } = useTranslationHint()
   const { setPageTitle } = usePageTitle()
 
   // Set page/document title to story title
@@ -254,9 +251,6 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
           onClose={clearSaveWordError}
         />
       )}
-
-      {/* Translation hint tip for first-time users (hide during onboarding) */}
-      <TranslationHintTip visible={showHintTip && !onboarding.isActive} onDismiss={dismissHint} />
 
       {/* Onboarding tooltip for step 2: Click a word */}
       {isClickWordStep && (
