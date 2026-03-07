@@ -1,6 +1,9 @@
+import { useEffect } from "react"
 import { Button } from "./ui/button"
 import { X, BookOpen } from "lucide-react"
 import { useTranslation } from "../i18n/useTranslation"
+import { OnboardingStep } from "../hooks/useOnboarding"
+import { OnboardingTooltip } from "./onboarding/OnboardingTooltip"
 
 interface SavedWord {
   id: string
@@ -9,13 +12,37 @@ interface SavedWord {
   timestamp: number
 }
 
+interface OnboardingControl {
+  currentStep: OnboardingStep
+  isActive: boolean
+  isCompleted: boolean
+  isDismissed: boolean
+  completeCurrentStep: () => void
+  skipOnboarding: () => void
+  resetOnboarding: () => void
+  isStepActive: (step: OnboardingStep) => boolean
+}
+
 interface VocabularyListProps {
   savedWords: SavedWord[]
   onRemoveWord: (id: string) => void
+  onboarding: OnboardingControl
 }
 
-export function VocabularyList({ savedWords, onRemoveWord }: VocabularyListProps) {
+export function VocabularyList({ savedWords, onRemoveWord, onboarding }: VocabularyListProps) {
   const { t } = useTranslation()
+
+  const isViewVocabularyStep = onboarding.isStepActive(OnboardingStep.VIEW_VOCABULARY)
+
+  // Auto-complete step 4 after 5 seconds when words are added
+  useEffect(() => {
+    if (isViewVocabularyStep && savedWords.length > 0) {
+      const timer = setTimeout(() => {
+        onboarding.completeCurrentStep()
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [isViewVocabularyStep, savedWords.length, onboarding])
 
   return (
     <div className="flex flex-col h-full overflow-auto">
@@ -69,6 +96,16 @@ export function VocabularyList({ savedWords, onRemoveWord }: VocabularyListProps
           </div>
         )}
       </div>
+
+      {/* Onboarding tooltip for step 4: View vocabulary */}
+      {isViewVocabularyStep && savedWords.length > 0 && (
+        <OnboardingTooltip
+          step={OnboardingStep.VIEW_VOCABULARY}
+          visible={isViewVocabularyStep}
+          onNext={onboarding.completeCurrentStep}
+          onSkip={onboarding.skipOnboarding}
+        />
+      )}
     </div>
   )
 }

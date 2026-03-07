@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from "react"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
-import { Loader2 } from "lucide-react"
+import { Loader2, icons } from "lucide-react"
 import { VocabularyList } from "../VocabularyList"
 import { QuizView } from "../QuizView"
 import { StoryLoading } from "../StoryLoading"
@@ -17,11 +17,14 @@ import { useTranslation } from "../../i18n/useTranslation"
 import { useTranslationHint } from "./useTranslationHint"
 import { TranslationHintTip } from "./TranslationHintTip"
 import { usePageTitle } from "../../contexts/PageTitleContext"
+import { useOnboarding, OnboardingStep } from "../../hooks/useOnboarding"
+import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
   export function StoryReader() {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isBannerDismissed, setIsBannerDismissed] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const { t } = useTranslation()
+  const onboarding = useOnboarding()
 
   const {
     // State
@@ -104,6 +107,19 @@ import { usePageTitle } from "../../contexts/PageTitleContext"
   // Determine if story is completed
   const isCompleted = readerStatus?.status === 'completed' || !!readerStatus?.completed_at
   const showCompletionBanner = isCompleted && !isBannerDismissed && view === 'story'
+
+  // Onboarding step 2: Click a word
+  const isClickWordStep = onboarding.isStepActive(OnboardingStep.CLICK_WORD)
+
+  // Onboarding step 5: After vocabulary viewed, guide user to finish story
+  const isAfterVocabularyStep = onboarding.currentStep === OnboardingStep.PRACTICE_WORDS && view === 'story'
+
+  // Advance from step 2 (CLICK_WORD) to step 3 (ADD_WORD) when word details appear
+  useEffect(() => {
+    if (isClickWordStep && (isWordDrawerOpen || selectedWord)) {
+      onboarding.completeCurrentStep()
+    }
+  }, [isClickWordStep, isWordDrawerOpen, selectedWord, onboarding])
 
   // Show full-screen loading animation while generating or fetching story
   if (isGeneratingStory || isFetchingStory) {
@@ -195,11 +211,12 @@ import { usePageTitle } from "../../contexts/PageTitleContext"
         savedWords={savedWords}
         onClose={closePopover}
         onAddWord={addWordToList}
+        onboarding={onboarding}
       />
 
       {/* Desktop Vocabulary Sidebar */}
       <div className="hidden lg:flex lg:flex-col w-80 bg-sidebar/50 border-l border-border/40">
-        <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} />
+        <VocabularyList savedWords={savedWords} onRemoveWord={handleRemoveWord} onboarding={onboarding} />
       </div>
 
       {/* Mobile Vocabulary FAB + Drawer */}
@@ -209,6 +226,7 @@ import { usePageTitle } from "../../contexts/PageTitleContext"
         onOpen={openVocabDrawer}
         onClose={closeVocabDrawer}
         onRemoveWord={handleRemoveWord}
+        onboarding={onboarding}
       />
 
       {/* Mobile Word Details Drawer */}
@@ -218,6 +236,7 @@ import { usePageTitle } from "../../contexts/PageTitleContext"
         savedWords={savedWords}
         onClose={closeWordDrawer}
         onAddWord={addWordToListAndCloseDrawer}
+        onboarding={onboarding}
       />
 
       {/* Translation error toast */}
@@ -236,8 +255,53 @@ import { usePageTitle } from "../../contexts/PageTitleContext"
         />
       )}
 
-      {/* Translation hint tip for first-time users */}
-      <TranslationHintTip visible={showHintTip} onDismiss={dismissHint} />
+      {/* Translation hint tip for first-time users (hide during onboarding) */}
+      <TranslationHintTip visible={showHintTip && !onboarding.isActive} onDismiss={dismissHint} />
+
+      {/* Onboarding tooltip for step 2: Click a word */}
+      {isClickWordStep && (
+        <OnboardingTooltip
+          step={OnboardingStep.CLICK_WORD}
+          visible={isClickWordStep}
+          onNext={onboarding.completeCurrentStep}
+          onSkip={onboarding.skipOnboarding}
+        />
+      )}
+
+      {/* Onboarding tooltip after vocabulary: Guide to finish story */}
+      {isAfterVocabularyStep && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-md w-[calc(100%-2rem)]">
+          <div className="bg-primary text-primary-foreground rounded-2xl px-5 py-4 shadow-2xl border-2 border-primary-foreground/20">
+            <div className="flex items-start gap-3 mb-3">
+              <icons.BookCheck className="h-5 w-5 mt-0.5 flex-shrink-0 opacity-90" />
+              <div className="flex-1">
+                <h3 className="text-base font-semibold leading-snug">{t('onboarding.finishStory.title')}</h3>
+              </div>
+              <button
+                onClick={onboarding.skipOnboarding}
+                className="flex-shrink-0 p-0.5 rounded-full hover:bg-primary-foreground/20 transition-colors"
+                aria-label="Close"
+              >
+                <icons.X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm font-medium leading-relaxed opacity-95 mb-4 ml-8">
+              {t('onboarding.finishStory.message')}
+            </p>
+            <div className="flex items-center justify-between gap-4 ml-8">
+              <span className="text-xs opacity-75 font-medium">{t('onboarding.progress', { current: '5', total: '5' })}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onboarding.skipOnboarding}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-primary-foreground/20 transition-colors"
+                >
+                  {t('onboarding.skip')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

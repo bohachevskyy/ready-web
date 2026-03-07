@@ -125,7 +125,39 @@
       "description": "How comfortable are you with English?",
       "levelProgress": "Level {level} of 5",
       "startLearning": "Start Learning"
-    }
+    },
+    "step0": {
+      "title": "Welcome to Your Reading Journey!",
+      "message": "Let's read your first story together"
+    },
+    "step0Fallback": {
+      "title": "Choose Your First Story",
+      "message": "Pick any topic that interests you to get started"
+    },
+    "step2": {
+      "title": "Discover New Words",
+      "message": "Tap any word to see its meaning"
+    },
+    "step3": {
+      "title": "Build Your Vocabulary",
+      "message": "Save words you want to remember"
+    },
+    "step4": {
+      "title": "Your Word Collection",
+      "message": "Access your saved words anytime"
+    },
+    "step5": {
+      "title": "Practice Makes Perfect",
+      "message": "Review words with spaced repetition"
+    },
+    "finishStory": {
+      "title": "Finish Your First Story",
+      "message": "Click 'Finish Reading' below and complete the quiz to return home"
+    },
+    "skip": "Skip Tour",
+    "next": "Next",
+    "gotIt": "Got it!",
+    "progress": "Step {current} of {total}"
   },
   "practice": {
     "loadingWords": "Loading words...",

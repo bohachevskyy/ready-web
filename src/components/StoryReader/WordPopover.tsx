@@ -5,6 +5,19 @@ import { SpeakerButton } from "../ui/speaker-button"
 import type { WordDetailsResponse } from "../../store/storiesSlice"
 import type { PopoverPosition } from "./types"
 import { useTranslation } from "../../i18n/useTranslation"
+import { OnboardingStep } from "../../hooks/useOnboarding"
+import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
+
+interface OnboardingControl {
+  currentStep: OnboardingStep
+  isActive: boolean
+  isCompleted: boolean
+  isDismissed: boolean
+  completeCurrentStep: () => void
+  skipOnboarding: () => void
+  resetOnboarding: () => void
+  isStepActive: (step: OnboardingStep) => boolean
+}
 
 interface WordPopoverProps {
   popoverRef: React.RefObject<HTMLDivElement | null>
@@ -13,6 +26,7 @@ interface WordPopoverProps {
   savedWords: Array<{ word: string }>
   onClose: () => void
   onAddWord: () => void
+  onboarding: OnboardingControl
 }
 
 export function WordPopover({
@@ -22,6 +36,7 @@ export function WordPopover({
   savedWords,
   onClose,
   onAddWord,
+  onboarding,
 }: WordPopoverProps) {
   const { t } = useTranslation()
 
@@ -30,6 +45,16 @@ export function WordPopover({
   const isWordInList = selectedWord
     ? savedWords.some(w => w.word.toLowerCase() === selectedWord.expression.toLowerCase())
     : false
+
+  const isAddWordStep = onboarding.isStepActive(OnboardingStep.ADD_WORD)
+
+  const handleAddWord = () => {
+    onAddWord()
+    // Complete onboarding step 3 when word is added
+    if (isAddWordStep) {
+      onboarding.completeCurrentStep()
+    }
+  }
 
   return (
     <div
@@ -95,7 +120,7 @@ export function WordPopover({
             {/* Add to list button */}
             <Button
               className="w-full gap-2 rounded-lg"
-              onClick={onAddWord}
+              onClick={handleAddWord}
               disabled={isWordInList}
             >
               <Plus className="h-4 w-4" />
@@ -104,6 +129,16 @@ export function WordPopover({
           </div>
         )}
       </div>
+
+      {/* Onboarding tooltip for step 3: Add word */}
+      {isAddWordStep && selectedWord && (
+        <OnboardingTooltip
+          step={OnboardingStep.ADD_WORD}
+          visible={isAddWordStep}
+          onNext={onboarding.completeCurrentStep}
+          onSkip={onboarding.skipOnboarding}
+        />
+      )}
     </div>
   )
 }

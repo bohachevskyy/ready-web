@@ -1,8 +1,22 @@
+import { useEffect } from "react"
 import { Button } from "../ui/button"
 import { X, BookOpen } from "lucide-react"
 import { VocabularyList } from "../VocabularyList"
 import type { SavedWord } from "../../types"
 import { useTranslation } from "../../i18n/useTranslation"
+import { OnboardingStep } from "../../hooks/useOnboarding"
+import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
+
+interface OnboardingControl {
+  currentStep: OnboardingStep
+  isActive: boolean
+  isCompleted: boolean
+  isDismissed: boolean
+  completeCurrentStep: () => void
+  skipOnboarding: () => void
+  resetOnboarding: () => void
+  isStepActive: (step: OnboardingStep) => boolean
+}
 
 interface VocabDrawerProps {
   isOpen: boolean
@@ -10,6 +24,7 @@ interface VocabDrawerProps {
   onOpen: () => void
   onClose: () => void
   onRemoveWord: (id: string) => void
+  onboarding: OnboardingControl
 }
 
 export function VocabDrawer({
@@ -18,8 +33,21 @@ export function VocabDrawer({
   onOpen,
   onClose,
   onRemoveWord,
+  onboarding,
 }: VocabDrawerProps) {
   const { t } = useTranslation()
+
+  const isViewVocabularyStep = onboarding.isStepActive(OnboardingStep.VIEW_VOCABULARY)
+
+  // Auto-complete step 4 after 5 seconds when words are added (mobile version)
+  useEffect(() => {
+    if (isViewVocabularyStep && savedWords.length > 0) {
+      const timer = setTimeout(() => {
+        onboarding.completeCurrentStep()
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [isViewVocabularyStep, savedWords.length, onboarding])
 
   return (
     <>
@@ -65,8 +93,18 @@ export function VocabDrawer({
               <X className="h-5 w-5" />
             </Button>
           </div>
-          <VocabularyList savedWords={savedWords} onRemoveWord={onRemoveWord} />
+          <VocabularyList savedWords={savedWords} onRemoveWord={onRemoveWord} onboarding={onboarding} />
         </div>
+      )}
+
+      {/* Onboarding tooltip for step 4: View vocabulary (mobile) */}
+      {isViewVocabularyStep && savedWords.length > 0 && (
+        <OnboardingTooltip
+          step={OnboardingStep.VIEW_VOCABULARY}
+          visible={isViewVocabularyStep}
+          onNext={onboarding.completeCurrentStep}
+          onSkip={onboarding.skipOnboarding}
+        />
       )}
     </>
   )

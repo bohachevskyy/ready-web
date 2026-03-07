@@ -14,6 +14,7 @@ import { OnboardingCheck } from './components/OnboardingCheck';
 import { useAuthMonitor } from './hooks/useAuthMonitor';
 import { useSentryUser } from './hooks/useSentryUser';
 import { useAnalyticsUser } from './hooks/useAnalyticsUser';
+import { useOnboarding, OnboardingStep } from './hooks/useOnboarding';
 import { I18nProvider } from './i18n/i18nContext';
 import { PageTitleProvider } from './contexts/PageTitleContext';
 import { ErrorFallback } from './components/ErrorFallback';
@@ -24,6 +25,7 @@ const SentryRoutes = Sentry.withSentryRouting(Routes);
 
 function ModeSelectionWithNavigation() {
   const navigate = useNavigate();
+  const onboarding = useOnboarding();
 
   const handleSelectMode = (mode: "read" | "practice") => {
     if (mode === "read") {
@@ -33,17 +35,22 @@ function ModeSelectionWithNavigation() {
     }
   };
 
-  return <ModeSelection onSelectMode={handleSelectMode} />;
+  return <ModeSelection onSelectMode={handleSelectMode} onboarding={onboarding} navigate={navigate} />;
 }
 
 function StoryCategoryWithNavigation() {
   const navigate = useNavigate();
+  const onboarding = useOnboarding();
 
   const handleSelectDomain = (domain: string) => {
     navigate(`/story/${domain}`);
+    // If user is on step 0 or 1 (welcome/auto-navigate), jump directly to step 2 (click word) when they manually select a story
+    if (onboarding.currentStep <= OnboardingStep.AUTO_NAVIGATE) {
+      onboarding.jumpToStep(OnboardingStep.CLICK_WORD);
+    }
   };
 
-  return <StoryCategorySelection onSelectDomain={handleSelectDomain} />;
+  return <StoryCategorySelection onSelectDomain={handleSelectDomain} onboarding={onboarding} />;
 }
 
 function AuthMonitor() {

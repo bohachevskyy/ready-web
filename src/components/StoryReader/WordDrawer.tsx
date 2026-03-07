@@ -3,6 +3,19 @@ import { X, Plus, Loader2 } from "lucide-react"
 import { SpeakerButton } from "../ui/speaker-button"
 import type { WordDetailsResponse } from "../../store/storiesSlice"
 import { useTranslation } from "../../i18n/useTranslation"
+import { OnboardingStep } from "../../hooks/useOnboarding"
+import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
+
+interface OnboardingControl {
+  currentStep: OnboardingStep
+  isActive: boolean
+  isCompleted: boolean
+  isDismissed: boolean
+  completeCurrentStep: () => void
+  skipOnboarding: () => void
+  resetOnboarding: () => void
+  isStepActive: (step: OnboardingStep) => boolean
+}
 
 interface WordDrawerProps {
   isOpen: boolean
@@ -10,6 +23,7 @@ interface WordDrawerProps {
   savedWords: Array<{ word: string }>
   onClose: () => void
   onAddWord: () => void
+  onboarding: OnboardingControl
 }
 
 export function WordDrawer({
@@ -18,6 +32,7 @@ export function WordDrawer({
   savedWords,
   onClose,
   onAddWord,
+  onboarding,
 }: WordDrawerProps) {
   const { t } = useTranslation()
 
@@ -26,6 +41,16 @@ export function WordDrawer({
   const isWordInList = selectedWord
     ? savedWords.some(w => w.word.toLowerCase() === selectedWord.expression.toLowerCase())
     : false
+
+  const isAddWordStep = onboarding.isStepActive(OnboardingStep.ADD_WORD)
+
+  const handleAddWord = () => {
+    onAddWord()
+    // Complete onboarding step 3 when word is added
+    if (isAddWordStep) {
+      onboarding.completeCurrentStep()
+    }
+  }
 
   return (
     <>
@@ -110,7 +135,7 @@ export function WordDrawer({
             {/* Add to vocabulary button */}
             <Button
               className="w-full gap-2 rounded-lg"
-              onClick={onAddWord}
+              onClick={handleAddWord}
               disabled={isWordInList}
             >
               <Plus className="h-4 w-4" />
@@ -119,6 +144,16 @@ export function WordDrawer({
           </div>
         )}
       </div>
+
+      {/* Onboarding tooltip for step 3: Add word */}
+      {isAddWordStep && selectedWord && (
+        <OnboardingTooltip
+          step={OnboardingStep.ADD_WORD}
+          visible={isAddWordStep}
+          onNext={onboarding.completeCurrentStep}
+          onSkip={onboarding.skipOnboarding}
+        />
+      )}
     </>
   )
 }

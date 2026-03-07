@@ -5,11 +5,24 @@ import { useStoryCategories } from "../hooks/useStoryCategories"
 import { useFavoriteDomains } from "../hooks/useFavoriteDomains"
 import { useDomainSearch } from "../hooks/useDomainSearch"
 import { Heart, Loader2, Search, icons } from "lucide-react"
+import { OnboardingStep } from "../hooks/useOnboarding"
 
 type StoryDomain = string
 
+interface OnboardingControl {
+  currentStep: OnboardingStep
+  isActive: boolean
+  isCompleted: boolean
+  isDismissed: boolean
+  completeCurrentStep: () => void
+  skipOnboarding: () => void
+  resetOnboarding: () => void
+  isStepActive: (step: OnboardingStep) => boolean
+}
+
 interface StoryCategorySelectionProps {
   onSelectDomain: (domain: StoryDomain) => void
+  onboarding: OnboardingControl
 }
 
 function DynamicIcon({ name, className }: { name: string; className?: string }) {
@@ -22,11 +35,14 @@ function DynamicIcon({ name, className }: { name: string; className?: string }) 
   return <IconComponent className={className} />
 }
 
-export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectionProps) {
+export function StoryCategorySelection({ onSelectDomain, onboarding }: StoryCategorySelectionProps) {
   const { t } = useTranslation()
   const { filteredCategories: allCategories, favoriteDomains: allFavorites, userFavoriteDomains: allUserFavorites, isLoading } = useStoryCategories()
   const { toggleFavoriteDomain, isFavorite } = useFavoriteDomains()
   const { searchQuery, setSearchQuery, filteredCategories, filteredFavoriteDomains: favoriteDomains, filteredUserFavoriteDomains: userFavoriteDomains } = useDomainSearch(allCategories, allFavorites, allUserFavorites)
+
+  // Show fallback onboarding tooltip if user ended up here during welcome/auto-navigate steps
+  const showFallbackOnboarding = onboarding.isActive && onboarding.currentStep <= OnboardingStep.AUTO_NAVIGATE
 
   const renderDomainCard = (domain: { id: string; name: string; title: string; description: string; icon: string }, forceFilledHeart = false) => {
     const favorite = forceFilledHeart || isFavorite(domain.id)
@@ -126,6 +142,41 @@ export function StoryCategorySelection({ onSelectDomain }: StoryCategorySelectio
           </div>
         )}
       </div>
+
+      {/* Fallback onboarding tooltip if auto-story generation failed */}
+      {showFallbackOnboarding && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-md w-[calc(100%-2rem)]">
+          <div className="bg-primary text-primary-foreground rounded-2xl px-5 py-4 shadow-2xl border-2 border-primary-foreground/20">
+            <div className="flex items-start gap-3 mb-3">
+              <Search className="h-5 w-5 mt-0.5 flex-shrink-0 opacity-90" />
+              <div className="flex-1">
+                <h3 className="text-base font-semibold leading-snug">{t('onboarding.step0Fallback.title')}</h3>
+              </div>
+              <button
+                onClick={onboarding.skipOnboarding}
+                className="flex-shrink-0 p-0.5 rounded-full hover:bg-primary-foreground/20 transition-colors"
+                aria-label="Close"
+              >
+                <icons.X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm font-medium leading-relaxed opacity-95 mb-4 ml-8">
+              {t('onboarding.step0Fallback.message')}
+            </p>
+            <div className="flex items-center justify-between gap-4 ml-8">
+              <span className="text-xs opacity-75 font-medium">{t('onboarding.progress', { current: '1', total: '5' })}</span>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={onboarding.skipOnboarding}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg hover:bg-primary-foreground/20 transition-colors"
+                >
+                  {t('onboarding.skip')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
