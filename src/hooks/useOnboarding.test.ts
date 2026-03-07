@@ -1,6 +1,11 @@
 import { renderHook, act } from '@testing-library/react'
 import { useOnboarding, OnboardingStep } from './useOnboarding'
 
+// Mock the analytics service to prevent async issues in tests
+jest.mock('../services/analyticsService', () => ({
+  logEvent: jest.fn()
+}))
+
 const STORAGE_KEY = 'readerly_onboarding_v1'
 
 describe('useOnboarding', () => {

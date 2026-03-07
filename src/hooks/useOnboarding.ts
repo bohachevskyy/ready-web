@@ -49,74 +49,93 @@ export function useOnboarding() {
     }
   }, [])
 
-  // Save state to localStorage whenever it changes
-  const saveState = useCallback((newState: OnboardingState) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
-      setState(newState)
-    } catch {
-      // If storage fails, still update state in memory
-      setState(newState)
-    }
-  }, [])
-
   // Complete the current step and advance to the next
   const completeCurrentStep = useCallback(() => {
-    if (state.isCompleted || state.isDismissed) {
-      return
-    }
+    setState(currentState => {
+      if (currentState.isCompleted || currentState.isDismissed) {
+        return currentState
+      }
 
-    // Track analytics event
-    logEvent('onboarding_step_completed', {
-      step: state.currentStep,
-      action: 'next'
-    })
-
-    const nextStep = state.currentStep + 1
-    if (nextStep >= OnboardingStep.COMPLETED) {
-      // Mark as completed
-      logEvent('onboarding_completed', {
+      // Track analytics event
+      logEvent('onboarding_step_completed', {
+        step: currentState.currentStep,
         action: 'next'
       })
-      saveState({
-        currentStep: OnboardingStep.COMPLETED,
-        isCompleted: true,
-        isDismissed: false,
-      })
-    } else {
-      // Move to next step
-      saveState({
-        ...state,
-        currentStep: nextStep,
-      })
-    }
-  }, [state, saveState])
+
+      const nextStep = currentState.currentStep + 1
+      if (nextStep >= OnboardingStep.COMPLETED) {
+        // Mark as completed
+        logEvent('onboarding_completed', {
+          action: 'next'
+        })
+        const newState = {
+          currentStep: OnboardingStep.COMPLETED,
+          isCompleted: true,
+          isDismissed: false,
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+        } catch {
+          // If storage fails, state is still updated in memory
+        }
+        return newState
+      } else {
+        // Move to next step
+        const newState = {
+          ...currentState,
+          currentStep: nextStep,
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+        } catch {
+          // If storage fails, state is still updated in memory
+        }
+        return newState
+      }
+    })
+  }, [])
 
   // Skip/dismiss the entire onboarding flow
   const skipOnboarding = useCallback(() => {
-    // Track analytics event
-    logEvent('onboarding_skipped', {
-      step: state.currentStep,
-      action: 'skip'
-    })
+    setState(currentState => {
+      // Track analytics event
+      logEvent('onboarding_skipped', {
+        step: currentState.currentStep,
+        action: 'skip'
+      })
 
-    saveState({
-      currentStep: state.currentStep,
-      isCompleted: false,
-      isDismissed: true,
+      const newState = {
+        currentStep: currentState.currentStep,
+        isCompleted: false,
+        isDismissed: true,
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+      } catch {
+        // If storage fails, state is still updated in memory
+      }
+      return newState
     })
-  }, [state.currentStep, saveState])
+  }, [])
 
   // Jump directly to a specific step (used when manually selecting story)
   const jumpToStep = useCallback((targetStep: OnboardingStep) => {
-    if (state.isCompleted || state.isDismissed) {
-      return
-    }
-    saveState({
-      ...state,
-      currentStep: targetStep,
+    setState(currentState => {
+      if (currentState.isCompleted || currentState.isDismissed) {
+        return currentState
+      }
+      const newState = {
+        ...currentState,
+        currentStep: targetStep,
+      }
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newState))
+      } catch {
+        // If storage fails, state is still updated in memory
+      }
+      return newState
     })
-  }, [state, saveState])
+  }, [])
 
   // Reset onboarding (for testing purposes)
   const resetOnboarding = useCallback(() => {
