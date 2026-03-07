@@ -115,7 +115,39 @@
       "description": "Qual é seu nível de conhecimento em inglês?",
       "levelProgress": "Nível {level} de 5",
       "startLearning": "Começar a Aprender"
-    }
+    },
+    "step0": {
+      "title": "Bem-vindo à Sua Jornada de Leitura!",
+      "message": "Vamos ler sua primeira história juntos"
+    },
+    "step0Fallback": {
+      "title": "Escolha Sua Primeira História",
+      "message": "Escolha qualquer tópico que lhe interesse para começar"
+    },
+    "step2": {
+      "title": "Descubra Novas Palavras",
+      "message": "Toque em qualquer palavra para ver seu significado"
+    },
+    "step3": {
+      "title": "Construa Seu Vocabulário",
+      "message": "Salve palavras que você quer lembrar"
+    },
+    "step4": {
+      "title": "Sua Coleção de Palavras",
+      "message": "Acesse suas palavras salvas a qualquer momento"
+    },
+    "step5": {
+      "title": "A Prática Leva à Perfeição",
+      "message": "Revise palavras com repetição espaçada"
+    },
+    "finishStory": {
+      "title": "Termine Sua Primeira História",
+      "message": "Clique em 'Terminar Leitura' abaixo e complete o quiz para voltar ao início. Depois pratique as palavras na seção Prática"
+    },
+    "skip": "Pular Tour",
+    "next": "Próximo",
+    "gotIt": "Entendi!",
+    "progress": "Passo {current} de {total}"
   },
   "practice": {
     "loadingWords": "Carregando palavras...",
