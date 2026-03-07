@@ -115,7 +115,39 @@
       "description": "¿Qué tan cómodo te sientes con el inglés?",
       "levelProgress": "Nivel {level} de 5",
       "startLearning": "Comenzar a aprender"
-    }
+    },
+    "step0": {
+      "title": "¡Bienvenido a Tu Viaje de Lectura!",
+      "message": "Leamos tu primera historia juntos"
+    },
+    "step0Fallback": {
+      "title": "Elige Tu Primera Historia",
+      "message": "Selecciona cualquier tema que te interese para comenzar"
+    },
+    "step2": {
+      "title": "Descubre Nuevas Palabras",
+      "message": "Toca cualquier palabra para ver su significado"
+    },
+    "step3": {
+      "title": "Construye Tu Vocabulario",
+      "message": "Guarda las palabras que quieres recordar"
+    },
+    "step4": {
+      "title": "Tu Colección de Palabras",
+      "message": "Accede a tus palabras guardadas en cualquier momento"
+    },
+    "step5": {
+      "title": "La Práctica Hace al Maestro",
+      "message": "Repasa palabras con repetición espaciada"
+    },
+    "finishStory": {
+      "title": "Termina Tu Primera Historia",
+      "message": "Haz clic en 'Terminar Lectura' abajo y completa el cuestionario para volver al inicio. Luego practica las palabras en la sección de Práctica"
+    },
+    "skip": "Saltar Tour",
+    "next": "Siguiente",
+    "gotIt": "¡Entendido!",
+    "progress": "Paso {current} de {total}"
   },
   "practice": {
     "loadingWords": "Cargando palabras...",
