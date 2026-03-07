@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
+import { logEvent } from "../services/analyticsService"
 
 const STORAGE_KEY = "readerly_onboarding_v1"
 
@@ -65,9 +66,18 @@ export function useOnboarding() {
       return
     }
 
+    // Track analytics event
+    logEvent('onboarding_step_completed', {
+      step: state.currentStep,
+      action: 'next'
+    })
+
     const nextStep = state.currentStep + 1
     if (nextStep >= OnboardingStep.COMPLETED) {
       // Mark as completed
+      logEvent('onboarding_completed', {
+        action: 'next'
+      })
       saveState({
         currentStep: OnboardingStep.COMPLETED,
         isCompleted: true,
@@ -84,6 +94,12 @@ export function useOnboarding() {
 
   // Skip/dismiss the entire onboarding flow
   const skipOnboarding = useCallback(() => {
+    // Track analytics event
+    logEvent('onboarding_skipped', {
+      step: state.currentStep,
+      action: 'skip'
+    })
+
     saveState({
       currentStep: state.currentStep,
       isCompleted: false,

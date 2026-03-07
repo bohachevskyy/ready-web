@@ -1,4 +1,4 @@
-import { setUserId as firebaseSetUserId, setUserProperties as firebaseSetUserProperties } from 'firebase/analytics';
+import { setUserId as firebaseSetUserId, setUserProperties as firebaseSetUserProperties, logEvent as firebaseLogEvent } from 'firebase/analytics';
 import { analyticsPromise } from '../config/firebase';
 
 /**
@@ -22,5 +22,20 @@ export const setUserProperties = async (
   const analytics = await analyticsPromise;
   if (analytics) {
     firebaseSetUserProperties(analytics, properties);
+  }
+};
+
+/**
+ * Log a custom event to Firebase Analytics
+ * @param eventName - The name of the event
+ * @param eventParams - Optional parameters for the event
+ */
+export const logEvent = async (
+  eventName: string,
+  eventParams?: Record<string, any>
+): Promise<void> => {
+  const analytics = await analyticsPromise;
+  if (analytics) {
+    firebaseLogEvent(analytics, eventName, eventParams);
   }
 };

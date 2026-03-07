@@ -1,4 +1,3 @@
-import { useEffect } from "react"
 import { Button } from "../ui/button"
 import { X, BookOpen } from "lucide-react"
 import { VocabularyList } from "../VocabularyList"
@@ -38,16 +37,6 @@ export function VocabDrawer({
   const { t } = useTranslation()
 
   const isViewVocabularyStep = onboarding.isStepActive(OnboardingStep.VIEW_VOCABULARY)
-
-  // Auto-complete step 4 after 5 seconds when words are added (mobile version)
-  useEffect(() => {
-    if (isViewVocabularyStep && savedWords.length > 0) {
-      const timer = setTimeout(() => {
-        onboarding.completeCurrentStep()
-      }, 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [isViewVocabularyStep, savedWords.length, onboarding])
 
   return (
     <>
