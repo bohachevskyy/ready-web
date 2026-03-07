@@ -172,6 +172,12 @@ export function StoryCategorySelection({ onSelectDomain, onboarding }: StoryCate
                 >
                   {t('onboarding.skip')}
                 </button>
+                <button
+                  onClick={onboarding.completeCurrentStep}
+                  className="px-4 py-1.5 text-xs font-semibold rounded-lg bg-primary-foreground/90 text-primary hover:bg-primary-foreground transition-colors shadow-sm"
+                >
+                  {t('onboarding.next')}
+                </button>
               </div>
             </div>
           </div>
