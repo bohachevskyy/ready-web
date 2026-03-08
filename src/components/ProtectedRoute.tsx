@@ -10,7 +10,8 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const location = useLocation();
 
   if (!token) {
-    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
+    const currentPath = location.pathname + location.search;
+    return <Navigate to={`/login?redirect=${encodeURIComponent(currentPath)}`} replace />;
   }
 
   return <>{children}</>;

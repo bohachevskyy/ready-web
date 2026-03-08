@@ -21,7 +21,9 @@ export function OnboardingCheck({ children }: OnboardingCheckProps) {
   )
 
   if (needsOnboarding) {
-    return <Navigate to="/onboarding" replace state={{ from: location.pathname + location.search }} />
+    const currentPath = location.pathname + location.search
+    const onboardingUrl = `/onboarding?redirect=${encodeURIComponent(currentPath)}`
+    return <Navigate to={onboardingUrl} replace />
   }
 
   return <>{children}</>

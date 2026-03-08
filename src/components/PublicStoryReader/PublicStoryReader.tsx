@@ -85,7 +85,7 @@ export function PublicStoryReader() {
             </p>
           </div>
           <Button
-            onClick={() => navigate('/login', { state: { from: location.pathname + location.search } })}
+            onClick={() => navigate(`/login?redirect=${encodeURIComponent(location.pathname + location.search)}`)}
             size="lg"
             className="w-full"
           >
