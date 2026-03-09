@@ -44,6 +44,10 @@ jest.mock('../../hooks/useSpeechSynthesis', () => ({
   useSpeechSynthesis: () => ({ speak: jest.fn(), supported: true }),
 }))
 
+jest.mock('../../services/analyticsService', () => ({
+  logEvent: jest.fn(),
+}))
+
 const mockSaveWords = jest.fn()
 jest.mock('../../store/storiesSlice', () => {
   const actual = jest.requireActual('../../store/storiesSlice')
@@ -61,6 +65,9 @@ jest.mock('../../store/storiesSlice', () => {
 // Import modules after mocks
 import { useNavigate, useParams } from 'react-router-dom'
 import { useStoryReader } from './useStoryReader'
+import { logEvent } from '../../services/analyticsService'
+
+const mockLogEvent = logEvent as jest.Mock
 
 const mockUseNavigate = useNavigate as jest.Mock
 const mockUseParams = useParams as jest.Mock
@@ -68,6 +75,7 @@ const mockUseParams = useParams as jest.Mock
 describe('useStoryReader', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockLogEvent.mockClear()
     mockSaveWords.mockClear()
     mockUseNavigate.mockReturnValue(mockNavigate)
     mockUseParams.mockReturnValue({ param: 'test-domain' })
@@ -254,6 +262,51 @@ describe('useStoryReader', () => {
       })
 
       expect(mockSaveWords).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('story_loading_abandoned event', () => {
+    it('should emit story_loading_abandoned when unmounted while loading', () => {
+      mockStoriesState = {
+        ...mockStoriesState,
+        isGeneratingStory: true,
+        isFetchingStory: false,
+      }
+
+      const { unmount } = renderHook(() => useStoryReader())
+
+      unmount()
+
+      expect(mockLogEvent).toHaveBeenCalledWith('story_loading_abandoned', { domain: 'history' })
+    })
+
+    it('should emit story_loading_abandoned when unmounted while fetching', () => {
+      mockStoriesState = {
+        ...mockStoriesState,
+        isGeneratingStory: false,
+        isFetchingStory: true,
+      }
+
+      const { unmount } = renderHook(() => useStoryReader())
+
+      unmount()
+
+      expect(mockLogEvent).toHaveBeenCalledWith('story_loading_abandoned', { domain: 'history' })
+    })
+
+    it('should NOT emit story_loading_abandoned when unmounted after loading completes', () => {
+      mockStoriesState = {
+        ...mockStoriesState,
+        isGeneratingStory: false,
+        isFetchingStory: false,
+      }
+
+      const { unmount } = renderHook(() => useStoryReader())
+
+      mockLogEvent.mockClear()
+      unmount()
+
+      expect(mockLogEvent).not.toHaveBeenCalledWith('story_loading_abandoned', expect.anything())
     })
   })
 })

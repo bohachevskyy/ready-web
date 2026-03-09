@@ -114,6 +114,19 @@ export function useStoryReader() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [param])
 
+  // Track loading state in a ref for cleanup
+  const isLoadingRef = useRef(false)
+  isLoadingRef.current = isGeneratingStory || isFetchingStory
+
+  // Emit event when user leaves the page while story is still loading
+  useEffect(() => {
+    return () => {
+      if (isLoadingRef.current) {
+        logEvent('story_loading_abandoned', { domain: domain || undefined })
+      }
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Auto-play pronunciation when word popup is shown
   useEffect(() => {
     if (autoPlayEnabled && speechSupported && selectedWord) {

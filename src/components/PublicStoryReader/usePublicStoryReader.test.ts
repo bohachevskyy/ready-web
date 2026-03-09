@@ -36,14 +36,22 @@ jest.mock('../../store/storySlice', () => ({
   setTranslations: (translations: Record<string, string>) => ({ type: 'story/setTranslations', payload: translations }),
 }))
 
+jest.mock('../../services/analyticsService', () => ({
+  logEvent: jest.fn(),
+}))
+
 import { useParams } from 'react-router-dom'
 import { usePublicStoryReader } from './usePublicStoryReader'
+import { logEvent } from '../../services/analyticsService'
+
+const mockLogEvent = logEvent as jest.Mock
 
 const mockUseParams = useParams as jest.Mock
 
 describe('usePublicStoryReader', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    mockLogEvent.mockClear()
     mockUseParams.mockReturnValue({ param: 'test-story-id' })
     mockStoryState = { id: '', text: '', translations: {} }
     mockStoriesState = {
@@ -146,6 +154,29 @@ describe('usePublicStoryReader', () => {
     })
     expect(result.current.isWordDrawerOpen).toBe(false)
     expect(result.current.selectedWord).toBeNull()
+  })
+
+  describe('story_loading_abandoned event', () => {
+    it('should emit story_loading_abandoned when unmounted while fetching', () => {
+      mockStoriesState = { isFetchingStory: true, error: null }
+
+      const { unmount } = renderHook(() => usePublicStoryReader())
+
+      unmount()
+
+      expect(mockLogEvent).toHaveBeenCalledWith('story_loading_abandoned', { public: true })
+    })
+
+    it('should NOT emit story_loading_abandoned when unmounted after loading completes', () => {
+      mockStoriesState = { isFetchingStory: false, error: null }
+
+      const { unmount } = renderHook(() => usePublicStoryReader())
+
+      mockLogEvent.mockClear()
+      unmount()
+
+      expect(mockLogEvent).not.toHaveBeenCalledWith('story_loading_abandoned', expect.anything())
+    })
   })
 
   it('should open signup modal from drawer', () => {
