@@ -453,8 +453,16 @@
     "questionsErrorDescription": "Не вдалося завантажити запитання вікторини. Ви можете пропустити вікторину та завершити історію.",
     "skipQuestions": "Пропустити запитання",
     "quizTime": "Час вікторини",
+    "skip": "Пропустити історію",
+    "complete": "Завершити",
     "finish": "Завершити читання",
     "loadingQuestions": "Завантаження запитань...",
+    "completion": {
+      "wordsAdded": "Ви додали {count} слів",
+      "feedbackQuestion": "Хочете бачити більше такого контенту?",
+      "nextStory": "Наступна історія",
+      "seeMoreCategories": "Переглянути більше категорій"
+    },
     "completionBanner": {
       "title": "Ви вже завершили цю історію",
       "completedOn": "Завершено",

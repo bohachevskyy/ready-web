@@ -142,7 +142,7 @@
     },
     "finishStory": {
       "title": "Termina Tu Primera Historia",
-      "message": "Haz clic en 'Terminar Lectura' abajo y completa el cuestionario para volver al inicio. Luego practica las palabras en la sección de Práctica"
+      "message": "Haz clic en 'Completar' abajo para terminar de leer. Luego practica las palabras en la sección de Práctica"
     },
     "skip": "Saltar Tour",
     "next": "Siguiente",
@@ -485,8 +485,16 @@
     "questionsErrorDescription": "No se pudieron cargar las preguntas del cuestionario. Puedes saltar el cuestionario y completar la historia.",
     "skipQuestions": "Saltar preguntas",
     "quizTime": "Tiempo del quiz",
+    "skip": "Omitir historia",
+    "complete": "Completar",
     "finish": "Terminar lectura",
     "loadingQuestions": "Cargando preguntas...",
+    "completion": {
+      "wordsAdded": "Agregaste {count} palabras",
+      "feedbackQuestion": "¿Quieres ver más contenido como este?",
+      "nextStory": "Siguiente historia",
+      "seeMoreCategories": "Ver más categorías"
+    },
     "completionBanner": {
       "title": "Ya has completado esta historia",
       "completedOn": "Completado el",

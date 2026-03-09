@@ -141,7 +141,7 @@
     },
     "finishStory": {
       "title": "最初のストーリーを完了",
-      "message": "下の「読み終わる」をクリックしてクイズを完了し、ホームに戻ります。その後、練習セクションで単語を練習しましょう"
+      "message": "下の「完了」をクリックして読み終えましょう。その後、練習セクションで単語を練習しましょう"
     },
     "skip": "ツアーをスキップ",
     "next": "次へ",
@@ -484,8 +484,16 @@
     "questionsErrorDescription": "クイズの質問を読み込めませんでした。クイズをスキップしてストーリーを完了できます。",
     "skipQuestions": "質問をスキップ",
     "quizTime": "クイズの時間",
+    "skip": "ストーリーをスキップ",
+    "complete": "完了",
     "finish": "読み終わる",
     "loadingQuestions": "質問を読み込み中...",
+    "completion": {
+      "wordsAdded": "{count}個の単語を追加しました",
+      "feedbackQuestion": "このようなコンテンツをもっと見たいですか？",
+      "nextStory": "次のストーリー",
+      "seeMoreCategories": "もっとカテゴリーを見る"
+    },
     "translationHint": "単語をタップすると翻訳が表示され、単語帳に追加できます！"
   },
   "publicStory": {

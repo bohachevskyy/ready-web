@@ -1,9 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from "react"
-import { Card } from "../ui/card"
-import { Button } from "../ui/button"
-import { Loader2, icons } from "lucide-react"
+import { icons } from "lucide-react"
 import { VocabularyList } from "../VocabularyList"
-import { QuizView } from "../QuizView"
 import { StoryLoading } from "../StoryLoading"
 import { Toast } from "../ui/toast"
 import { useStoryReader } from "./useStoryReader"
@@ -12,6 +9,8 @@ import { WordPopover } from "./WordPopover"
 import { WordDrawer } from "./WordDrawer"
 import { VocabDrawer } from "./VocabDrawer"
 import { CompletionBanner } from "./CompletionBanner"
+import { StoryBottomBar } from "./StoryBottomBar"
+import { StoryCompletionView } from "./StoryCompletionView"
 import { ReadingProgress } from "../ReadingProgress"
 import { useTranslation } from "../../i18n/useTranslation"
 import { usePageTitle } from "../../contexts/PageTitleContext"
@@ -33,26 +32,25 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
     savedWords,
     selectedWord,
     popoverPosition,
-    questions,
     likeStatus,
-    feedbackSubmitted,
     isGeneratingStory,
     isFetchingStory,
-    isLoadingQuestions,
+    isSubmittingFeedback,
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
     saveWordError,
     popoverRef,
     readerStatus,
+    wordCount,
 
     // Handlers
     handleWordClick,
-    handleFinish,
     handleComplete,
     handleSkip,
+    handleNextStory,
+    handleSeeMoreCategories,
     handleLikeFeedback,
-    handleAttempt,
     handleRemoveWord,
     addWordToList,
     addWordToListAndCloseDrawer,
@@ -94,9 +92,9 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
     return () => el.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
-  // Scroll to top when transitioning to questions view
+  // Scroll to top when transitioning to completion view
   useEffect(() => {
-    if (view === 'questions' && scrollContainerRef.current) {
+    if (view === 'completion' && scrollContainerRef.current) {
       scrollContainerRef.current.scrollTo({ top: 0, behavior: 'auto' })
     }
   }, [view])
@@ -108,7 +106,7 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
   // Onboarding step 2: Click a word
   const isClickWordStep = onboarding.isStepActive(OnboardingStep.CLICK_WORD)
 
-  // Onboarding step 5: After vocabulary viewed, guide user to finish story
+  // Onboarding step 5: After vocabulary viewed, guide user to complete story
   const isAfterVocabularyStep = onboarding.isActive && onboarding.currentStep === OnboardingStep.PRACTICE_WORDS && view === 'story'
 
   // Advance from step 2 (CLICK_WORD) to step 3 (ADD_WORD) when word details appear
@@ -130,21 +128,13 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
         {/* Reading progress bar */}
         {view === 'story' && <ReadingProgress progress={scrollProgress} />}
 
-        <div className="max-w-prose w-full mx-auto px-6 sm:px-8 pt-10 pb-16">
+        <div className="max-w-prose w-full mx-auto px-6 sm:px-8 pt-10 pb-24">
           {view === 'story' && storyTitle && (
             <header className="mb-10">
               <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground tracking-tight">
                 {storyTitle}
               </h1>
               <div className="mt-4 h-px bg-border/60 w-16" />
-            </header>
-          )}
-
-          {view === 'questions' && (
-            <header className="mb-10">
-              <h1 className="text-2xl font-semibold text-foreground">
-                {t('storyReader.quizTime')}
-              </h1>
             </header>
           )}
 
@@ -163,41 +153,26 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
             />
           )}
 
-          {view === 'questions' && (
-            <Card className="p-8 bg-card shadow-sm">
-              <QuizView
-                questions={questions}
-                isLoading={isLoadingQuestions}
-                onComplete={handleComplete}
-                onSkip={handleSkip}
-                onLikeFeedback={handleLikeFeedback}
-                onAttempt={handleAttempt}
-                likeStatus={likeStatus}
-                feedbackSubmitted={feedbackSubmitted}
-              />
-            </Card>
-          )}
-
-          {view === 'story' && !storyError && !isCompleted && (
-            <div className="flex justify-center mt-12 mb-8">
-              <Button
-                onClick={handleFinish}
-                size="lg"
-                className="px-10 py-3 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-base font-medium shadow-sm transition-all hover:shadow-md"
-                disabled={isLoadingQuestions}
-              >
-                {isLoadingQuestions ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t('storyReader.loadingQuestions')}
-                  </>
-                ) : (
-                  t('storyReader.finish')
-                )}
-              </Button>
-            </div>
+          {view === 'completion' && (
+            <StoryCompletionView
+              wordCount={wordCount}
+              likeStatus={likeStatus}
+              onLikeFeedback={handleLikeFeedback}
+              onNextStory={handleNextStory}
+              onSeeMoreCategories={handleSeeMoreCategories}
+              isSubmitting={isSubmittingFeedback}
+            />
           )}
         </div>
+
+        {/* Sticky bottom bar */}
+        {view === 'story' && !storyError && !isCompleted && (
+          <StoryBottomBar
+            onSkip={handleSkip}
+            onComplete={handleComplete}
+            isSubmitting={isSubmittingFeedback}
+          />
+        )}
       </div>
 
       {/* Translation popover (desktop) */}

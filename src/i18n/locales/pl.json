@@ -453,8 +453,16 @@
     "questionsErrorDescription": "Nie udało się załadować pytań quizu. Możesz pominąć quiz i ukończyć historię.",
     "skipQuestions": "Pomiń pytania",
     "quizTime": "Czas na quiz",
+    "skip": "Pomiń historię",
+    "complete": "Zakończ",
     "finish": "Zakończ czytanie",
     "loadingQuestions": "Ładowanie pytań...",
+    "completion": {
+      "wordsAdded": "Dodałeś {count} słów",
+      "feedbackQuestion": "Chcesz zobaczyć więcej takiej treści?",
+      "nextStory": "Następna historia",
+      "seeMoreCategories": "Zobacz więcej kategorii"
+    },
     "completionBanner": {
       "title": "Ukończyłeś już tę historię",
       "completedOn": "Ukończono",
