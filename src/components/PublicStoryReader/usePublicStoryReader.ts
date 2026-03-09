@@ -4,6 +4,7 @@ import { fetchPublicStoryById } from "../../store/storiesSlice"
 import { setStoryId, setStoryText, setTranslations } from "../../store/storySlice"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import { useTranslation } from "../../i18n/useTranslation"
+import { logEvent } from "../../services/analyticsService"
 
 export function usePublicStoryReader() {
   const { param } = useParams<{ param?: string }>()
@@ -17,6 +18,19 @@ export function usePublicStoryReader() {
   const [isWordDrawerOpen, setIsWordDrawerOpen] = useState(false)
   const [selectedWord, setSelectedWord] = useState<string | null>(null)
   const hasFetchedStory = useRef(false)
+
+  // Track loading state in a ref for cleanup
+  const isLoadingRef = useRef(false)
+  isLoadingRef.current = isFetchingStory
+
+  // Emit event when user leaves the page while story is still loading
+  useEffect(() => {
+    return () => {
+      if (isLoadingRef.current) {
+        logEvent('story_loading_abandoned', { public: true })
+      }
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Fetch story on mount (no auth)
   useEffect(() => {
