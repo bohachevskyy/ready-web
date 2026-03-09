@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { addWord, removeWord, clearAllWords } from "../../store/vocabularySlice"
-import { setStoryId, setStoryText, setStoryTitle, setTranslations } from "../../store/storySlice"
-import { generateStory, fetchStoryById, getQuestions, submitFeedback, getWordDetails, saveWords, type Question, type WordDetailsResponse } from "../../store/storiesSlice"
+import { setStoryId, setStoryText, setStoryTitle, setTranslations, setStoryDomain, clearStory } from "../../store/storySlice"
+import { generateStory, fetchStoryById, submitFeedback, getWordDetails, saveWords, type WordDetailsResponse } from "../../store/storiesSlice"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import type { SavedWord } from "../../types"
 import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis"
 import { useTranslation } from "../../i18n/useTranslation"
 import type { PopoverPosition } from "./types"
-import { incrementAttempt, buildQuestionAttempts } from "../../utils/attemptTracking"
 
 // Helper function to check if a string is a UUID
 const isUUID = (str: string): boolean => {
@@ -29,9 +28,10 @@ export function useStoryReader() {
   // Redux Thunk selectors
   const isGeneratingStory = useAppSelector((state) => state.stories.isGeneratingStory)
   const isFetchingStory = useAppSelector((state) => state.stories.isFetchingStory)
-  const isLoadingQuestions = useAppSelector((state) => state.stories.isLoadingQuestions)
+  const isSubmittingFeedback = useAppSelector((state) => state.stories.isSubmittingFeedback)
   const storyError = useAppSelector((state) => state.stories.error)
   const readerStatus = useAppSelector((state) => state.stories.readerStatus)
+  const domain = useAppSelector((state) => state.story.domain)
 
   // Speech synthesis for word pronunciation
   const { speak, supported: speechSupported } = useSpeechSynthesis()
@@ -40,20 +40,14 @@ export function useStoryReader() {
   const [selectedWord, setSelectedWord] = useState<WordDetailsResponse | null>(null)
   const [popoverPosition, setPopoverPosition] = useState<PopoverPosition | null>(null)
 
-  // Track if story has been fetched to prevent duplicate requests
-  const hasFetchedStory = useRef(false)
-
   // Track session start time for feedback
   const sessionStartTime = useRef<number | null>(null)
 
   // Ref for the popover element to detect outside clicks
   const popoverRef = useRef<HTMLDivElement>(null)
 
-  // Questions state
-  const [view, setView] = useState<'story' | 'questions'>('story')
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [attemptCounts, setAttemptCounts] = useState<Record<string, number>>({})
-  const [feedbackSubmitted] = useState(false)
+  // View and feedback state
+  const [view, setView] = useState<'story' | 'completion'>('story')
   const [likeStatus, setLikeStatus] = useState<"like" | "dislike" | null>(null)
   const [isVocabDrawerOpen, setIsVocabDrawerOpen] = useState<boolean>(false)
   const [isWordDrawerOpen, setIsWordDrawerOpen] = useState<boolean>(false)
@@ -61,28 +55,36 @@ export function useStoryReader() {
   const [saveWordError, setSaveWordError] = useState<string | null>(null)
   const clickedWordRef = useRef<HTMLElement | null>(null)
 
-  // Determine route mode based on param type
-  const isViewMode = param ? isUUID(param) : false
-  const isGenerateMode = param ? !isUUID(param) : false
+  // Track which param was already fetched to avoid double-loads
+  const fetchedParamRef = useRef<string | null>(null)
 
-  // Fetch or generate story on component mount
+  // Fetch or generate story on mount or when param changes
   useEffect(() => {
-    if (hasFetchedStory.current) return
+    if (!param || fetchedParamRef.current === param) return
+
+    const viewMode = isUUID(param)
+    const generateMode = !viewMode
+
+    // Reset view state when navigating to a new story (not first mount)
+    if (fetchedParamRef.current !== null) {
+      setView('story')
+      setLikeStatus(null)
+    }
+
+    fetchedParamRef.current = param
 
     const loadStory = async () => {
-      hasFetchedStory.current = true
       sessionStartTime.current = Date.now()
 
       try {
-        if (isViewMode && param) {
-          // UUID Flow: Fetch existing story by ID
+        if (viewMode) {
           const result = await dispatch(fetchStoryById(param)).unwrap()
           dispatch(setStoryId(result.id))
           dispatch(setStoryText(result.story))
           dispatch(setStoryTitle(result.title))
           dispatch(setTranslations(result.translations))
-        } else if (isGenerateMode && param) {
-          // Domain Flow: Generate new story, then redirect
+        } else if (generateMode) {
+          dispatch(setStoryDomain(param))
           const result = await dispatch(generateStory({
             level: 1,
             domain: param
@@ -93,12 +95,12 @@ export function useStoryReader() {
           dispatch(setStoryTitle(result.title))
           dispatch(setTranslations(result.translations))
 
-          // Redirect to UUID-based URL (without /view)
+          // Mark the new UUID as already fetched before redirecting
+          fetchedParamRef.current = result.id
           navigate(`/story/${result.id}`, { replace: true })
         }
       } catch (err) {
         console.error('Failed to load story:', err)
-        // More specific error messages
         if (err instanceof Error && err.message === 'Story not found') {
           dispatch(setStoryText(t('storyReader.storyNotFound')))
         } else {
@@ -108,7 +110,8 @@ export function useStoryReader() {
     }
 
     loadStory()
-  }, [dispatch, param, isViewMode, isGenerateMode, navigate, t])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [param])
 
   // Auto-play pronunciation when word popup is shown
   useEffect(() => {
@@ -153,83 +156,16 @@ export function useStoryReader() {
     }
   }, [popoverPosition])
 
-  const handleFinish = useCallback(async () => {
-    if (!storyId) return
-
-    try {
-      const result = await dispatch(getQuestions(storyId)).unwrap()
-      setQuestions(result.questions)
-      setView('questions')
-    } catch (err) {
-      console.error('Failed to fetch questions:', err)
-      // Automatically skip when questions fail - submit feedback and navigate
-      try {
-        await dispatch(submitFeedback({
-          storyId,
-          feedback: {
-            start_time: sessionStartTime.current
-              ? new Date(sessionStartTime.current).toISOString()
-              : new Date().toISOString(),
-            end_time: new Date().toISOString(),
-            is_skipped: true,
-            question_attempts: [],
-            is_liked: likeStatus === "like",
-            is_disliked: likeStatus === "dislike",
-            feedback_text: "Questions failed to load - skipped"
-          }
-        })).unwrap()
-
-        dispatch(clearAllWords())
-        navigate('/')
-      } catch (skipErr) {
-        console.error('Failed to submit feedback:', skipErr)
-        navigate('/')
-      }
-    }
-  }, [dispatch, storyId, likeStatus, navigate])
-
-  const handleComplete = useCallback(async () => {
-    if (!storyId) return
-
-    try {
-      await dispatch(submitFeedback({
-        storyId,
-        feedback: {
-          start_time: sessionStartTime.current
-            ? new Date(sessionStartTime.current).toISOString()
-            : new Date().toISOString(),
-          end_time: new Date().toISOString(),
-          is_skipped: false,
-          question_attempts: buildQuestionAttempts(questions, attemptCounts),
-          is_liked: likeStatus === "like",
-          is_disliked: likeStatus === "dislike",
-          feedback_text: likeStatus === "like" ? "Story liked" : likeStatus === "dislike" ? "Story disliked" : "Story completed"
-        }
-      })).unwrap()
-
-      // Clear vocabulary list after successful submission
-      dispatch(clearAllWords())
-
-      // Redirect to main page
-      navigate('/')
-    } catch (err) {
-      console.error('Failed to submit feedback:', err)
-      // Still redirect even if feedback fails
-      navigate('/')
-    }
-  }, [dispatch, storyId, questions, attemptCounts, likeStatus, navigate])
+  const handleComplete = useCallback(() => {
+    setView('completion')
+  }, [])
 
   const handleLikeFeedback = useCallback((status: "like" | "dislike") => {
-    // Toggle status
     const newStatus = likeStatus === status ? null : status
     setLikeStatus(newStatus)
   }, [likeStatus])
 
-  const handleAttempt = useCallback((questionId: string) => {
-    setAttemptCounts(prev => incrementAttempt(prev, questionId))
-  }, [])
-
-  const handleSkip = useCallback(async () => {
+  const submitFeedbackAndCleanup = useCallback(async (isSkipped: boolean) => {
     if (!storyId) return
 
     try {
@@ -240,25 +176,45 @@ export function useStoryReader() {
             ? new Date(sessionStartTime.current).toISOString()
             : new Date().toISOString(),
           end_time: new Date().toISOString(),
-          is_skipped: true,
-          question_attempts: buildQuestionAttempts(questions, attemptCounts),
+          is_skipped: isSkipped,
+          question_attempts: [],
           is_liked: likeStatus === "like",
           is_disliked: likeStatus === "dislike",
-          feedback_text: "Story skipped"
+          feedback_text: isSkipped ? "Story skipped" : likeStatus === "like" ? "Story liked" : likeStatus === "dislike" ? "Story disliked" : "Story completed"
         }
       })).unwrap()
-
-      // Clear vocabulary list after successful submission
-      dispatch(clearAllWords())
-
-      // Redirect to main page
-      navigate('/')
     } catch (err) {
       console.error('Failed to submit feedback:', err)
-      // Still redirect even if feedback fails
+    }
+
+    dispatch(clearAllWords())
+    dispatch(clearStory())
+  }, [dispatch, storyId, likeStatus])
+
+  const handleSkip = useCallback(async () => {
+    const currentDomain = domain
+    await submitFeedbackAndCleanup(true)
+    if (currentDomain) {
+      navigate(`/story/${currentDomain}`, { replace: true })
+    } else {
       navigate('/')
     }
-  }, [dispatch, storyId, questions, attemptCounts, likeStatus, navigate])
+  }, [submitFeedbackAndCleanup, domain, navigate])
+
+  const handleNextStory = useCallback(async () => {
+    const currentDomain = domain
+    await submitFeedbackAndCleanup(false)
+    if (currentDomain) {
+      navigate(`/story/${currentDomain}`, { replace: true })
+    } else {
+      navigate('/')
+    }
+  }, [submitFeedbackAndCleanup, domain, navigate])
+
+  const handleSeeMoreCategories = useCallback(async () => {
+    await submitFeedbackAndCleanup(false)
+    navigate('/story/category')
+  }, [submitFeedbackAndCleanup, navigate])
 
   const scrollWordIntoView = useCallback((wordElement: HTMLElement) => {
     // Wait for drawer animation to start
@@ -477,26 +433,25 @@ export function useStoryReader() {
     savedWords,
     selectedWord,
     popoverPosition,
-    questions,
     likeStatus,
-    feedbackSubmitted,
     isGeneratingStory,
     isFetchingStory,
-    isLoadingQuestions,
+    isSubmittingFeedback,
     isVocabDrawerOpen,
     isWordDrawerOpen,
     translationError,
     saveWordError,
     popoverRef,
     readerStatus,
+    wordCount: savedWords.length,
 
     // Handlers
     handleWordClick,
-    handleFinish,
     handleComplete,
     handleSkip,
+    handleNextStory,
+    handleSeeMoreCategories,
     handleLikeFeedback,
-    handleAttempt,
     handleRemoveWord,
     addWordToList,
     addWordToListAndCloseDrawer,

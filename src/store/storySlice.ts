@@ -5,6 +5,7 @@ interface StoryState {
   text: string
   title: string
   translations: Record<string, string>
+  domain: string
 }
 
 const initialState: StoryState = {
@@ -12,6 +13,7 @@ const initialState: StoryState = {
   text: '',
   title: '',
   translations: {},
+  domain: '',
 }
 
 export const storySlice = createSlice({
@@ -30,15 +32,19 @@ export const storySlice = createSlice({
     setTranslations: (state, action: PayloadAction<Record<string, string>>) => {
       state.translations = action.payload
     },
+    setStoryDomain: (state, action: PayloadAction<string>) => {
+      state.domain = action.payload
+    },
     clearStory: (state) => {
       state.id = ''
       state.text = ''
       state.title = ''
       state.translations = {}
+      state.domain = ''
     },
   },
 })
 
-export const { setStoryId, setStoryText, setStoryTitle, setTranslations, clearStory } = storySlice.actions
+export const { setStoryId, setStoryText, setStoryTitle, setTranslations, setStoryDomain, clearStory } = storySlice.actions
 
 export default storySlice.reducer

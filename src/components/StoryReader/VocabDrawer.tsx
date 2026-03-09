@@ -43,7 +43,7 @@ export function VocabDrawer({
       {/* Mobile Floating Action Button */}
       <button
         onClick={onOpen}
-        className="lg:hidden fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg z-40 flex items-center gap-2 transition-transform active:scale-95"
+        className="lg:hidden fixed bottom-20 left-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg z-40 flex items-center gap-2 transition-transform active:scale-95"
         aria-label={t('vocabulary.title')}
       >
         <BookOpen className="h-5 w-5" />

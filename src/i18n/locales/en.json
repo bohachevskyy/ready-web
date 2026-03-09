@@ -152,7 +152,7 @@
     },
     "finishStory": {
       "title": "Finish Your First Story",
-      "message": "Click 'Finish Reading' below and complete the quiz to return home. Then practice words in the Practice section"
+      "message": "Click 'Complete' below to finish reading. Then practice words in the Practice section"
     },
     "skip": "Skip Tour",
     "next": "Next",
@@ -468,8 +468,16 @@
     "questionsErrorDescription": "We couldn't load the quiz questions. You can skip the quiz and complete the story.",
     "skipQuestions": "Skip Questions",
     "quizTime": "Quiz Time",
+    "skip": "Skip Story",
+    "complete": "Complete",
     "finish": "Finish Reading",
     "loadingQuestions": "Loading questions...",
+    "completion": {
+      "wordsAdded": "You added {count} words",
+      "feedbackQuestion": "Do you want to see more content like this?",
+      "nextStory": "Next Story",
+      "seeMoreCategories": "See More Categories"
+    },
     "completionBanner": {
       "title": "You've already completed this story",
       "completedOn": "Completed on",

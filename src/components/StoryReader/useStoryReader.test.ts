@@ -7,11 +7,13 @@ const mockDispatch = jest.fn()
 const mockT = jest.fn((key: string) => key)
 
 let mockVocabularyState: { savedWords: any[] } = { savedWords: [] }
-let mockStoryState = { id: 'story-123', text: 'Test story' }
+let mockStoryState = { id: 'story-123', text: 'Test story', title: '', translations: {}, domain: 'history' }
 let mockStoriesState = {
   isGeneratingStory: false,
-  isLoadingQuestions: false,
+  isFetchingStory: false,
+  isSubmittingFeedback: false,
   error: null,
+  readerStatus: null,
 }
 let mockSpeechSettings = {
   autoPlayEnabled: false,
@@ -70,11 +72,13 @@ describe('useStoryReader', () => {
     mockUseNavigate.mockReturnValue(mockNavigate)
     mockUseParams.mockReturnValue({ param: 'test-domain' })
     mockVocabularyState = { savedWords: [] }
-    mockStoryState = { id: 'story-123', text: 'Test story' }
+    mockStoryState = { id: 'story-123', text: 'Test story', title: '', translations: {}, domain: 'history' }
     mockStoriesState = {
       isGeneratingStory: false,
-      isLoadingQuestions: false,
+      isFetchingStory: false,
+      isSubmittingFeedback: false,
       error: null,
+      readerStatus: null,
     }
     mockSpeechSettings = {
       autoPlayEnabled: false,
@@ -92,31 +96,91 @@ describe('useStoryReader', () => {
     })
   })
 
-  describe('handleFinish', () => {
-    it('should automatically skip and navigate home when getQuestions fails (no saveWords)', async () => {
-      const defaultRet = { unwrap: () => Promise.resolve() }
-      mockDispatch
-        .mockReturnValue(defaultRet)
-        .mockReturnValueOnce({ unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) })
-        .mockReturnValueOnce(defaultRet)
-        .mockReturnValueOnce(defaultRet)
-        .mockReturnValueOnce(defaultRet)
-        .mockReturnValueOnce({ unwrap: () => Promise.reject(new Error('Failed to fetch questions')) })
-        .mockReturnValueOnce({ unwrap: () => Promise.resolve() })
-        .mockReturnValueOnce({ type: 'vocabulary/clearAllWords' })
+  describe('handleComplete', () => {
+    it('should transition to completion view without submitting feedback', async () => {
+      const { result } = renderHook(() => useStoryReader())
 
-      mockVocabularyState = { savedWords: [] }
+      act(() => {
+        result.current.handleComplete()
+      })
+
+      expect(result.current.view).toBe('completion')
+      // Should not navigate or submit feedback
+      expect(mockNavigate).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('handleSkip', () => {
+    it('should submit skip feedback and navigate to next story from same domain', async () => {
+      const defaultRet = { unwrap: () => Promise.resolve() }
+      mockDispatch.mockReturnValue(defaultRet)
 
       const { result } = renderHook(() => useStoryReader())
 
       await act(async () => {
-        await result.current.handleFinish()
+        await result.current.handleSkip()
       })
 
-      await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/')
+      expect(mockNavigate).toHaveBeenCalledWith('/story/history', { replace: true })
+    })
+  })
+
+  describe('handleNextStory', () => {
+    it('should submit feedback and navigate to next story from same domain', async () => {
+      const defaultRet = { unwrap: () => Promise.resolve() }
+      mockDispatch.mockReturnValue(defaultRet)
+
+      const { result } = renderHook(() => useStoryReader())
+
+      await act(async () => {
+        await result.current.handleNextStory()
       })
-      expect(mockSaveWords).not.toHaveBeenCalled()
+
+      expect(mockNavigate).toHaveBeenCalledWith('/story/history', { replace: true })
+    })
+  })
+
+  describe('handleSeeMoreCategories', () => {
+    it('should submit feedback and navigate to category selection', async () => {
+      const defaultRet = { unwrap: () => Promise.resolve() }
+      mockDispatch.mockReturnValue(defaultRet)
+
+      const { result } = renderHook(() => useStoryReader())
+
+      await act(async () => {
+        await result.current.handleSeeMoreCategories()
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith('/story/category')
+    })
+  })
+
+  describe('handleLikeFeedback', () => {
+    it('should toggle like status', () => {
+      const { result } = renderHook(() => useStoryReader())
+
+      act(() => {
+        result.current.handleLikeFeedback('like')
+      })
+      expect(result.current.likeStatus).toBe('like')
+
+      act(() => {
+        result.current.handleLikeFeedback('like')
+      })
+      expect(result.current.likeStatus).toBe(null)
+
+      act(() => {
+        result.current.handleLikeFeedback('dislike')
+      })
+      expect(result.current.likeStatus).toBe('dislike')
+    })
+  })
+
+  describe('wordCount', () => {
+    it('should reflect saved words count', () => {
+      mockVocabularyState = { savedWords: [{ id: '1' }, { id: '2' }] as any[] }
+      const { result } = renderHook(() => useStoryReader())
+      expect(result.current.wordCount).toBe(2)
     })
   })
 
@@ -181,23 +245,12 @@ describe('useStoryReader', () => {
 
     it('handleComplete does not call saveWords', async () => {
       const defaultRet = { unwrap: () => Promise.resolve() }
-      mockDispatch
-        .mockReturnValue(defaultRet)
-        .mockReturnValueOnce({ unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) })
-        .mockReturnValueOnce(defaultRet)
-        .mockReturnValueOnce(defaultRet)
-        .mockReturnValueOnce(defaultRet)
-        .mockReturnValueOnce({ unwrap: () => Promise.resolve({ questions: [] }) })
-        .mockReturnValueOnce({ unwrap: () => Promise.resolve() })
-        .mockReturnValueOnce({ type: 'vocabulary/clearAllWords' })
+      mockDispatch.mockReturnValue(defaultRet)
 
       const { result } = renderHook(() => useStoryReader())
 
-      await act(async () => {
-        await result.current.handleFinish()
-      })
-      await act(async () => {
-        await result.current.handleComplete()
+      act(() => {
+        result.current.handleComplete()
       })
 
       expect(mockSaveWords).not.toHaveBeenCalled()
