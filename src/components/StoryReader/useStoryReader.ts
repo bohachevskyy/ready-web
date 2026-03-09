@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../store/store"
 import type { SavedWord } from "../../types"
 import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis"
 import { useTranslation } from "../../i18n/useTranslation"
+import { logEvent } from "../../services/analyticsService"
 import type { PopoverPosition } from "./types"
 
 // Helper function to check if a string is a UUID
@@ -192,6 +193,7 @@ export function useStoryReader() {
   }, [dispatch, storyId, likeStatus])
 
   const handleSkip = useCallback(async () => {
+    logEvent('story_read_skip', { story_id: storyId })
     const currentDomain = domain
     await submitFeedbackAndCleanup(true)
     if (currentDomain) {
@@ -202,6 +204,7 @@ export function useStoryReader() {
   }, [submitFeedbackAndCleanup, domain, navigate])
 
   const handleNextStory = useCallback(async () => {
+    logEvent('story_read_complete', { story_id: storyId })
     const currentDomain = domain
     await submitFeedbackAndCleanup(false)
     if (currentDomain) {
@@ -212,6 +215,7 @@ export function useStoryReader() {
   }, [submitFeedbackAndCleanup, domain, navigate])
 
   const handleSeeMoreCategories = useCallback(async () => {
+    logEvent('story_read_complete', { story_id: storyId })
     await submitFeedbackAndCleanup(false)
     navigate('/story/category')
   }, [submitFeedbackAndCleanup, navigate])
@@ -247,6 +251,8 @@ export function useStoryReader() {
     const end = target.getAttribute('data-end')
 
     if (!start || !end) return
+
+    logEvent('word_clicked', { story_id: storyId })
 
     // Store reference to clicked word for scroll positioning
     clickedWordRef.current = target
@@ -329,6 +335,8 @@ export function useStoryReader() {
   const addWordToList = useCallback(() => {
     if (!selectedWord) return
 
+    logEvent('word_added', { word: selectedWord.expression, story_id: storyId })
+
     const newWord: SavedWord = {
       id: `${Date.now()}-${selectedWord.expression}`,
       word: selectedWord.expression,
@@ -361,6 +369,8 @@ export function useStoryReader() {
 
   const addWordToListAndCloseDrawer = useCallback(() => {
     if (!selectedWord) return
+
+    logEvent('word_added', { word: selectedWord.expression, story_id: storyId })
 
     const newWord: SavedWord = {
       id: `${Date.now()}-${selectedWord.expression}`,
