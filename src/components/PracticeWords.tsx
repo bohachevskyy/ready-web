@@ -13,6 +13,7 @@ import { usePracticeKeyboard } from "../hooks/usePracticeKeyboard"
 import { usePracticeSession } from "../hooks/usePracticeSession"
 import { useAutoPlayPronunciation } from "../hooks/useAutoPlayPronunciation"
 import { useTranslation } from "../i18n/useTranslation"
+import { logEvent } from "../services/analyticsService"
 import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
 
 export function PracticeWords() {
@@ -119,6 +120,8 @@ export function PracticeWords() {
   const handleRating = useCallback(async (rating: "again" | "hard" | "good" | "easy") => {
     const currentCard = cards[currentIndex]
     const updatedCard = calculateNextReview(currentCard, rating)
+
+    logEvent('word_practiced', { word: currentCard.word, rating })
 
     // Cancel any ongoing speech before moving to next card
     cancel()

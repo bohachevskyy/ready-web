@@ -4,6 +4,7 @@ import { useTranslation } from "../i18n/useTranslation"
 import { useStoryCategories } from "../hooks/useStoryCategories"
 import { useFavoriteDomains } from "../hooks/useFavoriteDomains"
 import { useDomainSearch } from "../hooks/useDomainSearch"
+import { logEvent } from "../services/analyticsService"
 import { Heart, Loader2, Search, icons } from "lucide-react"
 import { OnboardingStep } from "../hooks/useOnboarding"
 
@@ -51,7 +52,10 @@ export function StoryCategorySelection({ onSelectDomain, onboarding }: StoryCate
       <Card
         key={domain.id}
         className="relative group cursor-pointer border-2 border-border bg-card p-6 transition-all duration-200 hover:scale-105 hover:border-primary hover:shadow-lg w-full max-w-xs"
-        onClick={() => onSelectDomain(domain.name)}
+        onClick={() => {
+          logEvent('domain_selected', { domain_slug: domain.name })
+          onSelectDomain(domain.name)
+        }}
       >
         <button
           type="button"
