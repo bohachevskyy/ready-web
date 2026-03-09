@@ -214,7 +214,7 @@ export function useStoryReader() {
     } else {
       navigate('/')
     }
-  }, [submitFeedbackAndCleanup, domain, navigate])
+  }, [submitFeedbackAndCleanup, domain, navigate, storyId])
 
   const handleNextStory = useCallback(async () => {
     logEvent('story_read_complete', { story_id: storyId })
@@ -225,13 +225,13 @@ export function useStoryReader() {
     } else {
       navigate('/')
     }
-  }, [submitFeedbackAndCleanup, domain, navigate])
+  }, [submitFeedbackAndCleanup, domain, navigate, storyId])
 
   const handleSeeMoreCategories = useCallback(async () => {
     logEvent('story_read_complete', { story_id: storyId })
     await submitFeedbackAndCleanup(false)
     navigate('/story/category')
-  }, [submitFeedbackAndCleanup, navigate])
+  }, [submitFeedbackAndCleanup, navigate, storyId])
 
   const scrollWordIntoView = useCallback((wordElement: HTMLElement) => {
     // Wait for drawer animation to start
