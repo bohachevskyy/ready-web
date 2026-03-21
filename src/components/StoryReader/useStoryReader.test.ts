@@ -265,6 +265,70 @@ describe('useStoryReader', () => {
     })
   })
 
+  describe('word_clicked event with loading_duration_ms', () => {
+    it('should emit word_clicked with loading_duration_ms after word details load', async () => {
+      let thunkCount = 0
+      mockDispatch.mockImplementation((action: unknown) => {
+        if (typeof action === 'function') {
+          const ix = thunkCount++
+          if (ix === 0) return { unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) }
+          // getWordDetails call
+          return { unwrap: () => Promise.resolve({ expression: 'hello', translation: 'hola', grammatical_info: 'interj', sentence_translation: 'Hi.', example_sentence: 'Hello!' }) }
+        }
+        return { unwrap: () => Promise.resolve() }
+      })
+
+      const { result } = renderHook(() => useStoryReader())
+
+      const el = document.createElement('span')
+      el.setAttribute('data-start', '0')
+      el.setAttribute('data-end', '5')
+      el.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 50, right: 100, width: 50, height: 20, x: 50, y: 100, toJSON: () => {} })
+
+      mockLogEvent.mockClear()
+
+      await act(async () => {
+        await result.current.handleWordClick({ target: el } as unknown as React.MouseEvent)
+      })
+
+      expect(mockLogEvent).toHaveBeenCalledWith('word_clicked', expect.objectContaining({
+        story_id: 'story-123',
+        loading_duration_ms: expect.any(Number),
+      }))
+    })
+
+    it('should emit word_clicked with error flag when word details fail', async () => {
+      let thunkCount = 0
+      mockDispatch.mockImplementation((action: unknown) => {
+        if (typeof action === 'function') {
+          const ix = thunkCount++
+          if (ix === 0) return { unwrap: () => Promise.resolve({ id: 'story-123', story: 'Test story', translations: {} }) }
+          return { unwrap: () => Promise.reject(new Error('API error')) }
+        }
+        return { unwrap: () => Promise.resolve() }
+      })
+
+      const { result } = renderHook(() => useStoryReader())
+
+      const el = document.createElement('span')
+      el.setAttribute('data-start', '0')
+      el.setAttribute('data-end', '5')
+      el.getBoundingClientRect = () => ({ top: 100, bottom: 120, left: 50, right: 100, width: 50, height: 20, x: 50, y: 100, toJSON: () => {} })
+
+      mockLogEvent.mockClear()
+
+      await act(async () => {
+        await result.current.handleWordClick({ target: el } as unknown as React.MouseEvent)
+      })
+
+      expect(mockLogEvent).toHaveBeenCalledWith('word_clicked', expect.objectContaining({
+        story_id: 'story-123',
+        loading_duration_ms: expect.any(Number),
+        error: true,
+      }))
+    })
+  })
+
   describe('story_loading_abandoned event', () => {
     it('should emit story_loading_abandoned when unmounted while loading', () => {
       mockStoriesState = {

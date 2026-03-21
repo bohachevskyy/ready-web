@@ -265,13 +265,13 @@ export function useStoryReader() {
 
     if (!start || !end) return
 
-    logEvent('word_clicked', { story_id: storyId })
-
     // Store reference to clicked word for scroll positioning
     clickedWordRef.current = target
 
     // Detect if mobile or desktop
     const isMobile = window.innerWidth < 1024
+
+    const loadingStartTime = Date.now()
 
     if (isMobile) {
       // Mobile: Open bottom drawer
@@ -285,11 +285,17 @@ export function useStoryReader() {
           end: parseInt(end),
         })).unwrap()
 
+        const loadingDurationMs = Date.now() - loadingStartTime
+        logEvent('word_clicked', { story_id: storyId, loading_duration_ms: loadingDurationMs })
+
         setSelectedWord(result)
 
         // Smart scroll to keep word visible
         scrollWordIntoView(target)
       } catch (error) {
+        const loadingDurationMs = Date.now() - loadingStartTime
+        logEvent('word_clicked', { story_id: storyId, loading_duration_ms: loadingDurationMs, error: true })
+
         console.error('Failed to fetch word details:', error)
         // Close drawer and show error toast
         setIsWordDrawerOpen(false)
@@ -336,8 +342,14 @@ export function useStoryReader() {
           end: parseInt(end),
         })).unwrap()
 
+        const loadingDurationMs = Date.now() - loadingStartTime
+        logEvent('word_clicked', { story_id: storyId, loading_duration_ms: loadingDurationMs })
+
         setSelectedWord(result)
       } catch (error) {
+        const loadingDurationMs = Date.now() - loadingStartTime
+        logEvent('word_clicked', { story_id: storyId, loading_duration_ms: loadingDurationMs, error: true })
+
         console.error('Failed to fetch word details:', error)
         setPopoverPosition(null)
         setTranslationError(t('storyReader.translationError'))
