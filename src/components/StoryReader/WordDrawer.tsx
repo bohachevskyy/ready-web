@@ -113,24 +113,28 @@ export function WordDrawer({
             </div>
 
             {/* Sentence translation */}
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                {t('wordPopover.sentenceTranslation')}
-              </p>
-              <p className="text-sm text-foreground/80 leading-relaxed">
-                {selectedWord.sentence_translation}
-              </p>
-            </div>
+            {selectedWord.sentence_translation && (
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                  {t('wordPopover.sentenceTranslation')}
+                </p>
+                <p className="text-sm text-foreground/80 leading-relaxed">
+                  {selectedWord.sentence_translation}
+                </p>
+              </div>
+            )}
 
             {/* Example sentence */}
-            <div>
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
-                {t('wordPopover.example')}
-              </p>
-              <p className="text-sm italic text-foreground/80 leading-relaxed">
-                {selectedWord.example_sentence}
-              </p>
-            </div>
+            {selectedWord.example_sentence && (
+              <div>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">
+                  {t('wordPopover.example')}
+                </p>
+                <p className="text-sm italic text-foreground/80 leading-relaxed">
+                  {selectedWord.example_sentence}
+                </p>
+              </div>
+            )}
 
             {/* Add to vocabulary button */}
             <Button
