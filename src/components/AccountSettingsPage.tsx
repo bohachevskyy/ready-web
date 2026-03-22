@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { AccountSettingsForm } from './AccountSettingsForm';
+import { FeedbackSection } from './FeedbackSection';
 import { NavigationBar } from './NavigationBar';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { clearAuth, setUser } from '../store/authSlice';
@@ -86,12 +87,13 @@ export function AccountSettingsPage() {
         onLogout={handleLogout}
         onAccountClick={handleAccountClick}
       />
-      <div className="p-6">
+      <div className="space-y-6 p-6">
         <AccountSettingsForm
           resetKey="account-page"
           onClose={handleHomeClick}
           closeLabel="Back to Home"
         />
+        <FeedbackSection />
       </div>
     </div>
   );
