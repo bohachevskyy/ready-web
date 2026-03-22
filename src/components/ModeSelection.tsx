@@ -8,6 +8,7 @@ import { OnboardingStep } from "../hooks/useOnboarding"
 import { OnboardingTooltip } from "./onboarding/OnboardingTooltip"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import { generateStory } from "../store/storiesSlice"
+import { Dashboard } from "./Dashboard/Dashboard"
 
 interface OnboardingControl {
   currentStep: OnboardingStep
@@ -98,6 +99,8 @@ export function ModeSelection({ onSelectMode, onboarding, navigate }: ModeSelect
             </div>
           </Card>
         </div>
+
+        <Dashboard />
       </div>
 
       {/* Onboarding Tooltips */}

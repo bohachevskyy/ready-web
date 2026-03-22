@@ -495,5 +495,25 @@
     "signupToRead": "Sign up to read",
     "signupToSeeTranslation": "Sign up to see the translation and add this word to your vocabulary",
     "signUpNow": "Sign Up Now"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "description": "Share your thoughts and help us improve",
+    "messageLabel": "Your feedback",
+    "placeholder": "Tell us what you think...",
+    "submit": "Send Feedback",
+    "submitting": "Sending...",
+    "success": "Thank you for your feedback!",
+    "emptyError": "Please enter your feedback"
+  },
+  "dashboard": {
+    "title": "Your Progress",
+    "storiesRead": "Stories Read",
+    "wordsFound": "Words Found",
+    "wordsPracticed": "Words Practiced",
+    "readingStreak": "Reading Streak",
+    "weekly": "Week",
+    "monthly": "Month",
+    "yearly": "Year"
   }
 }

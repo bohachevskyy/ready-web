@@ -480,5 +480,25 @@
     "signupToRead": "Zarejestruj się, aby czytać",
     "signupToSeeTranslation": "Zarejestruj się, aby zobaczyć tłumaczenie i dodać to słowo do swojego słownika",
     "signUpNow": "Zarejestruj Się Teraz"
+  },
+  "dashboard": {
+    "title": "Twój Postęp",
+    "storiesRead": "Przeczytane Historie",
+    "wordsFound": "Znalezione Słowa",
+    "wordsPracticed": "Ćwiczone Słowa",
+    "readingStreak": "Seria Czytania",
+    "weekly": "Tydzień",
+    "monthly": "Miesiąc",
+    "yearly": "Rok"
+  },
+  "feedback": {
+    "title": "Opinia",
+    "description": "Podziel się swoimi przemyśleniami",
+    "messageLabel": "Twoja opinia",
+    "placeholder": "Powiedz nam co myślisz...",
+    "submit": "Wyślij opinię",
+    "submitting": "Wysyłanie...",
+    "success": "Dziękujemy za opinię!",
+    "emptyError": "Wprowadź swoją opinię"
   }
 }

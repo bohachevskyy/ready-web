@@ -503,5 +503,25 @@
     "signupToRead": "読むために登録する",
     "signupToSeeTranslation": "翻訳を見て、この単語を語彙に追加するには登録してください",
     "signUpNow": "今すぐ登録"
+  },
+  "dashboard": {
+    "title": "あなたの進捗",
+    "storiesRead": "読んだストーリー",
+    "wordsFound": "見つけた単語",
+    "wordsPracticed": "練習した単語",
+    "readingStreak": "読書ストリーク",
+    "weekly": "週",
+    "monthly": "月",
+    "yearly": "年"
+  },
+  "feedback": {
+    "title": "フィードバック",
+    "description": "ご意見をお聞かせください",
+    "messageLabel": "フィードバック",
+    "placeholder": "ご感想をお聞かせください...",
+    "submit": "フィードバックを送信",
+    "submitting": "送信中...",
+    "success": "フィードバックありがとうございます！",
+    "emptyError": "フィードバックを入力してください"
   }
 }

@@ -512,5 +512,25 @@
     "signupToRead": "Cadastre-se para ler",
     "signupToSeeTranslation": "Cadastre-se para ver a tradução e adicionar esta palavra ao seu vocabulário",
     "signUpNow": "Cadastre-se Agora"
+  },
+  "dashboard": {
+    "title": "Seu Progresso",
+    "storiesRead": "Histórias Lidas",
+    "wordsFound": "Palavras Encontradas",
+    "wordsPracticed": "Palavras Praticadas",
+    "readingStreak": "Sequência de Leitura",
+    "weekly": "Semana",
+    "monthly": "Mês",
+    "yearly": "Ano"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "description": "Compartilhe suas opiniões",
+    "messageLabel": "Seu feedback",
+    "placeholder": "Diga-nos o que você pensa...",
+    "submit": "Enviar feedback",
+    "submitting": "Enviando...",
+    "success": "Obrigado pelo seu feedback!",
+    "emptyError": "Por favor, insira seu feedback"
   }
 }
