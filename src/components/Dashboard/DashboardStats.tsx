@@ -18,17 +18,19 @@ export function DashboardStats({ stats, isLoading }: DashboardStatsProps) {
   ]
 
   return (
-    <div className="grid gap-4 grid-cols-3">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
       {items.map(({ icon: Icon, label, value }) => (
-        <Card key={label} className="p-4 text-center">
-          <div className="flex flex-col items-center gap-2">
-            <Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
+        <Card key={label} className="p-6 text-center transition-all hover:shadow-md">
+          <div className="flex flex-col items-center gap-3">
+            <div className="rounded-2xl bg-primary/10 p-3">
+              <Icon className="h-8 w-8 text-primary" strokeWidth={1.5} />
+            </div>
             {isLoading ? (
-              <div className="h-8 w-12 animate-pulse rounded bg-muted" />
+              <div className="h-9 w-16 animate-pulse rounded-lg bg-muted" />
             ) : (
-              <span className="text-2xl font-bold text-foreground">{value}</span>
+              <span className="text-3xl font-bold tracking-tight text-foreground">{value}</span>
             )}
-            <span className="text-xs text-muted-foreground">{label}</span>
+            <span className="text-sm text-muted-foreground">{label}</span>
           </div>
         </Card>
       ))}
