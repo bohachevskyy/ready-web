@@ -471,5 +471,25 @@
     "signupToRead": "읽으려면 가입하세요",
     "signupToSeeTranslation": "번역을 보고 이 단어를 어휘에 추가하려면 가입하세요",
     "signUpNow": "지금 가입하기"
+  },
+  "dashboard": {
+    "title": "나의 진행률",
+    "storiesRead": "읽은 이야기",
+    "wordsFound": "찾은 단어",
+    "wordsPracticed": "연습한 단어",
+    "readingStreak": "독서 연속 기록",
+    "weekly": "주",
+    "monthly": "월",
+    "yearly": "년"
+  },
+  "feedback": {
+    "title": "피드백",
+    "description": "의견을 공유해 주세요",
+    "messageLabel": "피드백",
+    "placeholder": "의견을 알려주세요...",
+    "submit": "피드백 보내기",
+    "submitting": "전송 중...",
+    "success": "피드백 감사합니다!",
+    "emptyError": "피드백을 입력해 주세요"
   }
 }
