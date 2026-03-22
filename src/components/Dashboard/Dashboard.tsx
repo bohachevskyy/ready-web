@@ -8,8 +8,8 @@ export function Dashboard() {
   const { t } = useTranslation()
 
   return (
-    <div className="mt-10">
-      <h2 className="text-xl font-bold text-foreground mb-4">{t('dashboard.title')}</h2>
+    <section className="mt-12 space-y-6">
+      <h2 className="text-2xl font-bold text-foreground">{t('dashboard.title')}</h2>
       <DashboardStats stats={stats} isLoading={isLoading} />
       <ReadingStreakCalendar
         calendar={calendar}
@@ -17,6 +17,6 @@ export function Dashboard() {
         onViewChange={setView}
         isLoading={isLoading}
       />
-    </div>
+    </section>
   )
 }
