@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
-import { Button } from "./ui/button"
-import { SpeakerButton } from "./ui/speaker-button"
 import { Brain, Clock, Volume2, VolumeX } from "lucide-react"
+import { SpeakerButton } from "./ui/speaker-button"
+import { DuoButton } from "./ui/duo-button"
+import { DuoCard } from "./ui/duo-card"
 import { useAppDispatch, useAppSelector } from "../store/store"
 import { fetchWords, submitWordReview, nextWord, clearWords, setSessionTotal } from "../store/wordsSlice"
 import { toggleAutoPlay } from "../store/speechSettingsSlice"
@@ -15,6 +15,43 @@ import { useAutoPlayPronunciation } from "../hooks/useAutoPlayPronunciation"
 import { useTranslation } from "../i18n/useTranslation"
 import { logEvent } from "../services/analyticsService"
 import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
+import { cn } from "../lib/utils"
+
+type Rating = "again" | "hard" | "good" | "easy"
+
+const RATING_COLORS: Record<
+  Rating,
+  { bg: string; border: string; text: string; shadow: string; key: string }
+> = {
+  again: {
+    bg: "bg-[#FFE3E6]",
+    border: "border-heart",
+    text: "text-heart-deep",
+    shadow: "shadow-[0_4px_0_hsl(var(--heart-deep))]",
+    key: "1",
+  },
+  hard: {
+    bg: "bg-[#FFEEDF]",
+    border: "border-[#D67742]",
+    text: "text-[#A14E1F]",
+    shadow: "shadow-[0_4px_0_#A14E1F]",
+    key: "2",
+  },
+  good: {
+    bg: "bg-green-soft",
+    border: "border-green",
+    text: "text-green-ink",
+    shadow: "shadow-[0_4px_0_hsl(var(--green-deep))]",
+    key: "3",
+  },
+  easy: {
+    bg: "bg-brand-blue-soft",
+    border: "border-brand-blue",
+    text: "text-brand-blue-deep",
+    shadow: "shadow-[0_4px_0_hsl(var(--blue-deep))]",
+    key: "4",
+  },
+}
 
 export function PracticeWords() {
   const { t } = useTranslation()
@@ -24,9 +61,8 @@ export function PracticeWords() {
   const [timer, setTimer] = useState(0)
   const [isActive, setIsActive] = useState(true)
   const [sessionComplete, setSessionComplete] = useState(false)
-  const [highlightedRating, setHighlightedRating] = useState<string | null>(null)
+  const [highlightedRating, setHighlightedRating] = useState<Rating | null>(null)
 
-  // Redux state and dispatch
   const dispatch = useAppDispatch()
   const {
     words: apiWords,
@@ -35,57 +71,42 @@ export function PracticeWords() {
     lastWordId,
     hasNextPage,
     currentIndex,
-    sessionTotal
+    sessionTotal,
   } = useAppSelector((state) => state.words)
 
   const { autoPlayEnabled, speechRate } = useAppSelector((state) => state.speechSettings)
-
-  // Speech synthesis hook
   const { speak, cancel, supported } = useSpeechSynthesis()
-
-  // Word count hook (auto-fetches when undefined)
   const { wordsCount } = useWordCount()
-
-  // Practice session hook
   const { shouldContinueSession } = usePracticeSession()
 
-  // Initialize cards from Redux state - fetch on mount
   useEffect(() => {
-    // Clear any previous session data
     dispatch(clearWords())
-    // Fetch fresh data
     dispatch(fetchWords({ limit: 15 }))
   }, [dispatch])
 
-  // Initialize session total when words count is available
   useEffect(() => {
     if (wordsCount !== undefined && wordsCount > 0) {
       dispatch(setSessionTotal(wordsCount))
     }
   }, [wordsCount, dispatch])
 
-  // Update cards when apiWords changes
   useEffect(() => {
     if (apiWords && apiWords.length > 0) {
       setCards(apiWords.map(wordToCard))
-      setSessionComplete(false) // Reset session complete when we have words
-      setIsActive(true) // Make sure timer is active
+      setSessionComplete(false)
+      setIsActive(true)
     } else if (apiWords.length === 0 && !isLoading && cards.length === 0) {
-      // Only set session complete if we actually finished reviewing cards
-      // Not just because we cleared the state
       setSessionComplete(true)
       setIsActive(false)
     }
   }, [apiWords, isLoading, cards.length])
 
-  // Prefetch next page at word 10
   useEffect(() => {
     if (currentIndex === 9 && hasNextPage && lastWordId) {
       dispatch(fetchWords({ afterId: lastWordId, limit: 15 }))
     }
   }, [currentIndex, hasNextPage, lastWordId, dispatch])
 
-  // Auto-play pronunciation when card changes
   useAutoPlayPronunciation({
     autoPlayEnabled,
     supported,
@@ -96,16 +117,11 @@ export function PracticeWords() {
     speak,
   })
 
-  // Timer effect
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
-
     if (isActive && !sessionComplete) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev + 1)
-      }, 1000)
+      interval = setInterval(() => setTimer((p) => p + 1), 1000)
     }
-
     return () => {
       if (interval) clearInterval(interval)
     }
@@ -117,345 +133,283 @@ export function PracticeWords() {
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
-  const handleRating = useCallback(async (rating: "again" | "hard" | "good" | "easy") => {
-    const currentCard = cards[currentIndex]
-    const updatedCard = calculateNextReview(currentCard, rating)
+  const handleRating = useCallback(
+    async (rating: Rating) => {
+      const currentCard = cards[currentIndex]
+      const updatedCard = calculateNextReview(currentCard, rating)
+      logEvent('word_practiced', { word: currentCard.word, rating })
+      cancel()
 
-    logEvent('word_practiced', { word: currentCard.word, rating })
+      try {
+        await dispatch(submitWordReview({ wordId: currentCard.id, rating })).unwrap()
+        const newCards = [...cards]
+        newCards[currentIndex] = updatedCard
+        setCards(newCards)
 
-    // Cancel any ongoing speech before moving to next card
-    cancel()
+        const updatedWordsCount =
+          wordsCount !== undefined && wordsCount > 0 ? wordsCount - 1 : wordsCount
 
-    try {
-      // Dispatch thunk - optimistic count decrement happens in pending state
-      await dispatch(submitWordReview({ wordId: currentCard.id, rating })).unwrap()
+        const shouldContinue = shouldContinueSession({
+          currentIndex,
+          totalCards: cards.length,
+          sessionTotal,
+          wordsCount: updatedWordsCount,
+        })
 
-      // Only update local card state on success
-      const newCards = [...cards]
-      newCards[currentIndex] = updatedCard
-      setCards(newCards)
-
-      // Calculate what wordsCount will be after optimistic decrement
-      // submitWordReview.pending decrements wordsCount by 1
-      const updatedWordsCount = wordsCount !== undefined && wordsCount > 0 ? wordsCount - 1 : wordsCount
-
-      // Determine if we should continue to next word or complete session
-      const shouldContinue = shouldContinueSession({
-        currentIndex,
-        totalCards: cards.length,
-        sessionTotal,
-        wordsCount: updatedWordsCount,
-      })
-
-      // Move to next card - Redux manages currentIndex
-      if (shouldContinue) {
-        dispatch(nextWord())
-        setShowTranslation(false)
-        setTimer(0)
-      } else {
-        setSessionComplete(true)
-        setIsActive(false)
-        // Clear Redux words state to force fresh fetch on next session
-        dispatch(clearWords())
+        if (shouldContinue) {
+          dispatch(nextWord())
+          setShowTranslation(false)
+          setTimer(0)
+        } else {
+          setSessionComplete(true)
+          setIsActive(false)
+          dispatch(clearWords())
+        }
+      } catch (err) {
+        console.error('Failed to submit review:', err)
       }
-    } catch (error) {
-      console.error('Failed to submit review:', error)
-      // Optimistic update already rolled back in rejected state
-    }
-  }, [cards, currentIndex, cancel, dispatch, sessionTotal, wordsCount, shouldContinueSession])
+    },
+    [cards, currentIndex, cancel, dispatch, sessionTotal, wordsCount, shouldContinueSession],
+  )
 
-  const handleShowTranslation = useCallback(() => {
-    setShowTranslation(true)
-  }, [])
+  const handleShowTranslation = useCallback(() => setShowTranslation(true), [])
 
-  // Keyboard rating with visual feedback
-  const handleKeyboardRate = useCallback((rating: "again" | "hard" | "good" | "easy") => {
-    setHighlightedRating(rating)
-    setTimeout(() => {
-      setHighlightedRating(null)
-      handleRating(rating)
-    }, 300)
-  }, [handleRating])
+  const handleKeyboardRate = useCallback(
+    (rating: Rating) => {
+      setHighlightedRating(rating)
+      setTimeout(() => {
+        setHighlightedRating(null)
+        handleRating(rating)
+      }, 300)
+    },
+    [handleRating],
+  )
 
-  // Keyboard navigation hook
   usePracticeKeyboard({
     showTranslation,
     onShowTranslation: handleShowTranslation,
     onRate: handleKeyboardRate,
   })
 
+  // ── Loading / error / empty / complete states ────────────────────
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg border-2 border-primary/20">
-          <CardContent className="pt-6 text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto animate-pulse">
-              <Brain className="w-8 h-8 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold">{t('practice.loadingWords')}</h2>
-          </CardContent>
-        </Card>
-      </div>
+      <CenterPanel>
+        <div className="w-16 h-16 bg-green-soft rounded-full grid place-items-center mx-auto animate-pulse text-green">
+          <Brain className="w-8 h-8" />
+        </div>
+        <h2 className="text-2xl font-black mt-4">{t('practice.loadingWords')}</h2>
+      </CenterPanel>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg border-2 border-red-200">
-          <CardContent className="pt-6 text-center space-y-4">
-            <h2 className="text-2xl font-bold text-red-600">{t('practice.errorLoading')}</h2>
-            <p className="text-muted-foreground">{t('practice.tryAgainLater')}</p>
-          </CardContent>
-        </Card>
-      </div>
+      <CenterPanel>
+        <h2 className="text-2xl font-black text-heart-deep">{t('practice.errorLoading')}</h2>
+        <p className="text-ink-mute mt-2">{t('practice.tryAgainLater')}</p>
+      </CenterPanel>
     )
   }
 
-  // Check for empty state: no words to practice
   if ((apiWords.length === 0 && !isLoading) || cards.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg border-2 border-primary/20">
-          <CardContent className="pt-6 text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Brain className="w-8 h-8 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold">{t('practice.noWords')}</h2>
-            <p className="text-muted-foreground">
-              {t('practice.comeBackLater')}
-            </p>
-            <div className="pt-4">
-              <Button
-                size="lg"
-                onClick={() => navigate('/')}
-              >
-                {t('practice.goHome')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <CenterPanel>
+        <div className="w-16 h-16 bg-green-soft rounded-full grid place-items-center mx-auto text-green">
+          <Brain className="w-8 h-8" />
+        </div>
+        <h2 className="text-2xl font-black mt-4">{t('practice.noWords')}</h2>
+        <p className="text-ink-mute mt-2">{t('practice.comeBackLater')}</p>
+        <div className="pt-5">
+          <DuoButton size="lg" onClick={() => navigate('/')}>
+            {t('practice.goHome')}
+          </DuoButton>
+        </div>
+      </CenterPanel>
     )
   }
 
   if (sessionComplete) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 flex items-center justify-center p-4">
-        <Card className="w-full max-w-lg border-2 border-primary/20">
-          <CardContent className="pt-6 text-center space-y-4">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-              <Brain className="w-8 h-8 text-primary" />
-            </div>
-            <h2 className="text-2xl font-bold">{t('practice.sessionComplete')}</h2>
-            <p className="text-muted-foreground">
-              {t('practice.sessionCompleteMessage', { count: cards.length })}
-            </p>
-            <div className="pt-4">
-              <Button
-                size="lg"
-                onClick={() => {
-                  window.location.reload()
-                }}
-              >
-                {t('practice.startNewSession')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="bg-green-soft min-h-[calc(100vh-64px)] grid place-items-center p-10">
+        <DuoCard className="anim-bounce max-w-[480px] p-9 text-center bg-green-soft border-[#BBE3A0]">
+          <div className="text-[56px] mb-2">🎉</div>
+          <h1 className="font-black text-[32px] m-0 mb-2">{t('practice.sessionComplete')}</h1>
+          <p className="text-ink-soft text-[15px] m-0">
+            {t('practice.sessionCompleteMessage', { count: cards.length })}
+          </p>
+          <div className="flex gap-2.5 justify-center mt-6">
+            <DuoButton variant="secondary" onClick={() => navigate('/')}>
+              {t('common.home') || 'Home'}
+            </DuoButton>
+            <DuoButton onClick={() => window.location.reload()}>
+              {t('practice.startNewSession')}
+            </DuoButton>
+          </div>
+        </DuoCard>
       </div>
     )
   }
 
-  // Use sessionTotal if available, fallback to wordsCount or calculated remaining
   const remainingCards = wordsCount !== undefined ? wordsCount : cards.length - currentIndex
-  
-  const displayTotal = sessionTotal && wordsCount !== undefined 
-    ? sessionTotal 
-    : (cards.length > 0 ? cards.length : 0)
-
-  // Ensure current card number doesn't exceed total
-  const currentCardNumber = sessionTotal && wordsCount !== undefined 
-    ? Math.min((sessionTotal - wordsCount) + 1, sessionTotal)
-    : currentIndex + 1
+  const displayTotal =
+    sessionTotal && wordsCount !== undefined
+      ? sessionTotal
+      : cards.length > 0
+      ? cards.length
+      : 0
+  const currentCardNumber =
+    sessionTotal && wordsCount !== undefined
+      ? Math.min(sessionTotal - wordsCount + 1, sessionTotal)
+      : currentIndex + 1
 
   const currentCard = cards[currentIndex]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 pt-20 pb-8 px-4">
-      <div className="max-w-3xl mx-auto space-y-6">
-        {/* Header with stats */}
-        <div className="flex items-center justify-between bg-card p-4 rounded-xl border-2 border-primary shadow-lg">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center">
-              <Brain className="w-8 h-8 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground font-medium">{t('practice.cardsRemaining')}</p>
-              <p className="text-4xl font-bold text-primary">{remainingCards}</p>
-            </div>
+    <div className="bg-green-soft min-h-[calc(100vh-64px)] py-6 px-8 pb-16">
+      <div className="max-w-[880px] mx-auto space-y-4">
+        {/* Header chip */}
+        <div className="anim-slide bg-paper border-2 border-green rounded-[16px] px-5 py-3.5 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-green-soft text-green grid place-items-center">
+            <Brain className="w-[26px] h-[26px]" />
           </div>
-          <div className="flex items-center gap-3">
-            {supported && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => dispatch(toggleAutoPlay())}
-                className="gap-2"
-                title={autoPlayEnabled ? t('practice.autoPlayDisable') : t('practice.autoPlayEnable')}
-              >
-                {autoPlayEnabled ? (
-                  <>
-                    <Volume2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">{t('practice.autoPlay')}</span>
-                  </>
-                ) : (
-                  <>
-                    <VolumeX className="w-4 h-4" />
-                    <span className="hidden sm:inline">{t('practice.autoPlay')}</span>
-                  </>
-                )}
-              </Button>
-            )}
-            <div className="flex items-center gap-3 bg-primary/10 px-6 py-3 rounded-lg border-2 border-primary/30">
-              <Clock className="w-6 h-6 text-primary" />
-              <span className="font-mono text-2xl font-bold text-primary">{formatTime(timer)}</span>
+          <div className="flex-1">
+            <div className="text-ink-mute text-[13px] font-bold">
+              {t('practice.cardsRemaining')}
             </div>
+            <div className="text-[26px] font-black text-green leading-[1]">{remainingCards}</div>
+          </div>
+          {supported && (
+            <button
+              type="button"
+              onClick={() => dispatch(toggleAutoPlay())}
+              title={
+                autoPlayEnabled ? t('practice.autoPlayDisable') : t('practice.autoPlayEnable')
+              }
+              className={cn(
+                "border-2 border-line bg-paper rounded-[10px] px-3 py-2 cursor-pointer",
+                "font-bold text-[13px] flex items-center gap-1.5 font-sans",
+                autoPlayEnabled ? "text-green" : "text-ink-mute",
+              )}
+            >
+              {autoPlayEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              <span className="hidden sm:inline">{t('practice.autoPlay')}</span>
+            </button>
+          )}
+          <div className="border-2 border-green rounded-[10px] px-3.5 py-2 flex items-center gap-1.5 text-green font-black font-mono text-base">
+            <Clock className="w-4 h-4" />
+            {formatTime(timer)}
           </div>
         </div>
 
-        <Card className="border-4 border-primary/30 shadow-2xl bg-card">
-          <CardHeader className="border-b-2 border-border/50 bg-muted/30">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base font-semibold text-muted-foreground">
-                {t('practice.cardProgress', { current: currentCardNumber, total: displayTotal })}
-              </CardTitle>
-              <div className="flex gap-2">
-                <span className="text-sm px-3 py-1.5 bg-primary/20 text-primary rounded-full capitalize font-medium">
-                  {t(`practice.states.${currentCard.state}`)}
-                </span>
-                <span className="text-sm px-3 py-1.5 bg-muted rounded-full font-medium">{t('practice.reps', { count: currentCard.reps })}</span>
-              </div>
+        {/* Card */}
+        <DuoCard key={currentIndex} className="anim-slide overflow-hidden p-0">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b-2 border-line bg-[#FCFAF2]">
+            <div className="text-ink-mute text-sm font-bold">
+              {t('practice.cardProgress', { current: currentCardNumber, total: displayTotal })}
             </div>
-          </CardHeader>
-          <CardContent className="pt-16 pb-8">
-            <div className="text-center space-y-8">
-              <div className="space-y-4">
-                <p className="text-base text-muted-foreground font-medium">{t('practice.englishWord')}</p>
-                <div className="flex items-center justify-center gap-4">
-                  <h2 className="text-6xl font-bold text-primary">{currentCard.word}</h2>
-                  <SpeakerButton
-                    text={currentCard.word}
-                    size="lg"
-                  />
-                </div>
-              </div>
+            <div className="flex gap-2">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-green-soft text-green-ink text-[13px] font-extrabold capitalize border-2 border-transparent">
+                {t(`practice.states.${currentCard.state}`)}
+              </span>
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-paper border-2 border-line text-ink text-[13px] font-extrabold">
+                {t('practice.reps', { count: currentCard.reps })}
+              </span>
+            </div>
+          </div>
 
-              {showTranslation ? (
-                <div className="space-y-6 pt-8 border-t-2">
-                  <div className="space-y-2">
-                    <p className="text-base text-muted-foreground font-medium">{t('practice.translation')}</p>
-                    <h3 className="text-3xl font-bold text-foreground">
-                      {currentCard.translation || t('practice.noTranslation')}
-                    </h3>
-                  </div>
-                  {currentCard.sentenceContext && (
-                    <div className="space-y-2">
-                      <p className="text-sm text-muted-foreground font-medium">{t('practice.exampleSentence')}</p>
-                      <p className="text-lg text-muted-foreground italic">
-                        {currentCard.sentenceContext}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={handleShowTranslation}
-                  className="mt-8 bg-transparent text-lg px-8 py-6"
-                >
-                  {t('practice.showTranslation')}
-                </Button>
-              )}
+          <div className="px-5 pt-14 pb-10 text-center">
+            <div className="text-ink-mute text-sm font-bold">{t('practice.englishWord')}</div>
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <div className="text-[64px] font-black text-green tracking-tight leading-[1]">
+                {currentCard.word}
+              </div>
+              <SpeakerButton text={currentCard.word} size="lg" />
             </div>
 
-            <div className="mt-12 pt-8 border-t-2 border-border/50">
-              <div
-                className={`grid grid-cols-4 gap-4 transition-opacity duration-300 ${!showTranslation ? "opacity-40" : "opacity-100"}`}
+            {!showTranslation ? (
+              <DuoButton
+                variant="secondary"
+                onClick={handleShowTranslation}
+                className="mt-7 px-7"
               >
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => handleRating("again")}
-                  disabled={!showTranslation}
-                  className={`group h-24 flex flex-col justify-center items-center gap-1 border-2 transition-all duration-150 hover:border-red-500 hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none ${
-                    highlightedRating === 'again' ? 'border-red-500 bg-red-100 text-red-700 scale-105' : ''
-                  }`}
-                >
-                  <span className="font-semibold text-base">{t('practice.ratings.again')}</span>
-                  <span className="text-xs text-muted-foreground">&lt;1 day</span>
-                  <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'again' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(1)</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => handleRating("hard")}
-                  disabled={!showTranslation}
-                  className={`group h-24 flex flex-col justify-center items-center gap-1 border-2 transition-all duration-150 hover:border-orange-500 hover:bg-orange-50 hover:text-orange-700 disabled:pointer-events-none ${
-                    highlightedRating === 'hard' ? 'border-orange-500 bg-orange-100 text-orange-700 scale-105' : ''
-                  }`}
-                >
-                  <span className="font-semibold text-base">{t('practice.ratings.hard')}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'hard'))}d
-                  </span>
-                  <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'hard' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(2)</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => handleRating("good")}
-                  disabled={!showTranslation}
-                  className={`group h-24 flex flex-col justify-center items-center gap-1 border-2 transition-all duration-150 hover:border-green-500 hover:bg-green-50 hover:text-green-700 disabled:pointer-events-none ${
-                    highlightedRating === 'good' ? 'border-green-500 bg-green-100 text-green-700 scale-105' : ''
-                  }`}
-                >
-                  <span className="font-semibold text-base">{t('practice.ratings.good')}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'good'))}d
-                  </span>
-                  <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'good' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(3)</span>
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => handleRating("easy")}
-                  disabled={!showTranslation}
-                  className={`group h-24 flex flex-col justify-center items-center gap-1 border-2 transition-all duration-150 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 disabled:pointer-events-none ${
-                    highlightedRating === 'easy' ? 'border-blue-500 bg-blue-100 text-blue-700 scale-105' : ''
-                  }`}
-                >
-                  <span className="font-semibold text-base">{t('practice.ratings.easy')}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {Math.round(calculateScheduledDays(cards[currentIndex].stability, 'easy'))}d
-                  </span>
-                  <span className={`transition-opacity text-xs text-muted-foreground ${highlightedRating === 'easy' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>(4)</span>
-                </Button>
+                {t('practice.showTranslation')}
+              </DuoButton>
+            ) : (
+              <div className="anim-bounce mt-5">
+                <div className="text-ink-mute text-[13px] font-mono">
+                  {/* IPA placeholder removed; show only translation */}
+                </div>
+                <div className="text-[28px] font-extrabold mt-2">
+                  {currentCard.translation || t('practice.noTranslation')}
+                </div>
+                {currentCard.sentenceContext && (
+                  <div
+                    className="font-serif text-[17px] italic mt-4 px-4 py-3 bg-cream-2 rounded-[10px] border-l-[3px] border-gold inline-block text-ink-soft"
+                  >
+                    {currentCard.sentenceContext}
+                  </div>
+                )}
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            )}
+          </div>
 
-        {/* Instructions */}
-        {!showTranslation && (
-          <Card className="bg-muted/50 border-primary/20">
-            <CardContent className="pt-4 text-center text-sm text-muted-foreground">
-              {t('practice.instruction')}
-            </CardContent>
-          </Card>
-        )}
+          {/* Rating row */}
+          <div className="px-5 pb-5 pt-1.5">
+            <div className="grid grid-cols-4 gap-3">
+              {(['again', 'hard', 'good', 'easy'] as Rating[]).map((r) => {
+                const colors = RATING_COLORS[r]
+                const interval =
+                  r === 'again'
+                    ? '<1d'
+                    : `${Math.round(calculateScheduledDays(currentCard.stability, r))}d`
+                const highlighted = highlightedRating === r
+                return (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => handleRating(r)}
+                    disabled={!showTranslation}
+                    className={cn(
+                      'group relative rounded-[14px] px-2.5 py-4 cursor-pointer font-sans border-2 transition-[transform,box-shadow] duration-100',
+                      'disabled:cursor-not-allowed',
+                      showTranslation
+                        ? cn(colors.bg, colors.border, colors.text, colors.shadow)
+                        : 'bg-[#FAF6E8] border-line text-ink-mute',
+                      highlighted && 'translate-y-[3px]',
+                    )}
+                  >
+                    {showTranslation && (
+                      <span
+                        className="absolute top-1.5 right-2 text-[10px] font-black opacity-55 font-mono"
+                      >
+                        {colors.key}
+                      </span>
+                    )}
+                    <div className="text-[18px] font-black">{t(`practice.ratings.${r}`)}</div>
+                    <div className="text-[12px] font-bold mt-1 opacity-80">{interval}</div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </DuoCard>
+
+        {/* Keyboard hint */}
+        <DuoCard className="p-4 text-center bg-[#FAF6E8] shadow-none">
+          <span className="text-ink-mute text-sm font-semibold">
+            {t('practice.instruction')}
+          </span>
+        </DuoCard>
       </div>
+    </div>
+  )
+}
+
+function CenterPanel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-green-soft min-h-[calc(100vh-64px)] grid place-items-center p-4">
+      <DuoCard className="w-full max-w-lg p-7 text-center">{children}</DuoCard>
     </div>
   )
 }

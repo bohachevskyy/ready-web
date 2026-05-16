@@ -8,6 +8,7 @@ module.exports = {
       fontFamily: {
         sans: ['Nunito', 'system-ui', 'sans-serif'],
         serif: ['"Source Serif 4"', 'Georgia', 'serif'],
+        mono: ['"SF Mono"', 'Menlo', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -49,11 +50,60 @@ module.exports = {
           accent: "hsl(var(--sidebar-accent))",
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
         },
+        // Brand surfaces
+        cream: "hsl(var(--cream))",
+        "cream-2": "hsl(var(--cream-2))",
+        paper: "hsl(var(--paper))",
+        ink: {
+          DEFAULT: "hsl(var(--ink))",
+          soft: "hsl(var(--ink-soft))",
+          mute: "hsl(var(--ink-mute))",
+        },
+        line: {
+          DEFAULT: "hsl(var(--line))",
+          2: "hsl(var(--line-2))",
+        },
+        // Brand accents
+        green: {
+          DEFAULT: "hsl(var(--green))",
+          deep: "hsl(var(--green-deep))",
+          soft: "hsl(var(--green-soft))",
+          ink: "hsl(var(--green-ink))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          deep: "hsl(var(--gold-deep))",
+          soft: "hsl(var(--gold-soft))",
+        },
+        flame: {
+          DEFAULT: "hsl(var(--flame))",
+          deep: "hsl(var(--flame-deep))",
+        },
+        heart: {
+          DEFAULT: "hsl(var(--heart))",
+          deep: "hsl(var(--heart-deep))",
+        },
+        brand: {
+          blue: "hsl(var(--blue))",
+          "blue-deep": "hsl(var(--blue-deep))",
+          "blue-soft": "hsl(var(--blue-soft))",
+          purple: "hsl(var(--purple))",
+          "purple-deep": "hsl(var(--purple-deep))",
+          "purple-soft": "hsl(var(--purple-soft))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 6px)",
+        "2xl": "calc(var(--radius) + 12px)",
+      },
+      boxShadow: {
+        // 3D-button bottom-shadow trick
+        "duo": "0 5px 0 hsl(var(--green-deep))",
+        "duo-press": "0 2px 0 hsl(var(--green-deep))",
+        "duo-line": "0 1px 0 rgba(0,0,0,.04), 0 4px 0 hsl(var(--line))",
       },
     },
   },

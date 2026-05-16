@@ -5,7 +5,7 @@ import { SignupModal } from "../SignupModal"
 import { PublicWordDrawer } from "./PublicWordDrawer"
 import { StoryContent } from "../StoryReader/StoryContent"
 import { ReadingProgress } from "../ReadingProgress"
-import { Button } from "../ui/button"
+import { DuoButton } from "../ui/duo-button"
 import { usePublicStoryReader } from "./usePublicStoryReader"
 import { useTranslation } from "../../i18n/useTranslation"
 
@@ -73,40 +73,39 @@ export function PublicStoryReader() {
   // Show unauthorized page if story failed to load
   if (storyError) {
     return (
-      <div className="flex h-screen bg-background items-center justify-center p-4">
+      <div className="flex h-screen bg-cream items-center justify-center p-4">
         <div className="max-w-md w-full text-center space-y-6">
           <div className="space-y-2">
-            <h1 className="text-2xl font-semibold text-foreground">
+            <h1 className="font-black text-[28px] text-ink tracking-tight m-0">
               {t('publicStory.signupRequired')}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-ink-mute">
               {t('publicStory.signupRequiredDescription')}
             </p>
           </div>
-          <Button
+          <DuoButton
             onClick={() => navigate('/login')}
             size="lg"
-            className="w-full"
+            block
           >
             {t('publicStory.signupToRead')}
-          </Button>
+          </DuoButton>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="flex h-screen bg-background">
-      <div ref={scrollContainerRef} className="flex-1 flex flex-col overflow-auto relative">
+    <div className="flex h-screen bg-cream">
+      <div ref={scrollContainerRef} className="flex-1 flex flex-col overflow-auto relative scroll-cream">
         <ReadingProgress progress={scrollProgress} />
 
-        <div className="max-w-prose w-full mx-auto px-6 sm:px-8 pt-10 pb-16">
+        <div className="max-w-[700px] w-full mx-auto px-6 sm:px-8 pt-10 pb-16">
           {storyTitle && (
-            <header className="mb-10">
-              <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground tracking-tight">
+            <header className="mb-7">
+              <h1 className="font-serif text-[42px] font-bold leading-[1.05] text-ink tracking-tight m-0">
                 {storyTitle}
               </h1>
-              <div className="mt-4 h-px bg-border/60 w-16" />
             </header>
           )}
 
@@ -118,7 +117,7 @@ export function PublicStoryReader() {
 
           {!storyError && storyText && (
             <div className="mt-12 mb-8 text-center">
-              <p className="text-muted-foreground text-sm">
+              <p className="text-ink-mute text-sm font-semibold">
                 {t('publicStory.clickWordToSignup')}
               </p>
             </div>

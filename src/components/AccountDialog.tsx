@@ -22,8 +22,8 @@ export function AccountDialog({ open, onClose }: AccountDialogProps) {
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-4"
       onClick={handleOverlayClick}
     >
-      <div role="dialog" aria-modal="true">
-        <AccountSettingsForm onClose={onClose} resetKey="dialog" />
+      <div role="dialog" aria-modal="true" className="w-full max-w-[760px]">
+        <AccountSettingsForm resetKey="dialog" />
       </div>
     </div>
   );
