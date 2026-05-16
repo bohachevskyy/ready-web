@@ -122,19 +122,18 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-cream">
       {/* Main reading area */}
-      <div ref={scrollContainerRef} className="flex-1 flex flex-col overflow-auto relative">
+      <div ref={scrollContainerRef} className="flex-1 flex flex-col overflow-auto relative scroll-cream">
         {/* Reading progress bar */}
         {view === 'story' && <ReadingProgress progress={scrollProgress} />}
 
-        <div className="max-w-prose w-full mx-auto px-6 sm:px-8 pt-10 pb-24">
+        <div className="max-w-[700px] w-full mx-auto px-6 sm:px-8 pt-10 pb-24">
           {view === 'story' && storyTitle && (
-            <header className="mb-10">
-              <h1 className="font-serif text-3xl sm:text-4xl font-semibold leading-tight text-foreground tracking-tight">
+            <header className="mb-7">
+              <h1 className="font-serif text-[42px] font-bold leading-[1.05] text-ink tracking-tight m-0">
                 {storyTitle}
               </h1>
-              <div className="mt-4 h-px bg-border/60 w-16" />
             </header>
           )}
 
@@ -150,6 +149,7 @@ import { OnboardingTooltip } from "../onboarding/OnboardingTooltip"
               storyText={storyText}
               storyError={storyError}
               onWordClick={handleWordClick}
+              savedWords={savedWords}
             />
           )}
 

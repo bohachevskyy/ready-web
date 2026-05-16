@@ -1,7 +1,8 @@
-import { ChevronRight } from "lucide-react"
-import { Button } from "../ui/button"
-import { Label } from "../ui/label"
+import { useState } from "react"
+import { ChevronRight, ChevronDown } from "lucide-react"
 import { useTranslation } from "../../i18n/useTranslation"
+import { DuoButton } from "../ui/duo-button"
+import { cn } from "../../lib/utils"
 
 interface BirthdateStepProps {
   birthMonth: number
@@ -13,7 +14,7 @@ interface BirthdateStepProps {
 }
 
 const currentYear = new Date().getFullYear()
-const years = Array.from({ length: 96 }, (_, i) => currentYear - 5 - i) // Ages 5-100
+const years = Array.from({ length: 96 }, (_, i) => currentYear - 5 - i)
 
 export function BirthdateStep({
   birthMonth,
@@ -24,7 +25,7 @@ export function BirthdateStep({
   onBack,
 }: BirthdateStepProps) {
   const { t, tArray } = useTranslation()
-  const months = tArray('data.months')
+  const months = tArray("data.months")
 
   const calculateAgeGroup = (year: number): string => {
     const age = currentYear - year
@@ -36,63 +37,116 @@ export function BirthdateStep({
   const isValid = birthMonth > 0 && birthYear > 0
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-semibold">{t('onboarding.birthdate.question')}</h2>
-        <p className="text-sm text-muted-foreground mt-2">{t('onboarding.birthdate.description')}</p>
+    <div>
+      <h2 className="font-black text-[26px] m-0 text-center">
+        {t("onboarding.birthdate.question")}
+      </h2>
+      <p className="text-ink-soft text-[15px] text-center mt-2 mb-7">
+        {t("onboarding.birthdate.description")}
+      </p>
+
+      <div className="grid grid-cols-2 gap-3.5">
+        <NamedSelect
+          label={t("onboarding.birthdate.month")}
+          value={birthMonth}
+          onChange={(v) => onMonthChange(Number(v))}
+          options={[
+            { value: 0, label: t("onboarding.birthdate.selectMonth") },
+            ...months.map((m, i) => ({ value: i + 1, label: m })),
+          ]}
+        />
+        <NamedSelect
+          label={t("onboarding.birthdate.year")}
+          value={birthYear}
+          onChange={(v) => onYearChange(Number(v))}
+          options={[
+            { value: 0, label: t("onboarding.birthdate.selectYear") },
+            ...years.map((y) => ({ value: y, label: String(y) })),
+          ]}
+        />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label>{t('onboarding.birthdate.month')}</Label>
-          <select
-            value={birthMonth}
-            onChange={(e) => onMonthChange(Number(e.target.value))}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-          >
-            <option value={0}>{t('onboarding.birthdate.selectMonth')}</option>
-            {months.map((month, index) => (
-              <option key={month} value={index + 1}>
-                {month}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>{t('onboarding.birthdate.year')}</Label>
-          <select
-            value={birthYear}
-            onChange={(e) => onYearChange(Number(e.target.value))}
-            className="w-full rounded-lg border border-border bg-card px-4 py-3 text-base focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-          >
-            <option value={0}>{t('onboarding.birthdate.selectYear')}</option>
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
+      <div
+        className={cn(
+          "mt-5 px-6 py-5 rounded-[14px] text-center transition-all border-2",
+          isValid
+            ? "bg-green-soft border-[#BBE3A0]"
+            : "bg-[#FAF6E8] border-line",
+        )}
+      >
+        <div className="text-ink-mute text-[13px] font-bold">{t("onboarding.birthdate.ageGroup")}</div>
+        <div
+          className={cn(
+            "text-[22px] font-black mt-1",
+            isValid ? "text-green-ink" : "text-ink-mute",
+          )}
+        >
+          {birthYear > 0 ? calculateAgeGroup(birthYear) : "—"}
         </div>
       </div>
 
-      {birthYear > 0 && (
-        <div className="rounded-lg bg-muted/50 p-4 text-center">
-          <p className="text-sm text-muted-foreground">{t('onboarding.birthdate.ageGroup')}</p>
-          <p className="text-lg font-semibold text-foreground">{calculateAgeGroup(birthYear)}</p>
-        </div>
-      )}
-
-      <Button onClick={onNext} className="w-full" size="lg" disabled={!isValid}>
-        {t('common.continue')}
-        <ChevronRight className="h-4 w-4 ml-2" />
-      </Button>
+      <DuoButton size="lg" block className="mt-5" disabled={!isValid} onClick={onNext}>
+        {t("common.continue")} <ChevronRight className="h-[18px] w-[18px]" />
+      </DuoButton>
 
       {onBack && (
-        <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
-          {t('common.back')}
-        </Button>
+        <div className="mt-5 text-center">
+          <button
+            type="button"
+            onClick={onBack}
+            className="bg-transparent border-0 cursor-pointer text-ink-soft font-bold text-[15px] px-2 py-2"
+          >
+            {t("common.back")}
+          </button>
+        </div>
       )}
     </div>
+  )
+}
+
+function NamedSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string
+  value: number
+  onChange: (v: number) => void
+  options: Array<{ value: number; label: string }>
+}) {
+  const [focused, setFocused] = useState(false)
+  const hasValue = value > 0
+  return (
+    <label className="block relative">
+      <div className="text-sm font-extrabold mb-1.5">{label}</div>
+      <select
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        className={cn(
+          "w-full pl-4 pr-10 py-3.5 bg-[#FAF6E8] rounded-[12px] outline-none appearance-none cursor-pointer",
+          "text-base font-semibold transition-[border-color,box-shadow]",
+          "border-2",
+          focused
+            ? "border-green shadow-[0_0_0_4px_hsl(var(--green-soft))]"
+            : hasValue
+            ? "border-green"
+            : "border-line",
+        )}
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        className="absolute right-3.5 text-ink-mute pointer-events-none"
+        style={{ top: "calc(50% + 11px)" }}
+        size={18}
+      />
+    </label>
   )
 }

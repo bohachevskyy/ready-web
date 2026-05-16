@@ -1,30 +1,33 @@
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { signInWithGoogle, signInWithApple, signInWithEmail, signUpWithEmail } from '../services/firebaseAuth';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Apple, Mail, Eye, EyeOff } from 'lucide-react';
+import {
+  signInWithGoogle,
+  signInWithApple,
+  signInWithEmail,
+  signUpWithEmail,
+} from '../services/firebaseAuth';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
+import { DuoButton } from './ui/duo-button';
+import { cn } from '../lib/utils';
 
 interface AuthFormProps {
   onSuccess: () => void;
 }
+
+type Mode = 'signup' | 'signin';
 
 export function AuthForm({ onSuccess }: AuthFormProps) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { error } = useAppSelector((state) => state.auth);
 
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [method, setMethod] = useState<'choice' | 'email'>('choice');
-  const [emailMode, setEmailMode] = useState<'signin' | 'signup'>('signup');
+  const [mode, setMode] = useState<Mode>('signup');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSocialLogin = async (provider: 'google' | 'apple') => {
     try {
@@ -41,42 +44,31 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
     }
   };
 
-  const handleEmailSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
       setAuthError(t('auth.errors.emailPasswordRequired'));
       return;
     }
-
-    if (emailMode === 'signup') {
-      if (!confirmPassword) {
-        setAuthError(t('auth.errors.confirmPasswordRequired'));
-        return;
-      }
-      if (password !== confirmPassword) {
-        setAuthError(t('auth.errors.passwordMismatch'));
-        return;
-      }
-      if (password.length < 6) {
-        setAuthError(t('auth.errors.passwordTooShort'));
-        return;
-      }
+    if (mode === 'signup' && password.length < 6) {
+      setAuthError(t('auth.errors.passwordTooShort'));
+      return;
     }
 
     setIsSubmitting(true);
     setAuthError(null);
 
     try {
-      if (emailMode === 'signup') {
+      if (mode === 'signup') {
         await signUpWithEmail(email, password, dispatch);
       } else {
         await signInWithEmail(email, password, dispatch);
       }
       onSuccess();
     } catch (err: any) {
-      console.error(`Error ${emailMode === 'signup' ? 'signing up' : 'signing in'} with email:`, err);
-      if (emailMode === 'signin') {
+      console.error(err);
+      if (mode === 'signin') {
         if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
           setAuthError(t('auth.errors.invalidCredentials'));
         } else if (err.code === 'auth/user-not-found') {
@@ -102,170 +94,151 @@ export function AuthForm({ onSuccess }: AuthFormProps) {
     }
   };
 
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    setAuthError(null);
+  };
+
   return (
-    <>
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">{t('auth.welcome')}</h1>
-        <p className="text-muted-foreground">{t('auth.signInPrompt')}</p>
+    <div className="anim-slide w-full max-w-[400px] mx-auto">
+      {/* Tab toggle */}
+      <div className="flex gap-1.5 bg-cream-2 p-1.5 rounded-[14px] mb-6">
+        {(['signup', 'signin'] as Mode[]).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => switchMode(m)}
+            className={cn(
+              'flex-1 border-0 py-2.5 font-black text-[13px] tracking-wider uppercase rounded-[10px] cursor-pointer font-sans',
+              mode === m
+                ? 'bg-paper text-ink shadow-[0_2px_0_hsl(var(--line-2))]'
+                : 'bg-transparent text-ink-mute',
+            )}
+          >
+            {m === 'signup' ? t('auth.createAccount') || 'Create account' : t('auth.signInTab') || 'Sign in'}
+          </button>
+        ))}
       </div>
 
-      {method === 'choice' && (
-        <div className="space-y-4">
-          <Button
+      <h2 className="font-black text-[30px] leading-[1] mb-1.5 tracking-tight">
+        {mode === 'signup'
+          ? t('auth.signupHeadline') || 'Start reading today.'
+          : t('auth.signinHeadline') || 'Welcome back.'}
+      </h2>
+      <p className="text-ink-soft text-[15px] mt-0 mb-5">
+        {mode === 'signup'
+          ? t('auth.signupSub') || 'Takes 30 seconds. No card needed.'
+          : t('auth.signinSub') || 'Pick up where you left off.'}
+      </p>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <label className="flex items-center gap-3 bg-paper border-2 border-line rounded-[14px] px-4">
+          <Mail className="h-5 w-5 text-ink-mute shrink-0" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('auth.email.placeholder')}
+            disabled={isSubmitting}
+            autoComplete="email"
+            className="flex-1 border-0 outline-none bg-transparent text-base font-semibold py-3.5 placeholder:text-ink-mute"
+          />
+        </label>
+        <label className="flex items-center gap-3 bg-paper border-2 border-line rounded-[14px] px-4">
+          <Lock className="h-5 w-5 text-ink-mute shrink-0" />
+          <input
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={
+              mode === 'signup'
+                ? t('auth.passwordHint') || 'At least 6 characters'
+                : t('auth.email.passwordPlaceholder')
+            }
+            disabled={isSubmitting}
+            autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
+            className="flex-1 border-0 outline-none bg-transparent text-base font-semibold py-3.5 placeholder:text-ink-mute"
+          />
+          <button
             type="button"
-            variant="outline"
-            className="w-full bg-transparent"
-            size="lg"
-            onClick={() => handleSocialLogin('google')}
+            onClick={() => setShowPassword((s) => !s)}
+            className="bg-transparent border-0 text-ink-mute cursor-pointer p-1"
+            tabIndex={-1}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
-            <svg className="h-5 w-5" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            {t('auth.continueWithGoogle')}
-          </Button>
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </label>
 
-          {process.env.REACT_APP_ENABLE_APPLE_LOGIN === 'true' && (
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full bg-transparent"
-              size="lg"
-              onClick={() => handleSocialLogin('apple')}
-            >
-              <Apple className="h-5 w-5" />
-              {t('auth.continueWithApple')}
-            </Button>
-          )}
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">{t('auth.or')}</span>
-            </div>
+        {(authError || error) && (
+          <div className="anim-shake bg-[#FFE3E6] text-heart-deep border-2 border-[#FFC2C8] px-3.5 py-2.5 rounded-[12px] font-bold text-sm">
+            {authError || error}
           </div>
+        )}
 
-          <Button
+        <DuoButton type="submit" size="lg" block className="mt-1.5" disabled={isSubmitting}>
+          {isSubmitting
+            ? mode === 'signup'
+              ? t('common.signingUp')
+              : t('common.signingIn')
+            : mode === 'signup'
+            ? t('auth.signupCta') || "Let's go"
+            : t('auth.email.signInButton')}
+        </DuoButton>
+      </form>
+
+      <div className="flex items-center gap-3 my-5 text-ink-mute font-bold text-xs">
+        <div className="flex-1 h-0.5 bg-line" />
+        {t('auth.or') || 'OR'}
+        <div className="flex-1 h-0.5 bg-line" />
+      </div>
+
+      <div className="flex flex-col gap-2.5">
+        <DuoButton
+          type="button"
+          variant="secondary"
+          block
+          onClick={() => handleSocialLogin('google')}
+          disabled={isSubmitting}
+        >
+          <GoogleIcon /> {t('auth.continueWithGoogle')}
+        </DuoButton>
+
+        {process.env.REACT_APP_ENABLE_APPLE_LOGIN === 'true' && (
+          <DuoButton
             type="button"
-            variant="outline"
-            className="w-full bg-transparent"
-            size="lg"
-            onClick={() => setMethod('email')}
+            variant="secondary"
+            block
+            onClick={() => handleSocialLogin('apple')}
+            disabled={isSubmitting}
           >
-            <Mail className="h-5 w-5" />
-            {t('auth.continueWithEmail')}
-          </Button>
-        </div>
-      )}
+            <AppleIcon /> {t('auth.continueWithApple')}
+          </DuoButton>
+        )}
+      </div>
 
-      {method === 'email' && (
-        <form onSubmit={handleEmailSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">{t('auth.email.label')}</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder={t('auth.email.placeholder')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isSubmitting}
-              className="text-base"
-            />
-          </div>
+      <p className="text-ink-mute text-[11px] mt-5 text-center">
+        {t('auth.terms') || 'By continuing you agree to our Terms and Privacy Policy.'}
+      </p>
+    </div>
+  );
+}
 
-          <div className="space-y-2">
-            <Label htmlFor="password">{t('auth.email.password')}</Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder={t('auth.email.passwordPlaceholder')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={isSubmitting}
-                className="text-base pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                tabIndex={-1}
-              >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
+function GoogleIcon() {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" aria-hidden>
+      <path fill="#4285F4" d="M22 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.6c-.2 1.3-1 2.4-2.1 3.1v2.6h3.4c2-1.8 3.1-4.5 3.1-7.6Z"/>
+      <path fill="#34A853" d="M12 22c2.8 0 5.2-.9 6.9-2.5l-3.4-2.6c-.9.6-2.1 1-3.5 1-2.7 0-5-1.8-5.8-4.3H2.7v2.7A10 10 0 0 0 12 22Z"/>
+      <path fill="#FBBC05" d="M6.2 13.6c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V6.9H2.7A10 10 0 0 0 2 12c0 1.6.4 3.1 1 4.3l3.2-2.7Z"/>
+      <path fill="#EA4335" d="M12 5.7c1.5 0 2.9.5 4 1.5l3-3A10 10 0 0 0 12 2 10 10 0 0 0 2.7 6.9l3.5 2.7C7 7.4 9.3 5.7 12 5.7Z"/>
+    </svg>
+  );
+}
 
-          {emailMode === 'signup' && (
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">{t('auth.email.confirmPassword')}</Label>
-              <div className="relative">
-                <Input
-                  id="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder={t('auth.email.confirmPasswordPlaceholder')}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={isSubmitting}
-                  className="text-base pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  tabIndex={-1}
-                >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-          )}
-
-          <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? (emailMode === 'signin' ? t('common.signingIn') : t('common.signingUp')) : (emailMode === 'signin' ? t('auth.email.signInButton') : t('auth.email.signUpButton'))}
-          </Button>
-
-          <div className="text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setEmailMode(emailMode === 'signin' ? 'signup' : 'signin');
-                setConfirmPassword('');
-                setAuthError(null);
-              }}
-              className="text-sm text-primary hover:underline"
-            >
-              {emailMode === 'signin' ? t('auth.email.noAccount') : t('auth.email.hasAccount')}
-            </button>
-          </div>
-
-          <Button
-            type="button"
-            variant="ghost"
-            className="w-full"
-            onClick={() => {
-              setMethod('choice');
-              setEmail('');
-              setPassword('');
-              setConfirmPassword('');
-              setEmailMode('signup');
-              setAuthError(null);
-            }}
-          >
-            {t('auth.email.backToOptions')}
-          </Button>
-        </form>
-      )}
-
-      {(error || authError) && (
-        <div className="mt-4 p-3 bg-destructive/10 text-destructive rounded-md text-sm text-center">
-          {error || authError}
-        </div>
-      )}
-    </>
+function AppleIcon() {
+  return (
+    <svg width={20} height={20} viewBox="0 0 24 24" fill="#000" aria-hidden>
+      <path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.4-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9-.7 0-1.9-.8-3.1-.8-1.6 0-3.1 1-4 2.5-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.5 1.2 0 1.7-.8 3.1-.8 1.4 0 1.9.8 3.1.8 1.3 0 2.1-1.2 2.9-2.4.9-1.4 1.3-2.7 1.3-2.8-.1 0-2.6-1-2.6-3.5ZM14.2 5.6c.7-.8 1.1-2 1-3.1-1 0-2.1.7-2.8 1.5-.6.7-1.2 1.9-1 3 1.1 0 2.2-.6 2.8-1.4Z"/>
+    </svg>
   );
 }

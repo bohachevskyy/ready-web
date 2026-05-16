@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
+import { Check, MessageSquare } from 'lucide-react';
 import { useTranslation } from '../i18n/useTranslation';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Label } from './ui/label';
 import { Toast } from './ui/toast';
 import { useFeedback } from '../hooks/useFeedback';
+import { DuoCard } from './ui/duo-card';
+import { DuoButton } from './ui/duo-button';
+
+const RATING_CHIPS = ['❤️ Love it', "🙂 It's good", '🤔 Hmm', '😬 Frustrating'];
 
 export function FeedbackSection() {
   const { t } = useTranslation();
@@ -13,56 +14,80 @@ export function FeedbackSection() {
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    if (isSuccess) {
-      setShowToast(true);
-    }
+    if (isSuccess) setShowToast(true);
   }, [isSuccess]);
 
+  const handleChip = (chip: string) => {
+    setMessage(message ? `${message}\n${chip}` : chip);
+  };
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <MessageSquare className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-2xl">{t('feedback.title')}</CardTitle>
-              <CardDescription>{t('feedback.description')}</CardDescription>
-            </div>
+    <DuoCard className="anim-slide p-7">
+      <div className="flex items-center gap-3.5">
+        <div className="w-[52px] h-[52px] rounded-full bg-green-soft text-green grid place-items-center shrink-0">
+          <MessageSquare className="h-6 w-6" strokeWidth={2.2} />
+        </div>
+        <div>
+          <h2 className="font-black text-[26px] m-0 leading-tight">{t('feedback.title')}</h2>
+          <div className="text-ink-mute text-sm font-semibold mt-0.5">
+            {t('feedback.description')}
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="feedback-message" className="text-base font-semibold">
-              {t('feedback.messageLabel')}
-            </Label>
-            <textarea
-              id="feedback-message"
-              className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-              placeholder={t('feedback.placeholder')}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
+        </div>
+      </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+      <div className="mt-5">
+        <div className="text-[15px] font-black mb-2">{t('feedback.messageLabel')}</div>
+        <textarea
+          id="feedback-message"
+          rows={5}
+          className="w-full min-h-[120px] px-4 py-3.5 bg-[#FAF6E8] border-2 border-line rounded-[12px] text-base font-semibold outline-none resize-y leading-[1.5] text-ink placeholder:text-ink-mute focus:border-green focus:shadow-[0_0_0_4px_hsl(var(--green-soft))] transition-[border-color,box-shadow] font-sans"
+          placeholder={t('feedback.placeholder')}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          disabled={isSubmitting}
+        />
+      </div>
 
-          <div className="flex pt-2">
-            <Button
-              onClick={submitFeedback}
-              disabled={isSubmitting || !message.trim()}
-              size="lg"
-              className="flex-1"
-            >
-              {isSubmitting ? t('feedback.submitting') : t('feedback.submit')}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mt-3.5 flex items-center gap-2.5 flex-wrap">
+        <span className="text-ink-mute text-[13px] font-extrabold">
+          {t('feedback.quickRating') || 'Quick rating:'}
+        </span>
+        {RATING_CHIPS.map((chip) => (
+          <button
+            key={chip}
+            type="button"
+            onClick={() => handleChip(chip)}
+            disabled={isSubmitting}
+            className="bg-paper border-2 border-line rounded-[12px] px-3 py-2 text-[12px] font-bold text-ink cursor-pointer hover:brightness-105 shadow-[0_4px_0_hsl(var(--line-2))] active:translate-y-[3px] active:shadow-[0_1px_0_hsl(var(--line-2))] font-sans"
+          >
+            {chip}
+          </button>
+        ))}
+      </div>
 
-      {showToast && <Toast message={t('feedback.success')} onClose={() => setShowToast(false)} />}
-    </div>
+      {error && <p className="text-sm font-bold text-heart-deep mt-3">{error}</p>}
+
+      <DuoButton
+        size="lg"
+        block
+        className="mt-5"
+        onClick={submitFeedback}
+        disabled={isSubmitting || !message.trim()}
+      >
+        {isSubmitting ? (
+          t('feedback.submitting')
+        ) : isSuccess ? (
+          <>
+            <Check className="h-[18px] w-[18px]" /> {t('feedback.thanks') || 'Thanks!'}
+          </>
+        ) : (
+          t('feedback.submit')
+        )}
+      </DuoButton>
+
+      {showToast && (
+        <Toast message={t('feedback.success')} onClose={() => setShowToast(false)} />
+      )}
+    </DuoCard>
   );
 }

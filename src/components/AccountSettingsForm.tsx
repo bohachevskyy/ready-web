@@ -1,23 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { User } from 'lucide-react';
+import { Check, User } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { Button } from './ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Label } from './ui/label';
 import { Toast } from './ui/toast';
 import { updateUserLanguageLevel } from '../store/authSlice';
 import { updateLanguageLevel } from '../store/userSlice';
 import { useUserAge } from '../hooks/useUserAge';
+import { useTranslation } from '../i18n/useTranslation';
+import { DuoCard } from './ui/duo-card';
+import { DuoButton } from './ui/duo-button';
+import { LevelSlider, type LevelOption } from './onboarding/LevelSlider';
+import { LevelBadge } from './brand/icons';
 
 type LanguageLevel = 1 | 2 | 3 | 4 | 5;
-
-const languageLevels = [
-  { level: 1, label: "A1", color: "bg-emerald-400", description: "Beginner" },
-  { level: 2, label: "A2", color: "bg-green-400", description: "Elementary" },
-  { level: 3, label: "B1", color: "bg-yellow-400", description: "Intermediate" },
-  { level: 4, label: "B2", color: "bg-orange-400", description: "Upper Intermediate" },
-  { level: 5, label: "C1", color: "bg-red-400", description: "Advanced" },
-];
 
 export function useAccountSettings(resetKey?: unknown) {
   const dispatch = useAppDispatch();
@@ -56,11 +50,11 @@ export function useAccountSettings(resetKey?: unknown) {
     setIsSuccess(false);
 
     try {
-      await dispatch(updateLanguageLevel({
-        language_level: languageLevel,
-      })).unwrap();
+      await dispatch(
+        updateLanguageLevel({ language_level: languageLevel }),
+      ).unwrap();
 
-      dispatch(updateUserLanguageLevel(languageLevel));
+      dispatch(updateUserLanguageLevel(languageLevel as LanguageLevel));
       setIsSuccess(true);
     } catch (err) {
       console.error('Failed to update language level', err);
@@ -82,164 +76,137 @@ export function useAccountSettings(resetKey?: unknown) {
 }
 
 interface AccountSettingsFormProps {
-  onClose?: () => void;
   resetKey?: unknown;
   className?: string;
-  closeLabel?: string;
-  showCloseButton?: boolean;
 }
 
-export function AccountSettingsForm({
-  onClose,
-  resetKey,
-  className,
-  closeLabel = 'Cancel',
-  showCloseButton = true,
-}: AccountSettingsFormProps) {
-  const { fullName, ageGroup, languageLevel, setLanguageLevel, isSaving, error, isSuccess, handleSave } =
-    useAccountSettings(resetKey);
+export function AccountSettingsForm({ resetKey, className }: AccountSettingsFormProps) {
+  const { t, tObject } = useTranslation();
+  const {
+    fullName,
+    ageGroup,
+    languageLevel,
+    setLanguageLevel,
+    isSaving,
+    error,
+    isSuccess,
+    handleSave,
+  } = useAccountSettings(resetKey);
 
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    if (isSuccess) {
-      setShowToast(true);
-    }
+    if (isSuccess) setShowToast(true);
   }, [isSuccess]);
 
+  const levelsObj = tObject('data.levels');
+  const levels: LevelOption[] = Object.entries(levelsObj).map(([, value]) => ({
+    id: value.label,
+    name: value.description,
+  }));
+  const idx = Math.max(0, Math.min(levels.length - 1, languageLevel - 1));
+  const lvl = levels[idx];
+
   return (
-    <div className={`mx-auto max-w-2xl ${className ?? ''}`.trim()}>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <User className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <CardTitle className="text-2xl">Account Settings</CardTitle>
-              <CardDescription>Manage your profile and learning preferences</CardDescription>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-8">
-          <div className="space-y-2">
-            <Label className="text-base font-semibold">Name</Label>
-            <div className="rounded-lg border border-border bg-muted/50 px-4 py-3 text-base text-foreground">
-              {fullName}
-            </div>
-          </div>
+    <DuoCard className={`anim-slide p-7 ${className ?? ''}`.trim()}>
+      <SectionHeader
+        title={t('account.settings')}
+        subtitle={t('account.settingsSubtitle') || 'Manage your profile and learning preferences'}
+        icon={<User className="h-6 w-6" strokeWidth={2.2} />}
+      />
 
-          <div className="space-y-3">
-            <Label className="text-base font-semibold">Age Group</Label>
-            <div className="rounded-lg border-2 border-primary bg-primary/10 px-6 py-4 text-center text-lg font-medium text-foreground">
-              {ageGroup}
-            </div>
-          </div>
+      {/* Name */}
+      <div className="mt-5">
+        <FieldLabel>{t('account.name')}</FieldLabel>
+        <div
+          className="rounded-[12px] border-2 border-line bg-[#FAF6E8] px-4 py-3.5 text-base font-semibold text-ink"
+        >
+          {fullName}
+        </div>
+      </div>
 
-          {/* Language Complexity Section */}
-          <div className="space-y-4">
-            <div>
-              <Label className="text-base font-semibold">Language Complexity</Label>
-              <p className="text-sm text-muted-foreground">
-                Choose your preferred difficulty level for reading materials
-              </p>
-            </div>
+      {/* Age group */}
+      <div className="mt-5">
+        <FieldLabel>{t('account.ageGroup')}</FieldLabel>
+        <div className="px-5 py-4 border-2 border-green rounded-[12px] bg-green-soft text-green-ink font-black text-lg text-center">
+          {ageGroup}
+        </div>
+      </div>
 
-            {/* Current Level Display */}
-            <div className="flex items-center justify-center gap-4 rounded-lg bg-muted/50 p-6">
-              <div
-                className={`flex h-16 w-16 items-center justify-center rounded-full ${
-                  languageLevels[languageLevel - 1].color
-                } text-2xl font-bold text-white shadow-lg`}
-              >
-                {languageLevels[languageLevel - 1].label}
-              </div>
-              <div>
-                <p className="text-xl font-semibold">{languageLevels[languageLevel - 1].description}</p>
-                <p className="text-sm text-muted-foreground">Level {languageLevel} of 5</p>
-              </div>
-            </div>
-
-            {/* Custom Slider */}
-            <div className="space-y-4">
-              <div className="relative px-2">
-                {/* Level markers */}
-                <div className="mb-3 flex justify-between">
-                  {languageLevels.map((level) => (
-                    <div key={level.level} className="flex flex-col items-center gap-1">
-                      <div
-                        className={`h-3 w-3 rounded-full transition-all ${
-                          languageLevel >= level.level ? level.color : "bg-muted"
-                        }`}
-                      />
-                      <span
-                        className={`text-xs font-medium transition-colors ${
-                          languageLevel === level.level ? "text-foreground" : "text-muted-foreground"
-                        }`}
-                      >
-                        {level.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Slider track */}
-                <div className="relative h-2 rounded-full bg-muted">
-                  {/* Progress bar */}
-                  <div
-                    className={`absolute left-0 top-0 h-full rounded-full transition-all ${
-                      languageLevels[languageLevel - 1].color
-                    }`}
-                    style={{ width: `${((languageLevel - 1) / 4) * 100}%` }}
-                  />
-                </div>
-
-                {/* Actual slider input */}
-                <input
-                  type="range"
-                  min="1"
-                  max="5"
-                  step="1"
-                  value={languageLevel}
-                  onChange={(e) => setLanguageLevel(Number(e.target.value) as LanguageLevel)}
-                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                  disabled={isSaving}
-                />
-              </div>
-
-              {/* Level descriptions */}
-              <div className="grid grid-cols-5 gap-2 text-center">
-                {languageLevels.map((level) => (
-                  <button
-                    key={level.level}
-                    onClick={() => setLanguageLevel(level.level as LanguageLevel)}
-                    className={`rounded-md p-2 text-xs transition-colors ${
-                      languageLevel === level.level
-                        ? "bg-primary/10 font-semibold text-primary"
-                        : "text-muted-foreground hover:bg-muted"
-                    }`}
-                    disabled={isSaving}
-                    type="button"
-                  >
-                    {level.description}
-                  </button>
-                ))}
-              </div>
+      {/* Language complexity */}
+      <div className="mt-5">
+        <FieldLabel sub={t('account.languageComplexitySub') || 'Choose your preferred difficulty level for reading materials'}>
+          {t('account.languageComplexity')}
+        </FieldLabel>
+        <div className="bg-[#FAF6E8] border-2 border-line rounded-[14px] px-5 py-5 flex items-center gap-4">
+          <LevelBadge level={lvl.id} />
+          <div className="flex-1">
+            <div className="text-[20px] font-black">{lvl.name}</div>
+            <div className="text-ink-soft text-[13px] mt-0.5">
+              {t('account.levelOf', { current: idx + 1, total: levels.length }) ||
+                `Level ${idx + 1} of ${levels.length}`}
             </div>
           </div>
+        </div>
+        <LevelSlider
+          levels={levels}
+          value={idx}
+          onChange={(i) => setLanguageLevel(i + 1)}
+        />
+      </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+      {error && <p className="text-sm font-bold text-heart-deep mt-3">{error}</p>}
 
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
-            <Button onClick={handleSave} className="flex-1" size="lg" disabled={isSaving}>
-              {isSaving ? 'Saving Changes...' : 'Save Changes'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <DuoButton
+        size="lg"
+        block
+        className="mt-6"
+        onClick={handleSave}
+        disabled={isSaving}
+      >
+        {isSaving ? (
+          t('common.saving')
+        ) : isSuccess ? (
+          <>
+            <Check className="h-[18px] w-[18px]" /> {t('account.saved') || 'Saved'}
+          </>
+        ) : (
+          t('account.saveChanges') || 'Save Changes'
+        )}
+      </DuoButton>
 
-      {showToast && <Toast message="Saved" onClose={() => setShowToast(false)} />}
+      {showToast && <Toast message={t('account.saved') || 'Saved'} onClose={() => setShowToast(false)} />}
+    </DuoCard>
+  );
+}
+
+function SectionHeader({
+  title,
+  subtitle,
+  icon,
+}: {
+  title: string;
+  subtitle: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-3.5">
+      <div className="w-[52px] h-[52px] rounded-full bg-green-soft text-green grid place-items-center shrink-0">
+        {icon}
+      </div>
+      <div>
+        <h2 className="font-black text-[26px] m-0 leading-tight">{title}</h2>
+        <div className="text-ink-mute text-sm font-semibold mt-0.5">{subtitle}</div>
+      </div>
+    </div>
+  );
+}
+
+function FieldLabel({ children, sub }: { children: React.ReactNode; sub?: string }) {
+  return (
+    <div className="mb-2">
+      <div className="text-[15px] font-black">{children}</div>
+      {sub && <div className="text-ink-mute text-[13px] font-semibold mt-0.5">{sub}</div>}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 import { Fragment } from 'react'
 import { useTranslation } from '../../i18n/useTranslation'
 import { cn } from '../../lib/utils'
-import { Card, CardHeader, CardTitle, CardContent } from '../ui/card'
+import { DuoCard } from '../ui/duo-card'
+import { Flame } from '../brand/icons'
 import type { CalendarDay, CalendarView } from '../../hooks/useDashboard'
 
 interface ReadingStreakCalendarProps {
@@ -23,15 +24,31 @@ function getWeekday(dateStr: string): number {
   return d.getDay()
 }
 
+function isToday(dateStr: string): boolean {
+  const today = new Date()
+  const isoToday =
+    today.getFullYear() +
+    '-' +
+    String(today.getMonth() + 1).padStart(2, '0') +
+    '-' +
+    String(today.getDate()).padStart(2, '0')
+  return dateStr === isoToday
+}
+
 function getWeekdayLabels(): string[] {
   const formatter = new Intl.DateTimeFormat(undefined, { weekday: 'narrow' })
   return Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(2023, 0, 1 + i) // Jan 1 2023 is Sunday
+    const date = new Date(2023, 0, 1 + i)
     return formatter.format(date)
   })
 }
 
-export function ReadingStreakCalendar({ calendar, view, onViewChange, isLoading }: ReadingStreakCalendarProps) {
+export function ReadingStreakCalendar({
+  calendar,
+  view,
+  onViewChange,
+  isLoading,
+}: ReadingStreakCalendarProps) {
   const { t } = useTranslation()
 
   const viewLabels: Record<CalendarView, string> = {
@@ -41,32 +58,35 @@ export function ReadingStreakCalendar({ calendar, view, onViewChange, isLoading 
   }
 
   return (
-    <Card className="overflow-hidden">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg">{t('dashboard.readingStreak')}</CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">{t('dashboard.readingStreakDescription')}</p>
-          </div>
-          <div className="flex gap-1 rounded-lg bg-muted p-1">
-            {VIEW_OPTIONS.map((v) => (
-              <button
-                key={v}
-                onClick={() => onViewChange(v)}
-                className={cn(
-                  'rounded-md px-3 py-1 text-sm font-medium transition-colors',
-                  view === v
-                    ? 'bg-background text-foreground shadow-sm'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                {viewLabels[v]}
-              </button>
-            ))}
-          </div>
+    <DuoCard className="p-7 overflow-hidden">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 className="text-[22px] font-black m-0 leading-tight">
+            {t('dashboard.readingStreak')}
+          </h3>
+          <p className="text-ink-mute text-sm font-semibold mt-1.5 m-0">
+            {t('dashboard.readingStreakDescription')}
+          </p>
         </div>
-      </CardHeader>
-      <CardContent>
+        <div className="flex bg-cream-2 p-1 rounded-[10px]">
+          {VIEW_OPTIONS.map((v) => (
+            <button
+              key={v}
+              onClick={() => onViewChange(v)}
+              className={cn(
+                'border-0 px-4 py-2 rounded-[8px] cursor-pointer font-extrabold text-[13px] font-sans',
+                view === v
+                  ? 'bg-paper text-ink shadow-[0_2px_0_hsl(var(--line-2))]'
+                  : 'bg-transparent text-ink-mute',
+              )}
+            >
+              {viewLabels[v]}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-5">
         {isLoading ? (
           <LoadingSkeleton view={view} />
         ) : view === 'yearly' ? (
@@ -74,8 +94,8 @@ export function ReadingStreakCalendar({ calendar, view, onViewChange, isLoading 
         ) : (
           <MonthlyWeeklyGrid calendar={calendar} view={view} />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </DuoCard>
   )
 }
 
@@ -90,7 +110,10 @@ function LoadingSkeleton({ view }: { view: CalendarView }) {
           <Fragment key={row}>
             <div className="h-2" />
             {Array.from({ length: 52 }).map((_, col) => (
-              <div key={`${row}-${col}`} className="aspect-square animate-pulse rounded-[3px] bg-muted" />
+              <div
+                key={`${row}-${col}`}
+                className="aspect-square animate-pulse rounded-[3px] bg-cream-2"
+              />
             ))}
           </Fragment>
         ))}
@@ -99,9 +122,9 @@ function LoadingSkeleton({ view }: { view: CalendarView }) {
   }
 
   return (
-    <div className="grid grid-cols-7 gap-1.5">
+    <div className="grid grid-cols-7 gap-2">
       {Array.from({ length: view === 'weekly' ? 7 : 35 }).map((_, i) => (
-        <div key={i} className="aspect-square animate-pulse rounded-lg bg-muted" />
+        <div key={i} className="aspect-square animate-pulse rounded-[12px] bg-cream-2" />
       ))}
     </div>
   )
@@ -109,24 +132,28 @@ function LoadingSkeleton({ view }: { view: CalendarView }) {
 
 function MonthlyWeeklyGrid({ calendar, view }: { calendar: CalendarDay[]; view: CalendarView }) {
   const weekdayLabels = getWeekdayLabels()
-
-  const firstWeekday = view === 'monthly' && calendar.length > 0 ? getWeekday(calendar[0].date) : 0
-  const paddedDays = view === 'monthly'
-    ? Array.from({ length: firstWeekday }).map((_, i) => (
-        <div key={`pad-${i}`} className="h-9 sm:h-10" />
-      ))
-    : []
+  const firstWeekday =
+    view === 'monthly' && calendar.length > 0 ? getWeekday(calendar[0].date) : 0
+  const paddedDays =
+    view === 'monthly'
+      ? Array.from({ length: firstWeekday }).map((_, i) => (
+          <div key={`pad-${i}`} className="h-9 sm:h-10" />
+        ))
+      : []
 
   return (
-    <div className="grid grid-cols-7 gap-1.5 justify-items-center">
+    <div className="grid grid-cols-7 gap-2 justify-items-stretch">
       {weekdayLabels.map((label, i) => (
-        <div key={i} className="flex h-8 items-center justify-center text-xs font-medium text-muted-foreground">
+        <div
+          key={i}
+          className="flex items-center justify-center text-[13px] font-extrabold text-ink-mute pb-1"
+        >
           {label}
         </div>
       ))}
       {paddedDays}
       {calendar.map((day) => (
-        <DayCell key={day.date} day={day} showLabel />
+        <DayCell key={day.date} day={day} />
       ))}
     </div>
   )
@@ -150,9 +177,7 @@ function YearlyGrid({ calendar }: { calendar: CalendarDay[] }) {
       currentWeek = []
     }
   }
-  if (currentWeek.length > 0) {
-    weeks.push(currentWeek)
-  }
+  if (currentWeek.length > 0) weeks.push(currentWeek)
 
   const weekdayLabels = getWeekdayLabels()
 
@@ -161,10 +186,9 @@ function YearlyGrid({ calendar }: { calendar: CalendarDay[] }) {
       className="grid gap-[3px]"
       style={{ gridTemplateColumns: `auto repeat(${weeks.length}, 1fr)` }}
     >
-      {/* Weekday labels column + week columns, rendered row by row */}
       {Array.from({ length: 7 }, (_, row) => (
         <Fragment key={row}>
-          <div className="flex items-center justify-end pr-1 text-[10px] text-muted-foreground">
+          <div className="flex items-center justify-end pr-1 text-[10px] font-extrabold text-ink-mute">
             {row % 2 === 0 ? weekdayLabels[row] : ''}
           </div>
           {weeks.map((week, wi) => {
@@ -175,11 +199,7 @@ function YearlyGrid({ calendar }: { calendar: CalendarDay[] }) {
                 key={day.date || `empty-${wi}-${row}`}
                 className={cn(
                   'aspect-square rounded-[3px]',
-                  !day.date
-                    ? 'bg-transparent'
-                    : day.has_read
-                    ? 'bg-primary'
-                    : 'bg-muted'
+                  !day.date ? 'bg-transparent' : day.has_read ? 'bg-green' : 'bg-[#F2EAD0]',
                 )}
                 title={day.date || undefined}
               />
@@ -191,18 +211,25 @@ function YearlyGrid({ calendar }: { calendar: CalendarDay[] }) {
   )
 }
 
-function DayCell({ day, showLabel }: { day: CalendarDay; showLabel?: boolean }) {
+function DayCell({ day }: { day: CalendarDay }) {
+  const today = isToday(day.date)
   return (
     <div
-      className={cn(
-        'flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg text-xs font-medium transition-colors',
-        day.has_read
-          ? 'bg-primary text-primary-foreground'
-          : 'bg-muted text-muted-foreground'
-      )}
       title={day.date}
+      className={cn(
+        'aspect-square w-full max-w-14 mx-auto rounded-[12px] grid place-items-center',
+        'font-black text-base relative',
+        day.has_read
+          ? 'bg-green text-white shadow-[0_3px_0_hsl(var(--green-deep))]'
+          : 'bg-[#F2EAD0] text-ink-mute',
+        today && day.has_read && 'ring-2 ring-gold ring-offset-0',
+      )}
     >
-      {showLabel && formatDayLabel(day.date)}
+      {day.has_read ? (
+        <Flame size={22} animate={today} />
+      ) : (
+        <span className="text-[14px]">{formatDayLabel(day.date)}</span>
+      )}
     </div>
   )
 }

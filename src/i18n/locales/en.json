@@ -24,7 +24,27 @@
     "continueWithApple": "Continue with Apple",
     "continueWithPhone": "Continue with Phone Number",
     "continueWithEmail": "Continue with Email",
-    "or": "Or",
+    "or": "OR",
+    "createAccount": "Create account",
+    "signInTab": "Sign in",
+    "signupHeadline": "Start reading today.",
+    "signinHeadline": "Welcome back.",
+    "signupSub": "Takes 30 seconds. No card needed.",
+    "signinSub": "Pick up where you left off.",
+    "signupCta": "Let's go",
+    "passwordHint": "At least 6 characters",
+    "terms": "By continuing you agree to our Terms and Privacy Policy.",
+    "freeForeverPill": "Free forever · No card needed",
+    "headline": "Curiosity is the best teacher.",
+    "subhead": "Find your perfect story in seconds.",
+    "pitchLead": "200 categories. Thousands of stories. 20+ languages.",
+    "pitchBody": "Readerly is a library built for language learners — pick something you'd Google at 2 AM, tap any word for an instant translation, and keep your streak going.",
+    "feature1Title": "Instant translation",
+    "feature1Desc": "Tap any word for the meaning in your language — without leaving the story.",
+    "feature2Title": "Real stories, not textbook drills",
+    "feature2Desc": "Astronomy, biographies, mythology, business — read what you actually care about.",
+    "feature3Title": "Every level, A1 to C1",
+    "feature3Desc": "Stories adapt to you. From everyday English to professional vocabulary.",
     "phone": {
       "label": "Phone Number",
       "placeholder": "+1 (555) 000-0000",
@@ -81,6 +101,7 @@
   },
   "onboarding": {
     "welcome": "Welcome",
+    "saveExit": "Save & exit",
     "stepProgress": "Step {current} of {total}",
     "completeAllFields": "Please complete all fields",
     "failedSaveProfile": "Failed to save profile. Please try again.",
@@ -337,7 +358,9 @@
   "navigation": {
     "home": "Home",
     "account": "Account",
-    "logout": "Logout"
+    "logout": "Logout",
+    "learn": "Learn",
+    "practice": "Practice"
   },
   "modeSelection": {
     "title": "Learn by reading",
@@ -379,12 +402,19 @@
   },
   "account": {
     "settings": "Account Settings",
+    "settingsSubtitle": "Manage your profile and learning preferences",
     "loadingInfo": "Loading account information...",
     "failedLoad": "Failed to load account information. Please try again.",
     "name": "Name",
     "ageGroup": "Age Group",
     "languageComplexity": "Language Complexity",
-    "backToHome": "Back to Home"
+    "languageComplexitySub": "Choose your preferred difficulty level for reading materials",
+    "levelOf": "Level {current} of {total}",
+    "backToHome": "Back to Home",
+    "saved": "Saved",
+    "saveChanges": "Save Changes",
+    "signOut": "Sign out",
+    "signOutHint": "You'll need to sign back in to keep your streak."
   },
   "data": {
     "months": [
@@ -504,7 +534,9 @@
     "submit": "Send Feedback",
     "submitting": "Sending...",
     "success": "Thank you for your feedback!",
-    "emptyError": "Please enter your feedback"
+    "emptyError": "Please enter your feedback",
+    "quickRating": "Quick rating:",
+    "thanks": "Thanks!"
   },
   "dashboard": {
     "title": "Your Progress",

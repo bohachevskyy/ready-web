@@ -4,30 +4,66 @@
 
 @layer base {
   :root {
-    --background: 40 20% 98%;
-    --foreground: 30 10% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 30 10% 12%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 30 10% 12%;
-    --primary: 152 44% 49%;
-    --primary-foreground: 0 0% 99%;
-    --secondary: 40 12% 94%;
-    --secondary-foreground: 30 10% 12%;
-    --muted: 40 10% 93%;
-    --muted-foreground: 30 6% 46%;
-    --accent: 152 38% 55%;
-    --accent-foreground: 0 0% 99%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 40 10% 90%;
-    --input: 40 10% 90%;
-    --ring: 152 44% 49%;
-    --radius: 0.5rem;
-    --sidebar: 40 15% 96%;
-    --sidebar-foreground: 30 10% 12%;
-    --sidebar-accent: 40 12% 92%;
-    --sidebar-accent-foreground: 30 10% 12%;
+    /* ── Brand surfaces ──────────────────────────────────────── */
+    --cream:     40 100% 95%;   /* #FFF8E7 */
+    --cream-2:   40 100% 91%;   /* #FFF1D0 */
+    --paper:     0  0%   100%;
+    --ink:       240 16% 20%;   /* #2B2B3A */
+    --ink-soft:  240 11% 33%;   /* #4B4B5C */
+    --ink-mute:  240  7% 57%;   /* #8B8B98 */
+    --line:      45  35% 85%;   /* #E8E1CC */
+    --line-2:    45  31% 76%;   /* #D6CCB0 */
+
+    /* ── Brand colors (accent palette) ───────────────────────── */
+    --green:        103 55% 49%;  /* #5DC037 */
+    --green-deep:   103 67% 35%;  /* #43961F */
+    --green-soft:   100 64% 92%;  /* #E8F8DC */
+    --green-ink:    100 71% 24%;  /* #2E6B12 */
+
+    --gold:         44  90% 61%;  /* #F5C341 */
+    --gold-deep:    40  84% 43%;  /* #C99211 */
+    --gold-soft:    46 100% 88%;  /* #FFF1C4 */
+
+    --flame:        24 100% 58%;  /* #FF8A2A */
+    --flame-deep:   22  93% 40%;  /* #C75A06 */
+
+    --heart:        354 100% 65%; /* #FF4D5E */
+    --heart-deep:   353 64% 47%;  /* #C72C3D */
+
+    --blue:         204 100% 59%; /* #2FA8FF */
+    --blue-deep:    206 81%  42%; /* #1473C2 */
+    --blue-soft:    210 100% 93%; /* #DCEEFF */
+
+    --purple:       258 100% 72%; /* #9870FF */
+    --purple-deep:  259  64% 55%; /* #6D44D6 */
+    --purple-soft:  259 100% 94%; /* #ECE2FF */
+
+    /* ── Semantic mapping (used by ui/* primitives) ──────────── */
+    --background:            var(--cream);
+    --foreground:            var(--ink);
+    --card:                  var(--paper);
+    --card-foreground:       var(--ink);
+    --popover:               var(--paper);
+    --popover-foreground:    var(--ink);
+    --primary:               var(--green);
+    --primary-foreground:    0 0% 100%;
+    --secondary:             var(--cream-2);
+    --secondary-foreground:  var(--ink);
+    --muted:                 var(--line);
+    --muted-foreground:      var(--ink-mute);
+    --accent:                var(--green-soft);
+    --accent-foreground:     var(--green-ink);
+    --destructive:           var(--heart);
+    --destructive-foreground: 0 0% 100%;
+    --border:                var(--line);
+    --input:                 var(--line);
+    --ring:                  var(--green);
+    --radius: 1rem;
+
+    --sidebar:                       var(--cream);
+    --sidebar-foreground:            var(--ink);
+    --sidebar-accent:                var(--green-soft);
+    --sidebar-accent-foreground:     var(--green-ink);
   }
 
   .dark {
@@ -62,9 +98,90 @@
     font-family: 'Nunito', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: #FFE17A;
   }
 
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
   }
+}
+
+/* ── Animations ──────────────────────────────────────────────── */
+@keyframes pop {
+  0%   { transform: scale(.85); }
+  60%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes flameFlicker {
+  0%, 100% { transform: scale(1) rotate(-1deg); }
+  50%      { transform: scale(1.06) rotate(2deg); }
+}
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(93, 192, 55, .55); }
+  100% { box-shadow: 0 0 0 18px rgba(93, 192, 55, 0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounceIn {
+  0%  { opacity: 0; transform: scale(.85); }
+  60% { opacity: 1; transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.anim-pop    { animation: pop .35s ease; }
+.anim-shake  { animation: shake .45s ease; }
+.anim-slide  { animation: slideUp .35s ease both; }
+.anim-bounce { animation: bounceIn .35s ease both; }
+.anim-flame  { animation: flameFlicker 1.6s ease-in-out infinite; transform-origin: 50% 90%; }
+.anim-float  { animation: float 3s ease-in-out infinite; }
+.anim-pulse-ring { animation: pulseRing 1.6s ease-out infinite; }
+
+/* ── Wordmark logotype ───────────────────────────────────────── */
+.wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  font-family: 'Nunito', system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -.04em;
+  color: hsl(var(--green));
+  line-height: 1;
+}
+.wordmark .wordmark-dot {
+  display: inline-block;
+  width: .42em;
+  height: .42em;
+  border-radius: 50%;
+  background: hsl(var(--gold));
+  margin: 0 .04em;
+}
+
+/* ── Custom scrollbar for inner panes ────────────────────────── */
+.scroll-cream {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--line-2)) transparent;
+}
+.scroll-cream::-webkit-scrollbar { width: 10px; }
+.scroll-cream::-webkit-scrollbar-thumb {
+  background: hsl(var(--line-2));
+  border-radius: 8px;
+  border: 2px solid hsl(var(--cream));
 }
