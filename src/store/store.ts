@@ -11,6 +11,7 @@ import speechSettingsReducer from './speechSettingsSlice'
 import userReducer from './userSlice'
 import storiesReducer from './storiesSlice'
 import categoriesReducer from './categoriesSlice'
+import dashboardReducer from './dashboardSlice'
 import { authMiddleware } from './authMiddleware'
 import { sentryMiddleware } from './sentryMiddleware'
 
@@ -32,6 +33,15 @@ const speechSettingsPersistConfig = {
 
 const persistedSpeechSettingsReducer = persistReducer(speechSettingsPersistConfig, speechSettingsReducer)
 
+// Configure persistence for dashboard cache
+const dashboardPersistConfig = {
+  key: 'dashboard',
+  storage,
+  whitelist: ['dataByView', 'lastFetchedByView'],
+}
+
+const persistedDashboardReducer = persistReducer(dashboardPersistConfig, dashboardReducer)
+
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
@@ -43,6 +53,7 @@ export const store = configureStore({
     user: userReducer,
     stories: storiesReducer,
     categories: categoriesReducer,
+    dashboard: persistedDashboardReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
