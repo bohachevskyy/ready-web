@@ -7,7 +7,7 @@ interface LanguageStepProps {
   onBack: () => void
 }
 
-const languageCodes = [
+export const languageCodes = [
   { code: "zh", flag: "🇨🇳" },
   { code: "hi", flag: "🇮🇳" },
   { code: "es", flag: "🇪🇸" },
@@ -28,6 +28,7 @@ const languageCodes = [
   { code: "th", flag: "🇹🇭" },
   { code: "id", flag: "🇮🇩" },
   { code: "ms", flag: "🇲🇾" },
+  { code: "hu", flag: "🇭🇺" },
 ]
 
 export function LanguageStep({ selectedLanguage, onLanguageSelect, onBack }: LanguageStepProps) {
