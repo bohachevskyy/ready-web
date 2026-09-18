@@ -16,6 +16,7 @@ import { useTranslation } from "../i18n/useTranslation"
 import { logEvent } from "../services/analyticsService"
 import { wordToCard, calculateNextReview, calculateScheduledDays, type FSRSCard } from "../services/fsrsService"
 import { cn } from "../lib/utils"
+import { PRACTICE_WORD_ROW_CLASS, PRACTICE_WORD_TEXT_CLASS } from "../utils/practiceWordLayout"
 
 type Rating = "again" | "hard" | "good" | "easy"
 
@@ -320,8 +321,8 @@ export function PracticeWords() {
 
           <div className="px-5 pt-14 pb-10 text-center">
             <div className="text-ink-mute text-sm font-bold">{t('practice.englishWord')}</div>
-            <div className="flex items-center justify-center gap-4 mt-4">
-              <div className="text-[64px] font-black text-green tracking-tight leading-[1]">
+            <div className={PRACTICE_WORD_ROW_CLASS}>
+              <div className={PRACTICE_WORD_TEXT_CLASS}>
                 {currentCard.word}
               </div>
               <SpeakerButton text={currentCard.word} size="lg" />
