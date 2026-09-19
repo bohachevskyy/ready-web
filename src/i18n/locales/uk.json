@@ -73,8 +73,31 @@
       "invalidEmail": "Невірна адреса електронної пошти",
       "weakPassword": "Пароль занадто слабкий",
       "failedCreateAccount": "Не вдалося створити обліковий запис. Будь ласка, спробуйте знову.",
-      "failedInitPhone": "Не вдалося ініціалізувати перевірку телефону. Будь ласка, оновіть сторінку."
-    }
+      "failedInitPhone": "Не вдалося ініціалізувати перевірку телефону. Будь ласка, оновіть сторінку.",
+      "networkError": "Помилка мережевого з’єднання",
+      "networkErrorDescription": "Не вдалося оновити вашу сесію. Перевірте підключення до інтернету."
+    },
+    "createAccount": "Створити акаунт",
+    "signInTab": "Увійти",
+    "signupHeadline": "Почніть читати вже сьогодні.",
+    "signinHeadline": "Раді бачити знову.",
+    "signupSub": "Це займе 30 секунд. Картка не потрібна.",
+    "signinSub": "Продовжуйте з того місця, де зупинилися.",
+    "signupCta": "Почнімо",
+    "passwordHint": "Щонайменше 6 символів",
+    "terms": "Продовжуючи, ви погоджуєтеся з нашими Умовами та Політикою конфіденційності.",
+    "freeForeverPill": "Безкоштовно назавжди · Картка не потрібна",
+    "headline": "Допитливість — найкращий учитель.",
+    "subhead": "Знайдіть ідеальну історію за кілька секунд.",
+    "pitchLead": "200 категорій. Тисячі історій. Понад 20 мов.",
+    "pitchBody": "Readerly — це бібліотека для тих, хто вивчає мови: оберіть те, що ви гуглили б о 2-й ночі, торкніться будь-якого слова для миттєвого перекладу й підтримуйте свою серію.",
+    "feature1Title": "Миттєвий переклад",
+    "feature1Desc": "Торкніться будь-якого слова, щоб побачити значення вашою мовою — не виходячи з історії.",
+    "feature2Title": "Справжні історії, а не вправи з підручника",
+    "feature2Desc": "Астрономія, біографії, міфологія, бізнес — читайте про те, що вам справді цікаво.",
+    "feature3Title": "Будь-який рівень, від A1 до C1",
+    "feature3Desc": "Історії підлаштовуються під вас. Від повсякденної англійської до професійної лексики.",
+    "retry": "Повторити"
   },
   "onboarding": {
     "welcome": "Ласкаво просимо",
@@ -87,7 +110,14 @@
       "clickLink": "Натисніть посилання у вашій пошті, щоб підтвердити обліковий запис",
       "waitingForVerification": "Очікування підтвердження...",
       "verifiedButton": "Я підтвердив мою пошту",
-      "resendEmail": "Надіслати лист підтвердження ще раз"
+      "resendEmail": "Надіслати лист підтвердження ще раз",
+      "checking": "Перевірка...",
+      "checkingStatus": "Перевірка статусу підтвердження...",
+      "skip": "Пропустити поки що",
+      "verified": "Пошту підтверджено!",
+      "verifiedMessage": "Вашу електронну пошту успішно підтверджено",
+      "redirecting": "Перенаправлення за 2 секунди...",
+      "sending": "Надсилання..."
     },
     "name": {
       "question": "Як вас звати?",
@@ -115,7 +145,40 @@
       "description": "Наскільки добре ви володієте англійською?",
       "levelProgress": "Рівень {level} з 5",
       "startLearning": "Почати навчання"
-    }
+    },
+    "saveExit": "Зберегти й вийти",
+    "step0": {
+      "title": "Ласкаво просимо у вашу читацьку подорож!",
+      "message": "Давайте прочитаємо вашу першу історію разом"
+    },
+    "step0Fallback": {
+      "title": "Оберіть свою першу історію",
+      "message": "Щоб почати, виберіть будь-яку тему, яка вас цікавить"
+    },
+    "step2": {
+      "title": "Відкривайте нові слова",
+      "message": "Торкніться будь-якого слова, щоб побачити його значення"
+    },
+    "step3": {
+      "title": "Розвивайте свій словниковий запас",
+      "message": "Зберігайте слова, які хочете запам'ятати"
+    },
+    "step4": {
+      "title": "Ваша колекція слів",
+      "message": "Отримуйте доступ до збережених слів у будь-який час"
+    },
+    "step5": {
+      "title": "Практика веде до майстерності",
+      "message": "Повторюйте слова за допомогою інтервального повторення"
+    },
+    "finishStory": {
+      "title": "Завершіть свою першу історію",
+      "message": "Натисніть «Завершити» нижче, щоб закінчити читання. Потім практикуйте слова в розділі «Практика»"
+    },
+    "skip": "Пропустити тур",
+    "next": "Далі",
+    "gotIt": "Зрозуміло!",
+    "progress": "Крок {current} з {total}"
   },
   "practice": {
     "loadingWords": "Завантаження слів...",
@@ -149,7 +212,8 @@
       "learning": "вивчається",
       "review": "перегляд",
       "relearning": "перевивчення"
-    }
+    },
+    "goHome": "На головну"
   },
   "stories": {
     "pageTitle": "Оберіть категорію історії",
@@ -321,45 +385,47 @@
   "navigation": {
     "home": "Головна",
     "account": "Акаунт",
-    "logout": "Вийти"
+    "logout": "Вийти",
+    "learn": "Навчання",
+    "practice": "Практика"
   },
   "modeSelection": {
-    "title": "Learn by reading",
-    "readStories": "Read Stories",
-    "readStoriesDescription": "Improve your reading comprehension with interactive stories",
-    "practiceWords": "Practice Words",
-    "practiceWordsDescription": "Build your vocabulary with targeted word exercises",
-    "visualsTitle": "Turn reading into a living word list",
-    "visualsSubtitle": "Pick a story, collect words, and practice in short bursts that stick.",
-    "visualsAlt": "Cheerful reading scene",
-    "visualsTag": "Made for learners",
+    "title": "Навчайтеся через читання",
+    "readStories": "Читати історії",
+    "readStoriesDescription": "Покращуйте розуміння прочитаного за допомогою інтерактивних історій",
+    "practiceWords": "Практикувати слова",
+    "practiceWordsDescription": "Розвивайте словниковий запас за допомогою цільових вправ зі словами",
+    "visualsTitle": "Перетворіть читання на живий список слів",
+    "visualsSubtitle": "Оберіть історію, збирайте слова й практикуйтеся короткими сесіями, які добре запам'ятовуються.",
+    "visualsAlt": "Радісна сцена читання",
+    "visualsTag": "Створено для тих, хто навчається",
     "steps": {
-      "readTitle": "Read in context",
-      "readDescription": "Meet words inside real sentences.",
-      "collectTitle": "Collect as you go",
-      "collectDescription": "Save words you want to remember.",
-      "practiceTitle": "Practice lightly",
-      "practiceDescription": "Quick sessions build recall."
+      "readTitle": "Читайте в контексті",
+      "readDescription": "Зустрічайте слова в реальних реченнях.",
+      "collectTitle": "Збирайте під час читання",
+      "collectDescription": "Зберігайте слова, які хочете запам'ятати.",
+      "practiceTitle": "Практикуйтеся легко",
+      "practiceDescription": "Короткі сесії допомагають краще запам'ятовувати."
     },
-    "wordGardenTitle": "Word garden",
-    "wordGardenSubtitle": "A growing set of words from your reading.",
-    "wordGardenTag": "New this week",
+    "wordGardenTitle": "Сад слів",
+    "wordGardenSubtitle": "Список слів із ваших читань, що постійно зростає.",
+    "wordGardenTag": "Нове цього тижня",
     "wordChips": [
-      "curious",
-      "essential",
-      "wander",
-      "glow",
-      "steady",
-      "bright",
-      "origin",
-      "craft",
-      "notice",
-      "rare"
+      "допитливий",
+      "важливий",
+      "мандрувати",
+      "сяйво",
+      "стійкий",
+      "яскравий",
+      "походження",
+      "творити",
+      "помічати",
+      "рідкісний"
     ],
-    "momentumTitle": "Reading momentum",
-    "momentumSubtitle": "A calm pace beats cramming every time.",
-    "momentumTag": "On track",
-    "momentumBadge": "Week 1"
+    "momentumTitle": "Ритм читання",
+    "momentumSubtitle": "Спокійний темп кращий за зубріння в останню мить.",
+    "momentumTag": "Все за планом",
+    "momentumBadge": "Тиждень 1"
   },
   "account": {
     "settings": "Налаштування акаунта",
@@ -368,7 +434,14 @@
     "name": "Ім'я",
     "ageGroup": "Вікова група",
     "languageComplexity": "Складність мови",
-    "backToHome": "Назад на головну"
+    "backToHome": "Назад на головну",
+    "settingsSubtitle": "Керуйте профілем і налаштуваннями навчання",
+    "languageComplexitySub": "Оберіть бажаний рівень складності матеріалів для читання",
+    "levelOf": "Рівень {current} з {total}",
+    "saved": "Збережено",
+    "saveChanges": "Зберегти зміни",
+    "signOut": "Вийти",
+    "signOutHint": "Щоб зберегти серію, потрібно буде увійти знову."
   },
   "data": {
     "months": [
@@ -501,6 +574,8 @@
     "submit": "Надіслати відгук",
     "submitting": "Надсилання...",
     "success": "Дякуємо за ваш відгук!",
-    "emptyError": "Будь ласка, введіть ваш відгук"
+    "emptyError": "Будь ласка, введіть ваш відгук",
+    "quickRating": "Швидка оцінка:",
+    "thanks": "Дякуємо!"
   }
 }

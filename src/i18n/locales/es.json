@@ -73,8 +73,31 @@
       "invalidEmail": "Dirección de correo electrónico inválida",
       "weakPassword": "La contraseña es muy débil",
       "failedCreateAccount": "Error al crear la cuenta. Por favor intenta de nuevo.",
-      "failedInitPhone": "Error al inicializar la verificación por teléfono. Por favor recarga la página."
-    }
+      "failedInitPhone": "Error al inicializar la verificación por teléfono. Por favor recarga la página.",
+      "networkError": "Error de conexión de red",
+      "networkErrorDescription": "No se pudo actualizar tu sesión. Comprueba tu conexión a internet."
+    },
+    "createAccount": "Crear cuenta",
+    "signInTab": "Iniciar sesión",
+    "signupHeadline": "Empieza a leer hoy.",
+    "signinHeadline": "Bienvenido de nuevo.",
+    "signupSub": "Toma 30 segundos. No necesitas tarjeta.",
+    "signinSub": "Continúa donde lo dejaste.",
+    "signupCta": "Vamos",
+    "passwordHint": "Al menos 6 caracteres",
+    "terms": "Al continuar, aceptas nuestros Términos y Política de privacidad.",
+    "freeForeverPill": "Gratis para siempre · No necesitas tarjeta",
+    "headline": "La curiosidad es la mejor maestra.",
+    "subhead": "Encuentra tu historia perfecta en segundos.",
+    "pitchLead": "200 categorías. Miles de historias. Más de 20 idiomas.",
+    "pitchBody": "Readerly es una biblioteca creada para estudiantes de idiomas: elige algo que buscarías en Google a las 2 a. m., toca cualquier palabra para ver una traducción instantánea y mantén tu racha.",
+    "feature1Title": "Traducción instantánea",
+    "feature1Desc": "Toca cualquier palabra para ver su significado en tu idioma, sin salir de la historia.",
+    "feature2Title": "Historias reales, no ejercicios de manual",
+    "feature2Desc": "Astronomía, biografías, mitología, negocios: lee sobre lo que realmente te interesa.",
+    "feature3Title": "Todos los niveles, de A1 a C1",
+    "feature3Desc": "Las historias se adaptan a ti. Desde inglés cotidiano hasta vocabulario profesional.",
+    "retry": "Reintentar"
   },
   "onboarding": {
     "welcome": "Bienvenido",
@@ -87,7 +110,14 @@
       "clickLink": "Haz clic en el enlace en tu correo electrónico para verificar tu cuenta",
       "waitingForVerification": "Esperando verificación...",
       "verifiedButton": "Ya verifiqué mi correo electrónico",
-      "resendEmail": "Reenviar correo de verificación"
+      "resendEmail": "Reenviar correo de verificación",
+      "checking": "Comprobando...",
+      "checkingStatus": "Comprobando el estado de verificación...",
+      "skip": "Omitir por ahora",
+      "verified": "¡Correo verificado!",
+      "verifiedMessage": "Tu correo electrónico se ha verificado correctamente",
+      "redirecting": "Redirigiendo en 2 segundos...",
+      "sending": "Enviando..."
     },
     "name": {
       "question": "¿Cuál es tu nombre?",
@@ -147,7 +177,8 @@
     "skip": "Saltar Tour",
     "next": "Siguiente",
     "gotIt": "¡Entendido!",
-    "progress": "Paso {current} de {total}"
+    "progress": "Paso {current} de {total}",
+    "saveExit": "Guardar y salir"
   },
   "practice": {
     "loadingWords": "Cargando palabras...",
@@ -181,7 +212,8 @@
       "learning": "aprendiendo",
       "review": "repaso",
       "relearning": "reaprendiendo"
-    }
+    },
+    "goHome": "Ir al inicio"
   },
   "stories": {
     "pageTitle": "Elige la categoría de tu historia",
@@ -353,45 +385,47 @@
   "navigation": {
     "home": "Inicio",
     "account": "Cuenta",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "learn": "Aprender",
+    "practice": "Practicar"
   },
   "modeSelection": {
-    "title": "Learn by reading",
-    "readStories": "Read Stories",
-    "readStoriesDescription": "Improve your reading comprehension with interactive stories",
-    "practiceWords": "Practice Words",
-    "practiceWordsDescription": "Build your vocabulary with targeted word exercises",
-    "visualsTitle": "Turn reading into a living word list",
-    "visualsSubtitle": "Pick a story, collect words, and practice in short bursts that stick.",
-    "visualsAlt": "Cheerful reading scene",
-    "visualsTag": "Made for learners",
+    "title": "Aprende leyendo",
+    "readStories": "Leer historias",
+    "readStoriesDescription": "Mejora tu comprensión lectora con historias interactivas",
+    "practiceWords": "Practicar palabras",
+    "practiceWordsDescription": "Amplía tu vocabulario con ejercicios de palabras específicos",
+    "visualsTitle": "Convierte la lectura en una lista viva de palabras",
+    "visualsSubtitle": "Elige una historia, guarda palabras y practica en sesiones breves que se quedan.",
+    "visualsAlt": "Escena alegre de lectura",
+    "visualsTag": "Hecho para estudiantes",
     "steps": {
-      "readTitle": "Read in context",
-      "readDescription": "Meet words inside real sentences.",
-      "collectTitle": "Collect as you go",
-      "collectDescription": "Save words you want to remember.",
-      "practiceTitle": "Practice lightly",
-      "practiceDescription": "Quick sessions build recall."
+      "readTitle": "Lee en contexto",
+      "readDescription": "Encuentra palabras dentro de frases reales.",
+      "collectTitle": "Guarda mientras lees",
+      "collectDescription": "Guarda las palabras que quieres recordar.",
+      "practiceTitle": "Practica de forma ligera",
+      "practiceDescription": "Las sesiones rápidas fortalecen la memoria."
     },
-    "wordGardenTitle": "Word garden",
-    "wordGardenSubtitle": "A growing set of words from your reading.",
-    "wordGardenTag": "New this week",
+    "wordGardenTitle": "Jardín de palabras",
+    "wordGardenSubtitle": "Un conjunto creciente de palabras de tus lecturas.",
+    "wordGardenTag": "Nuevo esta semana",
     "wordChips": [
-      "curious",
-      "essential",
-      "wander",
-      "glow",
-      "steady",
-      "bright",
-      "origin",
-      "craft",
-      "notice",
-      "rare"
+      "curioso",
+      "esencial",
+      "vagar",
+      "brillar",
+      "constante",
+      "brillante",
+      "origen",
+      "crear",
+      "notar",
+      "raro"
     ],
-    "momentumTitle": "Reading momentum",
-    "momentumSubtitle": "A calm pace beats cramming every time.",
-    "momentumTag": "On track",
-    "momentumBadge": "Week 1"
+    "momentumTitle": "Impulso de lectura",
+    "momentumSubtitle": "Un ritmo tranquilo vence a estudiar a última hora.",
+    "momentumTag": "Bien encaminado",
+    "momentumBadge": "Semana 1"
   },
   "account": {
     "settings": "Configuración de cuenta",
@@ -400,7 +434,14 @@
     "name": "Nombre",
     "ageGroup": "Grupo de edad",
     "languageComplexity": "Complejidad del idioma",
-    "backToHome": "Volver al inicio"
+    "backToHome": "Volver al inicio",
+    "settingsSubtitle": "Gestiona tu perfil y tus preferencias de aprendizaje",
+    "languageComplexitySub": "Elige tu nivel de dificultad preferido para los materiales de lectura",
+    "levelOf": "Nivel {current} de {total}",
+    "saved": "Guardado",
+    "saveChanges": "Guardar cambios",
+    "signOut": "Cerrar sesión",
+    "signOutHint": "Tendrás que volver a iniciar sesión para mantener tu racha."
   },
   "data": {
     "months": [
@@ -533,6 +574,8 @@
     "submit": "Enviar comentario",
     "submitting": "Enviando...",
     "success": "¡Gracias por tu comentario!",
-    "emptyError": "Por favor, ingresa tu comentario"
+    "emptyError": "Por favor, ingresa tu comentario",
+    "quickRating": "Valoración rápida:",
+    "thanks": "¡Gracias!"
   }
 }
