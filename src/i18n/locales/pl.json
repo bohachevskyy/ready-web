@@ -73,8 +73,31 @@
       "invalidEmail": "Nieprawidłowy adres email",
       "weakPassword": "Hasło jest zbyt słabe",
       "failedCreateAccount": "Nie udało się utworzyć konta. Spróbuj ponownie.",
-      "failedInitPhone": "Nie udało się zainicjować weryfikacji telefonu. Proszę odświeżyć stronę."
-    }
+      "failedInitPhone": "Nie udało się zainicjować weryfikacji telefonu. Proszę odświeżyć stronę.",
+      "networkError": "Błąd połączenia sieciowego",
+      "networkErrorDescription": "Nie udało się odświeżyć sesji. Sprawdź połączenie z internetem."
+    },
+    "createAccount": "Utwórz konto",
+    "signInTab": "Zaloguj się",
+    "signupHeadline": "Zacznij czytać już dziś.",
+    "signinHeadline": "Witaj z powrotem.",
+    "signupSub": "To zajmie 30 sekund. Karta nie jest potrzebna.",
+    "signinSub": "Kontynuuj od miejsca, w którym skończyłeś.",
+    "signupCta": "Zaczynajmy",
+    "passwordHint": "Co najmniej 6 znaków",
+    "terms": "Kontynuując, akceptujesz nasze Warunki i Politykę prywatności.",
+    "freeForeverPill": "Za darmo na zawsze · Karta nie jest potrzebna",
+    "headline": "Ciekawość jest najlepszym nauczycielem.",
+    "subhead": "Znajdź idealną historię w kilka sekund.",
+    "pitchLead": "200 kategorii. Tysiące historii. Ponad 20 języków.",
+    "pitchBody": "Readerly to biblioteka dla osób uczących się języków — wybierz coś, co sprawdzałbyś w Google o 2 w nocy, dotknij dowolnego słowa, aby zobaczyć natychmiastowe tłumaczenie, i utrzymuj swoją serię.",
+    "feature1Title": "Natychmiastowe tłumaczenie",
+    "feature1Desc": "Dotknij dowolnego słowa, aby zobaczyć jego znaczenie w swoim języku — bez wychodzenia z historii.",
+    "feature2Title": "Prawdziwe historie, nie ćwiczenia z podręcznika",
+    "feature2Desc": "Astronomia, biografie, mitologia, biznes — czytaj o tym, co naprawdę Cię interesuje.",
+    "feature3Title": "Każdy poziom, od A1 do C1",
+    "feature3Desc": "Historie dopasowują się do Ciebie. Od codziennego angielskiego po słownictwo zawodowe.",
+    "retry": "Spróbuj ponownie"
   },
   "onboarding": {
     "welcome": "Witaj",
@@ -87,7 +110,14 @@
       "clickLink": "Kliknij link w swoim emailu, aby zweryfikować swoje konto",
       "waitingForVerification": "Oczekiwanie na weryfikację...",
       "verifiedButton": "Zweryfikowałem mój email",
-      "resendEmail": "Wyślij email weryfikacyjny ponownie"
+      "resendEmail": "Wyślij email weryfikacyjny ponownie",
+      "checking": "Sprawdzanie...",
+      "checkingStatus": "Sprawdzanie statusu weryfikacji...",
+      "skip": "Pomiń na razie",
+      "verified": "E-mail zweryfikowany!",
+      "verifiedMessage": "Twój adres e-mail został pomyślnie zweryfikowany",
+      "redirecting": "Przekierowanie za 2 sekundy...",
+      "sending": "Wysyłanie..."
     },
     "name": {
       "question": "Jak masz na imię?",
@@ -115,7 +145,40 @@
       "description": "Jak wygodnie czujesz się z angielskim?",
       "levelProgress": "Poziom {level} z 5",
       "startLearning": "Zacznij naukę"
-    }
+    },
+    "saveExit": "Zapisz i wyjdź",
+    "step0": {
+      "title": "Witaj w swojej czytelniczej podróży!",
+      "message": "Przeczytajmy razem Twoją pierwszą historię"
+    },
+    "step0Fallback": {
+      "title": "Wybierz swoją pierwszą historię",
+      "message": "Wybierz dowolny temat, który Cię interesuje, aby zacząć"
+    },
+    "step2": {
+      "title": "Odkrywaj nowe słowa",
+      "message": "Dotknij dowolnego słowa, aby zobaczyć jego znaczenie"
+    },
+    "step3": {
+      "title": "Buduj swoje słownictwo",
+      "message": "Zapisuj słowa, które chcesz zapamiętać"
+    },
+    "step4": {
+      "title": "Twoja kolekcja słów",
+      "message": "Uzyskaj dostęp do zapisanych słów w dowolnym momencie"
+    },
+    "step5": {
+      "title": "Praktyka czyni mistrza",
+      "message": "Powtarzaj słowa z wykorzystaniem powtórek interwałowych"
+    },
+    "finishStory": {
+      "title": "Dokończ swoją pierwszą historię",
+      "message": "Kliknij „Zakończ” poniżej, aby skończyć czytanie. Następnie ćwicz słowa w sekcji Ćwiczenia"
+    },
+    "skip": "Pomiń samouczek",
+    "next": "Dalej",
+    "gotIt": "Rozumiem!",
+    "progress": "Krok {current} z {total}"
   },
   "practice": {
     "loadingWords": "Ładowanie słów...",
@@ -149,7 +212,8 @@
       "learning": "uczenie się",
       "review": "powtórzenie",
       "relearning": "ponowne uczenie się"
-    }
+    },
+    "goHome": "Idź do strony głównej"
   },
   "stories": {
     "pageTitle": "Wybierz kategorię swojej historii",
@@ -321,45 +385,47 @@
   "navigation": {
     "home": "Strona główna",
     "account": "Konto",
-    "logout": "Wyloguj się"
+    "logout": "Wyloguj się",
+    "learn": "Nauka",
+    "practice": "Ćwiczenia"
   },
   "modeSelection": {
-    "title": "Learn by reading",
-    "readStories": "Read Stories",
-    "readStoriesDescription": "Improve your reading comprehension with interactive stories",
-    "practiceWords": "Practice Words",
-    "practiceWordsDescription": "Build your vocabulary with targeted word exercises",
-    "visualsTitle": "Turn reading into a living word list",
-    "visualsSubtitle": "Pick a story, collect words, and practice in short bursts that stick.",
-    "visualsAlt": "Cheerful reading scene",
-    "visualsTag": "Made for learners",
+    "title": "Ucz się przez czytanie",
+    "readStories": "Czytaj historie",
+    "readStoriesDescription": "Poprawiaj rozumienie tekstu dzięki interaktywnym historiom",
+    "practiceWords": "Ćwicz słowa",
+    "practiceWordsDescription": "Buduj słownictwo dzięki ukierunkowanym ćwiczeniom",
+    "visualsTitle": "Zamień czytanie w żywą listę słów",
+    "visualsSubtitle": "Wybierz historię, zbieraj słowa i ćwicz w krótkich sesjach, które zostają w pamięci.",
+    "visualsAlt": "Radosna scena czytania",
+    "visualsTag": "Stworzone dla uczących się",
     "steps": {
-      "readTitle": "Read in context",
-      "readDescription": "Meet words inside real sentences.",
-      "collectTitle": "Collect as you go",
-      "collectDescription": "Save words you want to remember.",
-      "practiceTitle": "Practice lightly",
-      "practiceDescription": "Quick sessions build recall."
+      "readTitle": "Czytaj w kontekście",
+      "readDescription": "Poznawaj słowa w prawdziwych zdaniach.",
+      "collectTitle": "Zbieraj po drodze",
+      "collectDescription": "Zapisuj słowa, które chcesz zapamiętać.",
+      "practiceTitle": "Ćwicz lekko",
+      "practiceDescription": "Krótkie sesje wzmacniają zapamiętywanie."
     },
-    "wordGardenTitle": "Word garden",
-    "wordGardenSubtitle": "A growing set of words from your reading.",
-    "wordGardenTag": "New this week",
+    "wordGardenTitle": "Ogród słów",
+    "wordGardenSubtitle": "Rosnący zestaw słów z Twoich lektur.",
+    "wordGardenTag": "Nowe w tym tygodniu",
     "wordChips": [
-      "curious",
-      "essential",
-      "wander",
-      "glow",
-      "steady",
-      "bright",
-      "origin",
-      "craft",
-      "notice",
-      "rare"
+      "ciekawy",
+      "istotny",
+      "wędrować",
+      "blask",
+      "stabilny",
+      "jasny",
+      "pochodzenie",
+      "tworzyć",
+      "zauważyć",
+      "rzadki"
     ],
-    "momentumTitle": "Reading momentum",
-    "momentumSubtitle": "A calm pace beats cramming every time.",
-    "momentumTag": "On track",
-    "momentumBadge": "Week 1"
+    "momentumTitle": "Rytm czytania",
+    "momentumSubtitle": "Spokojne tempo wygrywa z nauką na ostatnią chwilę.",
+    "momentumTag": "Na dobrej drodze",
+    "momentumBadge": "Tydzień 1"
   },
   "account": {
     "settings": "Ustawienia konta",
@@ -368,7 +434,14 @@
     "name": "Imię i nazwisko",
     "ageGroup": "Grupa wiekowa",
     "languageComplexity": "Poziom trudności języka",
-    "backToHome": "Wróć do strony głównej"
+    "backToHome": "Wróć do strony głównej",
+    "settingsSubtitle": "Zarządzaj profilem i preferencjami nauki",
+    "languageComplexitySub": "Wybierz preferowany poziom trudności materiałów do czytania",
+    "levelOf": "Poziom {current} z {total}",
+    "saved": "Zapisano",
+    "saveChanges": "Zapisz zmiany",
+    "signOut": "Wyloguj się",
+    "signOutHint": "Aby utrzymać serię, trzeba będzie zalogować się ponownie."
   },
   "data": {
     "months": [
@@ -501,6 +574,8 @@
     "submit": "Wyślij opinię",
     "submitting": "Wysyłanie...",
     "success": "Dziękujemy za opinię!",
-    "emptyError": "Wprowadź swoją opinię"
+    "emptyError": "Wprowadź swoją opinię",
+    "quickRating": "Szybka ocena:",
+    "thanks": "Dziękujemy!"
   }
 }
